@@ -19,6 +19,7 @@
     <Button onAction="#onOpenGradesButtonClick" text="View Grades" />
     <Button onAction="#onOpenTuitionButtonClick" text="View Tuition Status" />
     <Button onAction="#onOpenSecondPageButtonClick" text="Open Student Info" />
+    <Button onAction="#onOpenAdminDashboardButtonClick" text="Admin Dashboard" />
     <Button text="Back to Main Screen" fx:id="backButton" onAction="#handleBackButton" style="-fx-font-size: 14;"/>
 
 </VBox>

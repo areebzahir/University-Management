@@ -15,7 +15,7 @@ public class StudentManagementMenuController {
     private Label welcomeText;
 
     @FXML
-    private Button backButton; // Add this line
+    private Button backButton;
 
     @FXML
     protected void onOpenSecondPageButtonClick() {
@@ -43,13 +43,15 @@ public class StudentManagementMenuController {
     }
 
     @FXML
+    protected void onOpenAdminDashboardButtonClick() {
+        loadPage("admin-student-view.fxml", "Admin Dashboard");
+    }
+
+    @FXML
     private void handleBackButton() {
         try {
-            // Load the Main Screen FXML file
             Parent root = FXMLLoader.load(getClass().getResource("menu-view.fxml"));
-            // Get the current stage
             Stage stage = (Stage) backButton.getScene().getWindow();
-            // Set the new scene
             stage.setScene(new Scene(root));
             stage.setTitle("University Management System - Main Screen");
         } catch (Exception e) {
