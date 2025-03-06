@@ -9,32 +9,24 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.paint.Color?>
 
-<VBox alignment="CENTER" prefHeight="400.0" prefWidth="300.0" spacing="20.0"
+<VBox alignment="CENTER" prefHeight="400.0" prefWidth="350.0" spacing="15.0"
       xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.FinalProject.UMS.LoginController"
-      style="-fx-background-color: #f0f8ff;">
+      style="-fx-background-color: linear-gradient(to bottom, #f0f8ff, #cce7ff); -fx-padding: 25px; -fx-border-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 10, 0, 0, 5);">
 
-    <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
-    </padding>
-
-    <Label text="University Management System - Login">
-        <font>
-            <Font name="Arial Bold" size="18.0"/>
-        </font>
-        <textFill><Color/></textFill>
-    </Label>
+    <Label text="University Management System" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #333;" />
 
     <TextField fx:id="usernameField" promptText="Username"
-               style="-fx-border-color: #a9a9a9; -fx-border-radius: 5; -fx-padding: 8;" />
-    <PasswordField fx:id="passwordField" promptText="Password"
-                   style="-fx-border-color: #a9a9a9; -fx-border-radius: 5; -fx-padding: 8;" />
+               style="-fx-border-color: #4682b4; -fx-border-radius: 8; -fx-padding: 10; -fx-font-size: 14px;" />
 
-    <Button onAction="#handleLogin" text="Login"
-            style="-fx-background-color: #4682b4; -fx-text-fill: white; -fx-font-size: 14;
-                   -fx-padding: 8 15; -fx-border-radius: 5; -fx-cursor: hand;" />
+    <PasswordField fx:id="passwordField" promptText="Password"
+                   style="-fx-border-color: #4682b4; -fx-border-radius: 8; -fx-padding: 10; -fx-font-size: 14px;" />
+
+    <Button text="Login" onAction="#handleLogin"
+            style="-fx-background-color: #4682b4; -fx-text-fill: white; -fx-font-size: 16px;
+                   -fx-padding: 10 20; -fx-border-radius: 8; -fx-cursor: hand;" />
 
     <!-- Error message label -->
-    <Label fx:id="errorMessageLabel" text="" textFill="RED" prefHeight="20"/>
+    <Label fx:id="errorMessageLabel" text="" textFill="RED" style="-fx-font-size: 14px;" />
 
 </VBox>
