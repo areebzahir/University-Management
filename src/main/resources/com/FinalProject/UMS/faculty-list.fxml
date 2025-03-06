@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox alignment="CENTER" spacing="10.0" xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml" fx:controller="com.FinalProject.UMS.FacultyListController">
+
+    <Label text="Faculty List" />
+
+    <!-- Table to display faculty members -->
+    <TableView fx:id="facultyTable">
+        <columns>
+            <TableColumn text="ID" fx:id="idColumn"/>
+            <TableColumn text="Name" fx:id="nameColumn"/>
+            <TableColumn text="Email" fx:id="emailColumn"/>
+            <TableColumn text="Department" fx:id="departmentColumn"/>
+            <TableColumn text="Actions" fx:id="actionsColumn"/>
+        </columns>
+    </TableView>
+
+    <!-- ✅ Updated Button -->
+    <Button text="Add Faculty" onAction="#goBack" />
+</VBox>

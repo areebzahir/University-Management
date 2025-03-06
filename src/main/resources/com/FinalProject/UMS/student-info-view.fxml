@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.effect.InnerShadow?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane centerShape="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" scaleShape="false" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.FinalProject.UMS.StudentInfoController">
+    <children>
+        <VBox alignment="CENTER" prefHeight="768.0" prefWidth="1366.0" spacing="10.0">
+            <Label text="Student Information">
+                <font>
+                    <Font name="System Bold" size="34.0" />
+                </font>
+            </Label>
+            <Separator prefWidth="200.0" />
+            <TableView fx:id="studentTable" cache="true" cacheHint="QUALITY" depthTest="ENABLE" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="426.0" prefWidth="1316.0">
+                <columns>
+                    <TableColumn prefWidth="150" text="Last Name">
+                        <cellValueFactory>
+                            <PropertyValueFactory property="lastName" />
+                        </cellValueFactory>
+                    </TableColumn>
+                    <TableColumn prefWidth="150" text="First Name">
+                        <cellValueFactory>
+                            <PropertyValueFactory property="firstName" />
+                        </cellValueFactory>
+                    </TableColumn>
+                    <TableColumn prefWidth="200" text="Email">
+                        <cellValueFactory>
+                            <PropertyValueFactory property="email" />
+                        </cellValueFactory>
+                    </TableColumn>
+                    <TableColumn minWidth="0.0" prefWidth="101.0" text="Student ID">
+                        <cellValueFactory>
+                            <PropertyValueFactory property="id" />
+                        </cellValueFactory>
+                    </TableColumn>
+                    <TableColumn minWidth="0.0" prefWidth="234.0" text="Role">
+                        <cellValueFactory>
+                            <PropertyValueFactory property="role" />
+                        </cellValueFactory>
+                    </TableColumn>
+                </columns>
+                <effect>
+                    <InnerShadow />
+                </effect>
+            </TableView>
+            <Button onAction="#onReturnButtonClick" text="Return to Previous Page">
+                <font>
+                    <Font name="System Bold" size="18.0" />
+                </font>
+                <VBox.margin>
+                    <Insets top="40.0" />
+                </VBox.margin>
+            </Button>
+        </VBox>
+    </children>
+</AnchorPane>
+
+
+

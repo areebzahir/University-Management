@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox alignment="CENTER" spacing="10.0" xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml" fx:controller="com.FinalProject.UMS.FacultyController">
+    <Label text="Faculty Management" />
+    <TextField fx:id="nameField" promptText="Enter Faculty Name" />
+    <TextField fx:id="emailField" promptText="Enter Email" />
+    <TextField fx:id="departmentField" promptText="Enter Department" />
+    <Button fx:id="saveButton" text="Save Faculty" onAction="#saveFaculty" />
+</VBox>

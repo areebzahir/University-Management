@@ -1,0 +1,108 @@
+
+<?fxml version="1.0" encoding="UTF-8"?>
+
+        <?import javafx.geometry.Insets?>
+        <?import javafx.scene.control.Button?>
+        <?import javafx.scene.control.Label?>
+        <?import javafx.scene.control.ScrollPane?>
+        <?import javafx.scene.layout.VBox?>
+        <?import javafx.scene.control.Separator?>
+        <?import javafx.scene.text.Font?>
+
+<ScrollPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.FinalProject.UMS.MenuController"
+            prefHeight="600.0" prefWidth="800.0" fitToWidth="true">
+    <!-- Increased size and enabled fitToWidth -->
+
+    <content>
+        <VBox alignment="TOP_LEFT" spacing="10.0">
+            <!-- Changed alignment to TOP_LEFT for better readability -->
+            <padding>
+                <Insets top="15.0" right="15.0" bottom="15.0" left="15.0"/>
+            </padding>
+            <children>
+                <Label text="University Management System" style="-fx-font-weight: bold;">
+                    <font>
+                        <Font size="18.0"/>
+                    </font>
+                </Label>
+
+                <Label text="Dashboard" style="-fx-font-weight: bold;">
+                    <font>
+                        <Font size="16.0"/>
+                    </font>
+                </Label>
+                <Button text="View Dashboard" onAction="#handleDashboard"/>
+
+                <Separator prefWidth="200.0"/>
+
+                <Label text="Subject Management" style="-fx-font-weight: bold;">
+                    <font>
+                        <Font size="16.0"/>
+                    </font>
+                </Label>
+                <Button fx:id="subjectManagementButton" text="Manage Subjects" onAction="#handleSubjectManagement"/>
+                <Button text = "Add Subject" onAction="#handleAddSubject"/>
+                <Button text = "Edit Subject" onAction="#handleEditSubject"/>
+                <Button text = "Delete Subject" onAction="#handleDeleteSubject"/>
+                <Button text = "View Subject" onAction="#handleViewSubject"/>
+
+                <Separator prefWidth="200.0"/>
+
+                <Label text="Course Management" style="-fx-font-weight: bold;">
+                    <font>
+                        <Font size="16.0"/>
+                    </font>
+                </Label>
+                <Button fx:id="courseManagementButton" text="Manage Courses" onAction="#handleCourseManagement"/>
+                <Button text = "Add Course" onAction="#handleAddCourse"/>
+                <Button text = "Edit Course" onAction="#handleEditCourse"/>
+                <Button text = "Delete Course" onAction="#handleDeleteCourse"/>
+                <Button text = "View Course" onAction="#handleViewCourse"/>
+                <Button text = "Assign Faculty" onAction="#handleAssignFaculty"/>
+                <Button text = "Manage Enrollments" onAction="#handleManageEnrollments"/>
+
+
+                <Separator prefWidth="200.0"/>
+
+                <Label text="Student Management" style="-fx-font-weight: bold;">
+                    <font>
+                        <Font size="16.0"/>
+                    </font>
+                </Label>
+                <Button fx:id="studentManagementButton" text="Manage Students" onAction="#handleStudentManage"/>
+
+
+                <Separator prefWidth="200.0"/>
+
+                <Label text="Faculty Management" style="-fx-font-weight: bold;">
+                    <font>
+                        <Font size="16.0"/>
+                    </font>
+                </Label>
+                <Button fx:id="facultyManagementButton" text="Manage Faculty" onAction="#handleFacultyManagement"/>
+                <Button text = "Assign Courses" onAction="#handleAssignFacultyCourses"/>
+
+                <Separator prefWidth="200.0"/>
+
+                <Label text="Event Management" style="-fx-font-weight: bold;">
+                    <font>
+                        <Font size="16.0"/>
+                    </font>
+                </Label>
+                <Button fx:id="eventManagementButton" text="Manage Events" onAction="#handleEventManagement"/>
+                <Button text = "Add Event" onAction="#handleAddEvent"/>
+                <Button text = "Edit Event" onAction="#handleEditEvent"/>
+                <Button text = "Delete Event" onAction="#handleDeleteEvent"/>
+                <Button text = "View Events" onAction="#handleViewEvents"/>
+                <Button text = "Manage Registrations" onAction="#handleManageEventRegistrations"/>
+
+                <Separator prefWidth="200.0"/>
+
+                <Button text="View Profile" onAction="#handleViewProfile"/>
+                <Button text="Logout" onAction="#handleLogout"/>
+            </children>
+        </VBox>
+    </content>
+</ScrollPane>
