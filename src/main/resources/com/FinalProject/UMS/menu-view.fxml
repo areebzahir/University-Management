@@ -92,11 +92,8 @@
                     </font>
                 </Label>
                 <Button fx:id="eventManagementButton" text="Manage Events" onAction="#handleEventManagement"/>
-                <Button text = "Add Event" onAction="#handleAddEvent"/>
-                <Button text = "Edit Event" onAction="#handleEditEvent"/>
-                <Button text = "Delete Event" onAction="#handleDeleteEvent"/>
-                <Button text = "View Events" onAction="#handleViewEvents"/>
-                <Button text = "Manage Registrations" onAction="#handleManageEventRegistrations"/>
+
+
 
                 <Separator prefWidth="200.0"/>
 

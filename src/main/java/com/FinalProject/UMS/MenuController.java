@@ -144,13 +144,11 @@ public class MenuController {
 
     @FXML
     private void handleEventManagement(ActionEvent event) {
-        loadScene("eventManagement.fxml", "Event Management", event);
+        loadScene("event-menu-view.fxml", "Event Management", event);
     }
 
-    @FXML
-    private void handleAddEvent(ActionEvent event) {
-        loadScene("addEvent.fxml", "Add Event", event);
-    }
+
+
 
     @FXML
     private void handleEditEvent(ActionEvent event) {

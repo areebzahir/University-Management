@@ -18,6 +18,5 @@
         </columns>
     </TableView>
 
-    <!-- ✅ Updated Button -->
     <Button text="Add Faculty" onAction="#goBack" />
 </VBox>
