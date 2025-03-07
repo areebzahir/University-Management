@@ -22,7 +22,7 @@ import java.util.ResourceBundle;
 public class DashboardController implements Initializable {
 
     // Labels to display summary statistics
-    @FXML
+    //@FXML
     private Label totalStudentsLabel;
 
     @FXML
