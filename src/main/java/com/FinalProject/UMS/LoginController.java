@@ -106,7 +106,7 @@ public class LoginController {
         }
     }
 
-    // Method to navigate to the admin dashboard after successful admin login
+    // Method to navigate to the admin dashboard after successful admin logjin
     private void navigateToAdminDashboard(ActionEvent event) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("menu-view.fxml"));
