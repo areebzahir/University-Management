@@ -1,29 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.FinalProject.UMS.SubjectManagementController">
-    <VBox spacing="10" alignment="CENTER">
-        <Label text="Subject Management" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.FinalProject.UMS.SubjectManagementController" prefWidth="800" prefHeight="600">
+    <VBox spacing="10" alignment="CENTER" prefWidth="760.0">
+        <padding>
+            <Insets top="20" right="20" bottom="20" left="20"/>
+        </padding>
 
-        <HBox spacing="10">
+        <Label text="Subject Management" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+
+        <!-- Add Subject Section -->
+        <HBox spacing="10" alignment="CENTER">
+            <Label text="Subject Name:"/>
             <TextField fx:id="subjectNameField" promptText="Enter Subject Name"/>
+            <Label text="Subject Code:"/>
             <TextField fx:id="subjectCodeField" promptText="Enter Subject Code"/>
-            <Button text="Add Subject" onAction="#addSubject"/>
+            <Button fx:id="addButton" text="Add Subject" onAction="#addSubject"/>
         </HBox>
 
-        <HBox spacing="10">
+        <!-- Search Section -->
+        <HBox spacing="10" alignment="CENTER">
+            <Label text="Search:"/>
             <TextField fx:id="searchField" promptText="Search by Name or Code"/>
-            <Button text="Search" onAction="#searchSubject"/>
+            <Button fx:id="searchButton" text="Search" onAction="#searchSubject"/>
         </HBox>
 
-        <TableView fx:id="subjectTable">
+        <!-- Subject Table -->
+        <TableView fx:id="subjectTable" prefHeight="400.0" prefWidth="760.0">
             <columns>
-                <TableColumn fx:id="nameColumn" text="Subject Name"/>
-                <TableColumn fx:id="codeColumn" text="Subject Code"/>
+                <TableColumn fx:id="nameColumn" text="Subject Name" prefWidth="380.0"/>
+                <TableColumn fx:id="codeColumn" text="Subject Code" prefWidth="380.0"/>
             </columns>
         </TableView>
 
-        <Button text="Delete Selected" onAction="#deleteSubject"/>
+        <!-- Delete Button -->
+        <Button fx:id="deleteButton" text="Delete Selected Subject" onAction="#deleteSubject"/>
+
+        <!-- Back Button -->
+        <Button fx:id="backButton" text="Back to Menu" onAction="#backToMenu"/>
     </VBox>
 </AnchorPane>
+
+

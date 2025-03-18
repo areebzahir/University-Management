@@ -8,25 +8,41 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.paint.Color?>
+<?import javafx.scene.effect.DropShadow?>
 
-<VBox alignment="CENTER" prefHeight="400.0" prefWidth="350.0" spacing="15.0"
+<VBox alignment="CENTER" prefHeight="400.0" prefWidth="350.0" spacing="20.0"
       xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.FinalProject.UMS.LoginController"
-      style="-fx-background-color: linear-gradient(to bottom, #f0f8ff, #cce7ff); -fx-padding: 25px; -fx-border-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 10, 0, 0, 5);">
+      style="-fx-background-color: #ffffff; -fx-padding: 30px; -fx-border-radius: 15; -fx-alignment: center;">
 
-    <Label text="University Management System" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #333;" />
+    <effect>
+        <DropShadow color="#9ecaed" radius="20.0" width="200.0" height="200.0"/>
+    </effect>
+
+    <Label text="University Login" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" />
+
+    <Label text="Welcome Back!" style="-fx-font-size: 14px; -fx-text-fill: #777777;"/>
 
     <TextField fx:id="usernameField" promptText="Username"
-               style="-fx-border-color: #4682b4; -fx-border-radius: 8; -fx-padding: 10; -fx-font-size: 14px;" />
+               style="-fx-border-color: #ced4da; -fx-border-width: 1px; -fx-border-radius: 5; -fx-padding: 12px; -fx-font-size: 14px; -fx-text-fill: #495057;"/>
 
     <PasswordField fx:id="passwordField" promptText="Password"
-                   style="-fx-border-color: #4682b4; -fx-border-radius: 8; -fx-padding: 10; -fx-font-size: 14px;" />
+                   style="-fx-border-color: #ced4da; -fx-border-width: 1px; -fx-border-radius: 5; -fx-padding: 12px; -fx-font-size: 14px; -fx-text-fill: #495057;"/>
 
     <Button text="Login" onAction="#handleLogin"
-            style="-fx-background-color: #4682b4; -fx-text-fill: white; -fx-font-size: 16px;
-                   -fx-padding: 10 20; -fx-border-radius: 8; -fx-cursor: hand;" />
+            style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-size: 16px;
+                   -fx-padding: 12px 30px; -fx-border-radius: 8; -fx-cursor: hand; -fx-font-weight: bold;">
+        <effect>
+            <DropShadow color="#3498db" radius="5.0" width="10.0" height="10.0"/>
+        </effect>
+    </Button>
 
-    <!-- Error message label -->
-    <Label fx:id="errorMessageLabel" text="" textFill="RED" style="-fx-font-size: 14px;" />
+    <Label fx:id="errorMessageLabel" text="" textFill="#e74c3c" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+
+    <padding>
+        <Insets bottom="30.0" left="30.0" right="30.0" top="30.0"/>
+    </padding>
 
 </VBox>
+
+
