@@ -87,7 +87,7 @@ public class SubjectManagementController implements Initializable {
             subjectNameField.setDisable(true);
             subjectCodeField.setDisable(true);
 
-
+//hey
         }
     }
 
