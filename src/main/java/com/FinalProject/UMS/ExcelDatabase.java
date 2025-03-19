@@ -14,6 +14,7 @@ public class ExcelDatabase {
     private static final String FILE_PATH = "src/main/resources/UMS_Data.xlsx";
     private static final String STUDENT_SHEET_NAME = "Students";
     private static final String SUBJECT_SHEET_NAME = "Subjects";
+    private static final String TUITION_SHEET_NAME = "Tuition"; //Sheet name for tuition
     private static final int ID_COLUMN = 0;
     private static final int NAME_COLUMN = 1;
     private static final int ADDRESS_COLUMN = 2;
@@ -27,6 +28,14 @@ public class ExcelDatabase {
     private static final int PROGRESS_COLUMN = 10;
     private static final int PASSWORD_COLUMN = 11;
     private static final boolean HAS_HEADER_ROW = true;
+
+    // Tuition Sheet Column Definitions
+    private static final int TUITION_SEMESTER_COLUMN = 0;
+    private static final int TUITION_AMOUNT_DUE_COLUMN = 1;
+    private static final int TUITION_AMOUNT_PAID_COLUMN = 2;
+    private static final int TUITION_STATUS_COLUMN = 3;
+    private static final int TUITION_STUDENT_ID_COLUMN = 4; //Column for student ID in Tuition sheet
+    private static final boolean HAS_TUITION_HEADER_ROW = true;
 
     // Subject Sheet Column Definitions
     private static final int SUBJECT_CODE_COLUMN = 0;
@@ -107,6 +116,293 @@ public class ExcelDatabase {
             LOGGER.log(Level.SEVERE, "Error loading the file object: " + e.getMessage(), e);
         }
         return users;
+    }
+
+    // Method to load student data from the Excel file
+    public static List<Student> loadStudents() {
+        List<Student> students = new ArrayList<>();
+        File excelFile = new File(FILE_PATH);
+        try (FileInputStream fis = new FileInputStream(excelFile);
+             Workbook workbook = new XSSFWorkbook(fis)) {
+
+            Sheet sheet = workbook.getSheet(STUDENT_SHEET_NAME);
+            if (sheet == null) {
+                LOGGER.warning("Sheet '" + STUDENT_SHEET_NAME + "' not found in Excel file.");
+                return students; // Return an empty list if the sheet is not found
+            }
+
+            Iterator<Row> rowIterator = sheet.rowIterator();
+            if (HAS_HEADER_ROW && rowIterator.hasNext()) {
+                rowIterator.next(); // Skip header row
+            }
+
+            while (rowIterator.hasNext()) {
+                Row row = rowIterator.next();
+                try {
+                    String studentId = getCellValueAsString(row.getCell(ID_COLUMN));
+                    String name = getCellValueAsString(row.getCell(NAME_COLUMN));
+                    String address = getCellValueAsString(row.getCell(ADDRESS_COLUMN));
+                    String telephone = getCellValueAsString(row.getCell(TELEPHONE_COLUMN));
+                    String email = getCellValueAsString(row.getCell(EMAIL_COLUMN));
+                    String academicLevel = getCellValueAsString(row.getCell(ACADEMIC_LEVEL_COLUMN));
+                    String currentSemester = getCellValueAsString(row.getCell(CURRENT_SEMESTER_COLUMN));
+                    String profilePhoto = getCellValueAsString(row.getCell(PROFILE_PHOTO_COLUMN));
+                    String subjectsRegistered = getCellValueAsString(row.getCell(SUBJECT_REGISTERED_COLUMN));
+                    String thesisTitle = getCellValueAsString(row.getCell(THESIS_TITLE_COLUMN));
+
+
+                    // Handle the progress value
+                    String progressStr = getCellValueAsString(row.getCell(PROGRESS_COLUMN));
+                    double progress = 0.0; // Default value
+                    if (progressStr != null && !progressStr.isEmpty()) {
+                        try {
+                            // Remove any non-numeric characters except the decimal point and percentage sign
+                            progressStr = progressStr.replaceAll("[^\\d.%]", "");
+                            // Remove the percentage sign if it exists
+                            progressStr = progressStr.replace("%", "");
+                            progress = Double.parseDouble(progressStr) / 100.0; // Convert to decimal
+                        } catch (NumberFormatException e) {
+                            LOGGER.log(Level.WARNING, "Invalid progress format: " + progressStr + ". Setting progress to 0.0");
+                        }
+                    }
+
+                    String password = getCellValueAsString(row.getCell(PASSWORD_COLUMN));
+
+                    // Split the name into first and last name
+                    String[] names = name.split(" ", 2);
+                    String firstName = names.length > 0 ? names[0] : "";
+                    String lastName = names.length > 1 ? names[1] : "";
+
+                    Student student = new Student(studentId, firstName, lastName, address, telephone, email,
+                            academicLevel, currentSemester, profilePhoto, subjectsRegistered,
+                            thesisTitle, progress, password);
+                    students.add(student);
+
+                } catch (Exception e) {
+                    LOGGER.log(Level.WARNING, "Error processing row: " + row.getRowNum() + " - " + e.getMessage(), e);
+                }
+            }
+
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Error loading Excel file: " + e.getMessage(), e);
+        }
+        return students;
+    }
+    public static List<Tuition> loadTuitionRecords(String studentId) {
+        List<Tuition> tuitionRecords = new ArrayList<>();
+        File excelFile = new File(FILE_PATH);
+
+        try (FileInputStream fis = new FileInputStream(excelFile);
+             Workbook workbook = new XSSFWorkbook(fis)) {
+
+            Sheet sheet = workbook.getSheet(TUITION_SHEET_NAME);
+            if (sheet == null) {
+                LOGGER.warning("Sheet " + TUITION_SHEET_NAME + " not found in Excel file.");
+                return tuitionRecords;
+            }
+
+            Iterator<Row> rowIterator = sheet.rowIterator();
+
+            // Skip header row if it exists
+            if (HAS_TUITION_HEADER_ROW && rowIterator.hasNext()) {
+                rowIterator.next();
+            }
+
+            while (rowIterator.hasNext()) {
+                Row row = rowIterator.next();
+                try {
+                    String semester = getCellValueAsString(row.getCell(TUITION_SEMESTER_COLUMN));
+                    String amountDue = getCellValueAsString(row.getCell(TUITION_AMOUNT_DUE_COLUMN));
+                    String amountPaid = getCellValueAsString(row.getCell(TUITION_AMOUNT_PAID_COLUMN));
+                    String status = getCellValueAsString(row.getCell(TUITION_STATUS_COLUMN));
+                    String tuitionStudentId = getCellValueAsString(row.getCell(TUITION_STUDENT_ID_COLUMN));
+
+                    // Only add tuition records that match the given student ID
+                    if (studentId.equals(tuitionStudentId)) {
+                        Tuition tuition = new Tuition(semester, amountDue, amountPaid, status);
+                        tuitionRecords.add(tuition);
+                    }
+                } catch (Exception e) {
+                    LOGGER.log(Level.WARNING, "Error processing tuition row: " + row.getRowNum() + " - " + e.getMessage(), e);
+                }
+            }
+
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Error loading Excel file: " + e.getMessage(), e);
+        }
+
+        return tuitionRecords;
+    }
+
+    // Method to load a student by their ID
+    public static Student loadStudentById(String studentId) {
+        File excelFile = new File(FILE_PATH);
+        try (FileInputStream fis = new FileInputStream(excelFile);
+             Workbook workbook = new XSSFWorkbook(fis)) {
+
+            Sheet sheet = workbook.getSheet(STUDENT_SHEET_NAME);
+            if (sheet == null) {
+                LOGGER.warning("Sheet '" + STUDENT_SHEET_NAME + "' not found in Excel file.");
+                return null;
+            }
+
+            Iterator<Row> rowIterator = sheet.rowIterator();
+            if (HAS_HEADER_ROW && rowIterator.hasNext()) {
+                rowIterator.next(); // Skip header row
+            }
+
+            while (rowIterator.hasNext()) {
+                Row row = rowIterator.next();
+                try {
+                    String currentStudentId = getCellValueAsString(row.getCell(ID_COLUMN));
+                    if (studentId.equals(currentStudentId)) {
+                        String name = getCellValueAsString(row.getCell(NAME_COLUMN));
+                        String address = getCellValueAsString(row.getCell(ADDRESS_COLUMN));
+                        String telephone = getCellValueAsString(row.getCell(TELEPHONE_COLUMN));
+                        String email = getCellValueAsString(row.getCell(EMAIL_COLUMN));
+                        String academicLevel = getCellValueAsString(row.getCell(ACADEMIC_LEVEL_COLUMN));
+                        String currentSemester = getCellValueAsString(row.getCell(CURRENT_SEMESTER_COLUMN));
+                        String profilePhoto = getCellValueAsString(row.getCell(PROFILE_PHOTO_COLUMN));
+                        String subjectsRegistered = getCellValueAsString(row.getCell(SUBJECT_REGISTERED_COLUMN));
+                        String thesisTitle = getCellValueAsString(row.getCell(THESIS_TITLE_COLUMN));
+
+                        // Handle the progress value
+                        String progressStr = getCellValueAsString(row.getCell(PROGRESS_COLUMN));
+                        double progress = 0.0; // Default value
+                        if (progressStr != null && !progressStr.isEmpty()) {
+                            try {
+                                // Remove any non-numeric characters except the decimal point and percentage sign
+                                progressStr = progressStr.replaceAll("[^\\d.%]", "");
+                                // Remove the percentage sign if it exists
+                                progressStr = progressStr.replace("%", "");
+                                progress = Double.parseDouble(progressStr) / 100.0; // Convert to decimal
+                            } catch (NumberFormatException e) {
+                                LOGGER.log(Level.WARNING, "Invalid progress format: " + progressStr + ". Setting progress to 0.0");
+                            }
+                        }
+
+                        String password = getCellValueAsString(row.getCell(PASSWORD_COLUMN));
+
+                        // Split the name into first and last name
+                        String[] names = name.split(" ", 2);
+                        String firstName = names.length > 0 ? names[0] : "";
+                        String lastName = names.length > 1 ? names[1] : "";
+
+                        return new Student(studentId, firstName, lastName, address, telephone, email,
+                                academicLevel, currentSemester, profilePhoto, subjectsRegistered,
+                                thesisTitle, progress, password);
+                    }
+                } catch (Exception e) {
+                    LOGGER.log(Level.WARNING, "Error processing row: " + row.getRowNum() + " - " + e.getMessage(), e);
+                }
+            }
+
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Error loading Excel file: " + e.getMessage(), e);
+        }
+        return null; // Student not found
+    }
+
+    public static List<String> loadEnrolledCourses(String studentId) {
+        List<String> enrolledCourses = new ArrayList<>();
+        File excelFile = new File(FILE_PATH);
+        
+        if (!excelFile.exists()) {
+            LOGGER.severe("Excel file not found at path: " + FILE_PATH);
+            return enrolledCourses;
+        }
+
+        try (FileInputStream fis = new FileInputStream(excelFile);
+             Workbook workbook = new XSSFWorkbook(fis)) {
+
+            LOGGER.info("Loading Excel file: " + FILE_PATH);
+            Sheet sheet = workbook.getSheet(STUDENT_SHEET_NAME);
+            if (sheet == null) {
+                LOGGER.warning("Sheet '" + STUDENT_SHEET_NAME + "' not found in Excel file.");
+                return enrolledCourses;
+            }
+
+            Iterator<Row> rowIterator = sheet.rowIterator();
+            if (HAS_HEADER_ROW && rowIterator.hasNext()) {
+                rowIterator.next(); // Skip header row
+            }
+
+            while (rowIterator.hasNext()) {
+                Row row = rowIterator.next();
+                try {
+                    String currentStudentId = getCellValueAsString(row.getCell(ID_COLUMN));
+                    LOGGER.info("Processing Student ID: " + currentStudentId);
+                    if (studentId.equals(currentStudentId)) {
+                        String subjectsRegistered = getCellValueAsString(row.getCell(SUBJECT_REGISTERED_COLUMN));
+                        LOGGER.info("Subjects Registered: " + subjectsRegistered);
+                        if (subjectsRegistered != null && !subjectsRegistered.isEmpty()) {
+                            String[] subjects = subjectsRegistered.split(",");
+                            for (String subject : subjects) {
+                                enrolledCourses.add(subject.trim());
+                            }
+                        }
+                        return enrolledCourses; // Return the list once the student is found
+                    }
+                } catch (Exception e) {
+                    LOGGER.log(Level.WARNING, "Error processing row: " + row.getRowNum() + " - " + e.getMessage(), e);
+                }
+            }
+
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Error loading Excel file: " + e.getMessage(), e);
+        }
+        return enrolledCourses; // Return an empty list if student not found
+    }
+    // Method to add a course to a student's enrolled courses in Excel
+    public static void addCourseToStudent(String studentId, String newCourse) {
+        File excelFile = new File(FILE_PATH);
+        try (FileInputStream fis = new FileInputStream(excelFile);
+             Workbook workbook = new XSSFWorkbook(fis)) {
+
+            Sheet sheet = workbook.getSheet(STUDENT_SHEET_NAME);
+            if (sheet == null) {
+                LOGGER.warning("Sheet '" + STUDENT_SHEET_NAME + "' not found in Excel file.");
+                return;
+            }
+
+            Iterator<Row> rowIterator = sheet.rowIterator();
+            if (HAS_HEADER_ROW && rowIterator.hasNext()) {
+                rowIterator.next(); // Skip header row
+            }
+
+            while (rowIterator.hasNext()) {
+                Row row = rowIterator.next();
+                try {
+                    String currentStudentId = getCellValueAsString(row.getCell(ID_COLUMN));
+                    if (studentId.equals(currentStudentId)) {
+                        String subjectsRegistered = getCellValueAsString(row.getCell(SUBJECT_REGISTERED_COLUMN));
+                        String updatedSubjectsRegistered;
+                        if (subjectsRegistered == null || subjectsRegistered.isEmpty()) {
+                            updatedSubjectsRegistered = newCourse;
+                        } else {
+                            updatedSubjectsRegistered = subjectsRegistered + ", " + newCourse;
+                        }
+                        row.getCell(SUBJECT_REGISTERED_COLUMN).setCellValue(updatedSubjectsRegistered);
+
+                        // Write the workbook changes to the file
+                        try (FileOutputStream fileOut = new FileOutputStream(excelFile)) {
+                            workbook.write(fileOut);
+                            LOGGER.info("Course '" + newCourse + "' added to student ID: " + studentId);
+                        } catch (IOException e) {
+                            LOGGER.log(Level.SEVERE, "Error writing to Excel file: " + e.getMessage(), e);
+                        }
+                        return; // Exit after updating the student
+                    }
+                } catch (Exception e) {
+                    LOGGER.log(Level.WARNING, "Error processing row: " + row.getRowNum() + " - " + e.getMessage(), e);
+                }
+            }
+
+            LOGGER.warning("Student with ID " + studentId + " not found in Excel file.");
+
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Error loading Excel file: " + e.getMessage(), e);
+        }
     }
 
     //Method to load subject
@@ -305,20 +601,10 @@ public class ExcelDatabase {
     }
 
     private static String getCellValueAsString(Cell cell) {
-        if (cell == null) return null;
+        if (cell == null) return "";
         try {
-            switch (cell.getCellType()) {
-                case STRING:
-                    return cell.getStringCellValue();
-                case NUMERIC:
-                    return DateUtil.isCellDateFormatted(cell) ? cell.getDateCellValue().toString() : String.valueOf(cell.getNumericCellValue());
-                case BOOLEAN:
-                    return String.valueOf(cell.getBooleanCellValue());
-                case FORMULA:
-                    return cell.getCellFormula();
-                default:
-                    return "";
-            }
+            DataFormatter formatter = new DataFormatter();
+            return formatter.formatCellValue(cell).trim();
         } catch (Exception e) {
             LOGGER.log(Level.WARNING, "Error getting cell value: " + e.getMessage(), e);
             return null;
@@ -358,6 +644,38 @@ public class ExcelDatabase {
                 }
             } else {
                 LOGGER.info("Sheet '" + SUBJECT_SHEET_NAME + "' already exists.");
+            }
+
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Error loading Excel file: " + e.getMessage(), e);
+        }
+    }
+    // Method to add the "Tuition" sheet if it doesn't exist.  Helpful for initial setup.
+    public static void addTuitionSheetIfMissing() {
+        File excelFile = new File(FILE_PATH);
+        try (FileInputStream fis = new FileInputStream(excelFile);
+             Workbook workbook = new XSSFWorkbook(fis)) {
+
+            if (workbook.getSheet(TUITION_SHEET_NAME) == null) {
+                Sheet subjectSheet = workbook.createSheet(TUITION_SHEET_NAME);
+
+                // Create header row
+                Row headerRow = subjectSheet.createRow(0);
+                headerRow.createCell(TUITION_SEMESTER_COLUMN).setCellValue("Semester");
+                headerRow.createCell(TUITION_AMOUNT_DUE_COLUMN).setCellValue("Amount Due");
+                headerRow.createCell(TUITION_AMOUNT_PAID_COLUMN).setCellValue("Amount Paid");
+                headerRow.createCell(TUITION_STATUS_COLUMN).setCellValue("Status");
+                headerRow.createCell(TUITION_STUDENT_ID_COLUMN).setCellValue("Student ID");
+
+                // Write the changes back to the Excel file
+                try (FileOutputStream fileOut = new FileOutputStream(excelFile)) {
+                    workbook.write(fileOut);
+                    LOGGER.info("Added 'Tuition' sheet to " + FILE_PATH);
+                } catch (IOException e) {
+                    LOGGER.log(Level.SEVERE, "Error writing to Excel file: " + e.getMessage(), e);
+                }
+            } else {
+                LOGGER.info("Sheet '" + TUITION_SHEET_NAME + "' already exists.");
             }
 
         } catch (IOException e) {

@@ -10,42 +10,48 @@ import javafx.collections.ObservableList;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.List;
 
 public class TuitionController {
-
     @FXML
-    private TableView<Tuition> tuitionTable; // TableView to display tuition records
+    private TableView<Tuition> tuitionTable;
+
+    private String userRole; // Add userRole field
 
     @FXML
     public void initialize() {
-        // Example data for tuition records
-        ObservableList<Tuition> tuitionRecords = FXCollections.observableArrayList(
-                new Tuition("Fall 2023", "$5,000", "$4,500", "Partially Paid"),
-                new Tuition("Spring 2024", "$5,000", "$0", "Unpaid"),
-                new Tuition("Summer 2024", "$3,000", "$0", "Unpaid")
-        );
+        // Load tuition records from Excel
+        List<Tuition> tuitionRecords = ExcelDatabase.loadTuitionRecords("132021"); // Replace with dynamic ID
+        ObservableList<Tuition> tuitionData = FXCollections.observableArrayList(tuitionRecords);
+        tuitionTable.setItems(tuitionData);
 
-        // Add data to the TableView
-        tuitionTable.setItems(tuitionRecords);
+        adjustVisibilityBasedOnRole(); // Adjust UI based on user role
+    }
+
+    public void setUserRole(String role) {
+        this.userRole = role;
+        adjustVisibilityBasedOnRole();
+    }
+
+    private void adjustVisibilityBasedOnRole() {
+        if ("USER".equals(userRole)) {
+            // Disable or hide features for USER role
+            // Example: Disable editing of tuition records
+        }
     }
 
     @FXML
     protected void onReturnButtonClick() {
         try {
-            // Load the main page (studentmanagecontroller.fxml)
             FXMLLoader loader = new FXMLLoader(getClass().getResource("studentmanagecontroller.fxml"));
             Parent root = loader.load();
-
-            // Get the current stage (window)
             Stage stage = (Stage) tuitionTable.getScene().getWindow();
-
-            // Set the new scene with the main page view
             Scene scene = new Scene(root, 1920, 1080);
             stage.setScene(scene);
             stage.setTitle("Main Page");
             stage.show();
         } catch (IOException e) {
-            e.printStackTrace(); // Print error details in case of an exception
+            e.printStackTrace();
         }
     }
 }
