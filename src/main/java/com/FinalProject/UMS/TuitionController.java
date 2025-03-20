@@ -10,7 +10,6 @@ import javafx.collections.ObservableList;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.List;
 
 public class TuitionController {
     @FXML
@@ -20,9 +19,14 @@ public class TuitionController {
 
     @FXML
     public void initialize() {
-        // Load tuition records from Excel
-        List<Tuition> tuitionRecords = ExcelDatabase.loadTuitionRecords("132021"); // Replace with dynamic ID
-        ObservableList<Tuition> tuitionData = FXCollections.observableArrayList(tuitionRecords);
+        // Hardcoded test values (no arrays or external data)
+        Tuition tuition1 = new Tuition("Fall 2023", 5000.0, 2500.0, "Partially Paid");
+        Tuition tuition2 = new Tuition("Spring 2024", 4000.0, 4000.0, "Fully Paid");
+
+        // Add test values directly to the table
+        ObservableList<Tuition> tuitionData = FXCollections.observableArrayList();
+        tuitionData.add(tuition1);
+        tuitionData.add(tuition2);
         tuitionTable.setItems(tuitionData);
 
         adjustVisibilityBasedOnRole(); // Adjust UI based on user role
@@ -35,8 +39,8 @@ public class TuitionController {
 
     private void adjustVisibilityBasedOnRole() {
         if ("USER".equals(userRole)) {
-            // Disable or hide features for USER role
-            // Example: Disable editing of tuition records
+            // Disable editing for USER role
+            tuitionTable.setEditable(false);
         }
     }
 
@@ -46,12 +50,22 @@ public class TuitionController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("studentmanagecontroller.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) tuitionTable.getScene().getWindow();
-            Scene scene = new Scene(root, 1920, 1080);
+            Scene scene = new Scene(root, 1366, 768);
             stage.setScene(scene);
-            stage.setTitle("Main Page");
+            stage.setTitle("Hello");
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    // Getter for tuitionTable (added for testing)
+    public TableView<Tuition> getTuitionTable() {
+        return tuitionTable;
+    }
+
+    // Getter for userRole (added for testing)
+    public String getUserRole() {
+        return userRole;
     }
 }

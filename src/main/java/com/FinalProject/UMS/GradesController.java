@@ -27,8 +27,8 @@ public class GradesController {
                 new Grade("CHBM*1040*0355", "General Chemistry I", "0.50", "077"),
                 new Grade("ENGG*1100*0211", "Engineering and Design I", "0.75", "084"),
                 new Grade("ENGG*1410*01034", "Intro Program for Engineers", "0.50", "070"),
-                new Grade("MATH*1200*0302", "Calculus I", "0.50", "087"),
-                new Grade("PHYS*1130*0109", "Intr Physics With Applications", "0.50", "080")
+                new Grade("MATH*1200*0302", "Calculus I", "0.50", "088"),
+                new Grade("PHYS*1130*0109", "Intr Physics With Applications", "0.50", "079")
         );
 
 

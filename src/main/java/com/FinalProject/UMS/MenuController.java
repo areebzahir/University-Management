@@ -89,9 +89,10 @@ public class MenuController {
         loadScene("viewSubject.fxml", "View Subject", event);
     }
 
+
     @FXML
     private void handleCourseManagement(ActionEvent event) {
-        loadScene("courseManagement.fxml", "Course Management", event);
+        loadScene("CourseManagement-view.fxml", "Course Management", event);
     }
 
     @FXML

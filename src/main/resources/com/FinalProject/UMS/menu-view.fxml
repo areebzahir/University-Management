@@ -39,12 +39,6 @@
 
                         <Label text="Course Management" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #495057; -fx-padding: 5px 0 0 0;"/>
                         <Button fx:id="courseManagementButton" text="Manage Courses" onAction="#handleCourseManagement" style="-fx-background-color: #007bff; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 5px 10px; -fx-border-radius: 5px; -fx-cursor: hand;"/>
-                        <Button text="Add Course" onAction="#handleAddCourse" style="-fx-background-color: #007bff; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 5px 10px; -fx-border-radius: 5px; -fx-cursor: hand;"/>
-                        <Button text="Edit Course" onAction="#handleEditCourse" style="-fx-background-color: #007bff; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 5px 10px; -fx-border-radius: 5px; -fx-cursor: hand;"/>
-                        <Button text="Delete Course" onAction="#handleDeleteCourse" style="-fx-background-color: #007bff; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 5px 10px; -fx-border-radius: 5px; -fx-cursor: hand;"/>
-                        <Button text="View Course" onAction="#handleViewCourse" style="-fx-background-color: #007bff; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 5px 10px; -fx-border-radius: 5px; -fx-cursor: hand;"/>
-                        <Button text="Assign Faculty" onAction="#handleAssignFacultyCourses" style="-fx-background-color: #007bff; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 5px 10px; -fx-border-radius: 5px; -fx-cursor: hand;"/>
-                        <Button text="Manage Enrollments" onAction="#handleManageEnrollments" style="-fx-background-color: #007bff; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 5px 10px; -fx-border-radius: 5px; -fx-cursor: hand;"/>
 
                         <Separator prefWidth="250.0"/>
 

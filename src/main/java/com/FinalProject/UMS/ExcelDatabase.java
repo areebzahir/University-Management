@@ -118,6 +118,8 @@ public class ExcelDatabase {
         return users;
     }
 
+
+
     // Method to load student data from the Excel file
     public static List<Student> loadStudents() {
         List<Student> students = new ArrayList<>();
@@ -188,51 +190,6 @@ public class ExcelDatabase {
         }
         return students;
     }
-    public static List<Tuition> loadTuitionRecords(String studentId) {
-        List<Tuition> tuitionRecords = new ArrayList<>();
-        File excelFile = new File(FILE_PATH);
-
-        try (FileInputStream fis = new FileInputStream(excelFile);
-             Workbook workbook = new XSSFWorkbook(fis)) {
-
-            Sheet sheet = workbook.getSheet(TUITION_SHEET_NAME);
-            if (sheet == null) {
-                LOGGER.warning("Sheet " + TUITION_SHEET_NAME + " not found in Excel file.");
-                return tuitionRecords;
-            }
-
-            Iterator<Row> rowIterator = sheet.rowIterator();
-
-            // Skip header row if it exists
-            if (HAS_TUITION_HEADER_ROW && rowIterator.hasNext()) {
-                rowIterator.next();
-            }
-
-            while (rowIterator.hasNext()) {
-                Row row = rowIterator.next();
-                try {
-                    String semester = getCellValueAsString(row.getCell(TUITION_SEMESTER_COLUMN));
-                    String amountDue = getCellValueAsString(row.getCell(TUITION_AMOUNT_DUE_COLUMN));
-                    String amountPaid = getCellValueAsString(row.getCell(TUITION_AMOUNT_PAID_COLUMN));
-                    String status = getCellValueAsString(row.getCell(TUITION_STATUS_COLUMN));
-                    String tuitionStudentId = getCellValueAsString(row.getCell(TUITION_STUDENT_ID_COLUMN));
-
-                    // Only add tuition records that match the given student ID
-                    if (studentId.equals(tuitionStudentId)) {
-                        Tuition tuition = new Tuition(semester, amountDue, amountPaid, status);
-                        tuitionRecords.add(tuition);
-                    }
-                } catch (Exception e) {
-                    LOGGER.log(Level.WARNING, "Error processing tuition row: " + row.getRowNum() + " - " + e.getMessage(), e);
-                }
-            }
-
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Error loading Excel file: " + e.getMessage(), e);
-        }
-
-        return tuitionRecords;
-    }
 
     // Method to load a student by their ID
     public static Student loadStudentById(String studentId) {
@@ -302,11 +259,11 @@ public class ExcelDatabase {
         }
         return null; // Student not found
     }
-
     public static List<String> loadEnrolledCourses(String studentId) {
         List<String> enrolledCourses = new ArrayList<>();
         File excelFile = new File(FILE_PATH);
-        
+
+        // Check if the Excel file exists
         if (!excelFile.exists()) {
             LOGGER.severe("Excel file not found at path: " + FILE_PATH);
             return enrolledCourses;
@@ -317,30 +274,47 @@ public class ExcelDatabase {
 
             LOGGER.info("Loading Excel file: " + FILE_PATH);
             Sheet sheet = workbook.getSheet(STUDENT_SHEET_NAME);
+
+            // Check if the sheet exists
             if (sheet == null) {
                 LOGGER.warning("Sheet '" + STUDENT_SHEET_NAME + "' not found in Excel file.");
                 return enrolledCourses;
             }
 
             Iterator<Row> rowIterator = sheet.rowIterator();
+
+            // Skip the header row if it exists
             if (HAS_HEADER_ROW && rowIterator.hasNext()) {
-                rowIterator.next(); // Skip header row
+                rowIterator.next();
             }
 
+            // Iterate through rows to find the student
             while (rowIterator.hasNext()) {
                 Row row = rowIterator.next();
                 try {
-                    String currentStudentId = getCellValueAsString(row.getCell(ID_COLUMN));
+                    // Get the student ID from the current row
+                    String currentStudentId = getCellValueAsString(row.getCell(ID_COLUMN)).trim();
                     LOGGER.info("Processing Student ID: " + currentStudentId);
-                    if (studentId.equals(currentStudentId)) {
-                        String subjectsRegistered = getCellValueAsString(row.getCell(SUBJECT_REGISTERED_COLUMN));
+
+                    // Check if the current row matches the provided student ID
+                    if (studentId.trim().equals(currentStudentId)) {
+                        // Get the subjects registered for the student
+                        String subjectsRegistered = getCellValueAsString(row.getCell(SUBJECT_REGISTERED_COLUMN)).trim();
                         LOGGER.info("Subjects Registered: " + subjectsRegistered);
-                        if (subjectsRegistered != null && !subjectsRegistered.isEmpty()) {
-                            String[] subjects = subjectsRegistered.split(",");
-                            for (String subject : subjects) {
-                                enrolledCourses.add(subject.trim());
-                            }
+
+                        // Handle empty or invalid subject data
+                        if (subjectsRegistered == null || subjectsRegistered.isEmpty() || subjectsRegistered.equals("-") || subjectsRegistered.equals("_")) {
+                            LOGGER.info("No subjects found for Student ID: " + studentId);
+                            return enrolledCourses; // Return empty list if no subjects are registered
                         }
+
+                        // Split the subjects by comma and trim whitespace
+                        String[] subjects = subjectsRegistered.split(",");
+                        for (String subject : subjects) {
+                            enrolledCourses.add(subject.trim());
+                        }
+
+                        LOGGER.info("Enrolled courses for Student ID " + studentId + ": " + enrolledCourses);
                         return enrolledCourses; // Return the list once the student is found
                     }
                 } catch (Exception e) {
@@ -348,10 +322,14 @@ public class ExcelDatabase {
                 }
             }
 
+            // Log if the student ID is not found
+            LOGGER.warning("Student ID " + studentId + " not found in the Excel file.");
+
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Error loading Excel file: " + e.getMessage(), e);
         }
-        return enrolledCourses; // Return an empty list if student not found
+
+        return enrolledCourses; // Return an empty list if the student is not found or an error occurs
     }
     // Method to add a course to a student's enrolled courses in Excel
     public static void addCourseToStudent(String studentId, String newCourse) {

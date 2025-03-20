@@ -10,6 +10,8 @@ import javafx.scene.control.Label;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class CoursesController {
     @FXML
@@ -19,6 +21,8 @@ public class CoursesController {
     private Label selectedCourseLabel; // Label to display the selected course
 
     private String studentId; // Field to store the student ID
+
+    private static final Logger LOGGER = Logger.getLogger(CoursesController.class.getName());
 
     @FXML
     public void initialize() {
@@ -33,16 +37,29 @@ public class CoursesController {
     // Set the student ID dynamically
     public void setStudentId(String studentId) {
         this.studentId = studentId;
+        LOGGER.info("Student ID set to: " + studentId);
         loadEnrolledCourses(); // Load courses when the student ID is set
     }
 
     // Load enrolled courses for the student from Excel
     private void loadEnrolledCourses() {
         if (studentId != null && !studentId.isEmpty()) {
+            LOGGER.info("Loading enrolled courses for Student ID: " + studentId);
+
             List<String> enrolledCourses = ExcelDatabase.loadEnrolledCourses(studentId);
             coursesList.getItems().clear(); // Clear existing items
-            coursesList.getItems().addAll(enrolledCourses); // Add enrolled courses to the ListView
+
+            if (enrolledCourses.isEmpty()) {
+                LOGGER.warning("No courses found for Student ID: " + studentId);
+                selectedCourseLabel.setText("No courses enrolled for Student ID: " + studentId);
+            } else {
+                LOGGER.info("Enrolled courses loaded: " + enrolledCourses);
+                coursesList.getItems().addAll(enrolledCourses); // Add enrolled courses to the ListView
+                selectedCourseLabel.setText("Enrolled Courses for ID: " + studentId);
+            }
+
         } else {
+            LOGGER.warning("Student ID is not set.");
             selectedCourseLabel.setText("Error: Student ID is not set.");
         }
     }
@@ -51,6 +68,7 @@ public class CoursesController {
     @FXML
     protected void onReturnButtonClick() {
         try {
+            LOGGER.info("Return button clicked. Loading student management page.");
             FXMLLoader loader = new FXMLLoader(getClass().getResource("studentmanagecontroller.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) coursesList.getScene().getWindow();
@@ -59,7 +77,7 @@ public class CoursesController {
             stage.setTitle("Student Management");
             stage.show();
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Error loading student management page: " + e.getMessage(), e);
             selectedCourseLabel.setText("Error: Failed to load the student management page.");
         }
     }
