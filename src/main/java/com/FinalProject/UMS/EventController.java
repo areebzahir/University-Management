@@ -1,81 +1,85 @@
-package com.FinalProject.UMS; // Declares the package where this class is located
+package com.FinalProject.UMS;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The EventController class represents an event in the University Management System.
- * It stores details about an event such as title, description, date, and location.
- * This class also provides getter and setter methods to access and modify event details.
+ * It stores details about an event such as title, description, date, location, and more.
  */
 public class EventController {
 
     // Private fields to store event details
-    private String title;       // Event title
-    private String description; // Event description
-    private String date;        // Event date
-    private String location;    // Event location
+    private String eventCode;       // Unique code for the event
+    private String title;           // Event title
+    private String description;     // Event description
+    private String date;            // Event date
+    private String location;        // Event location
+    private String imageUrl;       // URL for the event image
+    private int capacity;           // Maximum number of attendees
+    private double cost;            // Cost to attend the event
+    private List<EventStudent> registeredStudents; // List of registered students
 
     /**
      * Constructor to initialize an EventController object with given details.
-     * @param title The title of the event.
-     * @param description A brief description of the event.
-     * @param date The date on which the event will be held.
-     * @param location The venue where the event will take place.
      */
-    public EventController(String title, String description, String date, String location) {
+    public EventController(String eventCode, String title, String description, String date, String location, String imageUrl, int capacity, double cost) {
+        this.eventCode = eventCode;
         this.title = title;
         this.description = description;
         this.date = date;
         this.location = location;
+        this.imageUrl = imageUrl;
+        this.capacity = capacity;
+        this.cost = cost;
+        this.registeredStudents = new ArrayList<>();
     }
 
-    // Getter and Setter methods for each field
+    // Getters and Setters
+    public String getEventCode() { return eventCode; }
+    public void setEventCode(String eventCode) { this.eventCode = eventCode; }
 
-    /**
-     * Gets the title of the event.
-     * @return The event title.
-     */
     public String getTitle() { return title; }
-
-    /**
-     * Sets a new title for the event.
-     * @param title The new title to be assigned.
-     */
     public void setTitle(String title) { this.title = title; }
 
-    /**
-     * Gets the description of the event.
-     * @return The event description.
-     */
     public String getDescription() { return description; }
-
-    /**
-     * Sets a new description for the event.
-     * @param description The new description to be assigned.
-     */
     public void setDescription(String description) { this.description = description; }
 
-    /**
-     * Gets the date of the event.
-     * @return The event date.
-     */
     public String getDate() { return date; }
-
-    /**
-     * Sets a new date for the event.
-     * @param date The new date to be assigned.
-     */
     public void setDate(String date) { this.date = date; }
 
-    /**
-     * Gets the location of the event.
-     * @return The event location.
-     */
     public String getLocation() { return location; }
+    public void setLocation(String location) { this.location = location; }
+
+    public String getImageUrl() { return imageUrl; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+
+    public int getCapacity() { return capacity; }
+    public void setCapacity(int capacity) { this.capacity = capacity; }
+
+    public double getCost() { return cost; }
+    public void setCost(double cost) { this.cost = cost; }
+
+    public List<EventStudent> getRegisteredStudents() { return registeredStudents; }
+    public void setRegisteredStudents(List<EventStudent> registeredStudents) { this.registeredStudents = registeredStudents; }
 
     /**
-     * Sets a new location for the event.
-     * @param location The new location to be assigned.
+     * Checks if the event is full.
+     * @return true if the event is full, false otherwise.
      */
-    public void setLocation(String location) { this.location = location; }
+    public boolean isFull() {
+        return registeredStudents.size() >= capacity;
+    }
+
+    /**
+     * Registers a student for the event if there is capacity.
+     * @param student The student to register.
+     */
+    public void registerStudent(EventStudent student) {
+        if (!isFull()) {
+            registeredStudents.add(student);
+        }
+    }
 
     /**
      * Returns a string representation of the event.
