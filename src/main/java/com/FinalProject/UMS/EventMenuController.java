@@ -1,6 +1,5 @@
-package com.FinalProject.UMS; // Declares the package where this class is located
+package com.FinalProject.UMS;
 
-// Import necessary JavaFX classes
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -19,6 +18,7 @@ public class EventMenuController {
     // Buttons for navigation
     @FXML private Button adminButton; // Button to access the admin event view
     @FXML private Button userButton;  // Button to access the user event view
+    @FXML private Button returnButton;  // Button to return to the main menu
 
     /**
      * Handles the click event for the admin button.
@@ -63,6 +63,31 @@ public class EventMenuController {
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.setTitle("User View"); // Set the title for the new window
+            stage.show();
+        } catch (IOException e) {
+            // Print error details if loading fails
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Handles the click event for the back button.
+     * Loads the main menu view (menu-view.fxml) and switches the scene to the Main Menu.
+     */
+    @FXML
+    protected void handleBackButton() {
+        try {
+            // Load the Main Menu view from its FXML file
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("menu-view.fxml"));
+            Parent root = loader.load();
+
+            // Retrieve the current stage (window) from the back button
+            Stage stage = (Stage) returnButton.getScene().getWindow();
+
+            // Set a new scene with the main menu layout
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("University Management System - Main Screen"); // Set the title for the new window
             stage.show();
         } catch (IOException e) {
             // Print error details if loading fails
