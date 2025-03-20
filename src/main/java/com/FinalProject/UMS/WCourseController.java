@@ -11,7 +11,6 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Objects;
 
 public class WCourseController {
 
@@ -42,15 +41,7 @@ public class WCourseController {
     @FXML
     private ListView<WCourse> courseListView;
 
-    @FXML
-    private Button btnAdd;
-
-    @FXML
-    private Button btnDelete;
-
     private String userRole;
-
-    private String userId;
 
     private ObservableList<WCourse> courseData = FXCollections.observableArrayList();
 
@@ -95,16 +86,7 @@ public class WCourseController {
         adjustVisibilityBasedOnRole();
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
     private void adjustVisibilityBasedOnRole() {
-        //Enable add and delete buttons only for admin
-        boolean isAdmin = Objects.equals(userRole, "ADMIN");
-        btnAdd.setVisible(isAdmin);
-        btnDelete.setVisible(isAdmin);
-
         if ("USER".equals(userRole)) {
             txtCourseCode.setDisable(true);
             txtCourseName.setDisable(true);
@@ -115,41 +97,6 @@ public class WCourseController {
             dpExamDate.setDisable(true);
             txtLocation.setDisable(true);
         }
-
-        // Filter courses based on role
-        filterCourses();
-    }
-
-    private void filterCourses() {
-        ObservableList<WCourse> filteredCourses = FXCollections.observableArrayList();
-
-        switch (userRole) {
-            case "ADMIN":
-                // Show all courses
-                filteredCourses.addAll(courseData);
-                break;
-            case "FACULTY":
-                // Show courses taught by the faculty
-                for (WCourse course : courseData) {
-                    if (course.getTeacherName().equals(userId)) {
-                        filteredCourses.add(course);
-                    }
-                }
-                break;
-            case "STUDENT":
-                // Show courses the student is enrolled in (This is a placeholder, you'll need to implement the logic)
-                for (WCourse course : courseData) {
-                    // Add logic to check if the student is enrolled in the course
-                    // For example, you might have a method to check enrollments
-                    // if (isStudentEnrolled(userId, course.getCourseCode())) {
-                    filteredCourses.add(course);  // Add logic to check enrollments
-                    // }
-                }
-                break;
-            default:
-                break;
-        }
-        courseListView.setItems(filteredCourses);
     }
 
     @FXML
@@ -174,7 +121,6 @@ public class WCourseController {
 
             WCourse newCourse = new WCourse(courseCode, courseName, subjectCode, sectionNumber, capacity, "To be scheduled", examDateStr, location, teacherName);
             courseData.add(newCourse);
-            filterCourses();
             clearFields();
         } catch (Exception e) {
             showAlert("Error", "An error occurred while adding the course.");
@@ -182,17 +128,18 @@ public class WCourseController {
         }
     }
 
+
     @FXML
     private void deleteCourse() {
         WCourse selectedCourse = courseListView.getSelectionModel().getSelectedItem();
         if (selectedCourse != null) {
             courseData.remove(selectedCourse);
-            filterCourses();
             clearFields();
         } else {
             showAlert("Error", "Please select a course to delete.");
         }
     }
+
 
     @FXML
     private void goBack() {
@@ -208,6 +155,7 @@ public class WCourseController {
             e.printStackTrace();
         }
     }
+
 
     private void clearFields() {
         txtCourseCode.clear();
@@ -237,4 +185,5 @@ public class WCourseController {
     public String getUserRole() {
         return userRole;
     }
+
 }
