@@ -34,35 +34,7 @@ public class CoursesController {
         });
     }
 
-    // Set the student ID dynamically
-    public void setStudentId(String studentId) {
-        this.studentId = studentId;
-        LOGGER.info("Student ID set to: " + studentId);
-        loadEnrolledCourses(); // Load courses when the student ID is set
-    }
 
-    // Load enrolled courses for the student from Excel
-    private void loadEnrolledCourses() {
-        if (studentId != null && !studentId.isEmpty()) {
-            LOGGER.info("Loading enrolled courses for Student ID: " + studentId);
-
-            List<String> enrolledCourses = ExcelDatabase.loadEnrolledCourses(studentId);
-            coursesList.getItems().clear(); // Clear existing items
-
-            if (enrolledCourses.isEmpty()) {
-                LOGGER.warning("No courses found for Student ID: " + studentId);
-                selectedCourseLabel.setText("No courses enrolled for Student ID: " + studentId);
-            } else {
-                LOGGER.info("Enrolled courses loaded: " + enrolledCourses);
-                coursesList.getItems().addAll(enrolledCourses); // Add enrolled courses to the ListView
-                selectedCourseLabel.setText("Enrolled Courses for ID: " + studentId);
-            }
-
-        } else {
-            LOGGER.warning("Student ID is not set.");
-            selectedCourseLabel.setText("Error: Student ID is not set.");
-        }
-    }
 
     // Handle return button click
     @FXML

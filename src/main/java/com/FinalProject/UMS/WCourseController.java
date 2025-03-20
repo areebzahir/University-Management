@@ -9,16 +9,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.stage.Stage;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Iterator;
-
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import java.util.Objects;
 
 public class WCourseController {
 
@@ -49,11 +42,17 @@ public class WCourseController {
     @FXML
     private ListView<WCourse> courseListView;
 
+    @FXML
+    private Button btnAdd;
+
+    @FXML
+    private Button btnDelete;
+
     private String userRole;
 
-    private ObservableList<WCourse> courseData = FXCollections.observableArrayList();
+    private String userId;
 
-    private static final String EXCEL_FILE_PATH = "\"C:\\Users\\haazi\\OneDrive\\Documents\\FINALPROJECT 1420\\University-Management\\courses.xlsx\"";
+    private ObservableList<WCourse> courseData = FXCollections.observableArrayList();
 
     @FXML
     public void initialize() {
@@ -64,7 +63,16 @@ public class WCourseController {
         SpinnerValueFactory<Integer> capacityValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100);
         spnCapacity.setValueFactory(capacityValueFactory);
 
-        loadCoursesFromExcel();
+        // Hardcoded course data
+        courseData.addAll(
+                new WCourse("MATH101", "Calculus I", "MATH", "1", 30, "Mon/Wed 9-11 AM", "12/15/2025", "Room 101", "Dr. Alan Turing"),
+                new WCourse("ENG101", "Literature Basics", "ENG", "1", 25, "Tue/Thu 10-12 PM", "12/16/2025", "Room 102", "Prof. Emily Bronte"),
+                new WCourse("CS101", "Intro to Programming", "CS", "1", 42, "Tue/Thu 12-2 PM", "12/16/2025", "Room 103", "Prof. Bahar Nozari"),
+                new WCourse("CHEM101", "Intro to Chemistry", "CHEM", "1", 20, "Mon/Wed 3-4 PM", "12/14/2025", "Room 201", "Dr. Lucka Lucku"),
+                new WCourse("FREN101", "Intro to French", "FREN", "1", 22, "Tue/Thu 4:30-5:30", "12/13/2025", "Room 202", "Dr. Lakyn Copeland"),
+                new WCourse("ENGG402", "Water Resources", "ENGG", "1", 18, "Mon/Fri 9:00-10:30", "12/01/2025", "Room 203", "Dr. Albozr Ghanaba")
+        );
+
         courseListView.setItems(courseData);
         adjustVisibilityBasedOnRole();
 
@@ -87,7 +95,16 @@ public class WCourseController {
         adjustVisibilityBasedOnRole();
     }
 
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
     private void adjustVisibilityBasedOnRole() {
+        //Enable add and delete buttons only for admin
+        boolean isAdmin = Objects.equals(userRole, "ADMIN");
+        btnAdd.setVisible(isAdmin);
+        btnDelete.setVisible(isAdmin);
+
         if ("USER".equals(userRole)) {
             txtCourseCode.setDisable(true);
             txtCourseName.setDisable(true);
@@ -98,6 +115,41 @@ public class WCourseController {
             dpExamDate.setDisable(true);
             txtLocation.setDisable(true);
         }
+
+        // Filter courses based on role
+        filterCourses();
+    }
+
+    private void filterCourses() {
+        ObservableList<WCourse> filteredCourses = FXCollections.observableArrayList();
+
+        switch (userRole) {
+            case "ADMIN":
+                // Show all courses
+                filteredCourses.addAll(courseData);
+                break;
+            case "FACULTY":
+                // Show courses taught by the faculty
+                for (WCourse course : courseData) {
+                    if (course.getTeacherName().equals(userId)) {
+                        filteredCourses.add(course);
+                    }
+                }
+                break;
+            case "STUDENT":
+                // Show courses the student is enrolled in (This is a placeholder, you'll need to implement the logic)
+                for (WCourse course : courseData) {
+                    // Add logic to check if the student is enrolled in the course
+                    // For example, you might have a method to check enrollments
+                    // if (isStudentEnrolled(userId, course.getCourseCode())) {
+                    filteredCourses.add(course);  // Add logic to check enrollments
+                    // }
+                }
+                break;
+            default:
+                break;
+        }
+        courseListView.setItems(filteredCourses);
     }
 
     @FXML
@@ -122,7 +174,7 @@ public class WCourseController {
 
             WCourse newCourse = new WCourse(courseCode, courseName, subjectCode, sectionNumber, capacity, "To be scheduled", examDateStr, location, teacherName);
             courseData.add(newCourse);
-            updateCoursesInExcel(); // Update Excel file
+            filterCourses();
             clearFields();
         } catch (Exception e) {
             showAlert("Error", "An error occurred while adding the course.");
@@ -135,13 +187,12 @@ public class WCourseController {
         WCourse selectedCourse = courseListView.getSelectionModel().getSelectedItem();
         if (selectedCourse != null) {
             courseData.remove(selectedCourse);
-            updateCoursesInExcel(); // Update Excel file
+            filterCourses();
             clearFields();
         } else {
             showAlert("Error", "Please select a course to delete.");
         }
     }
-
 
     @FXML
     private void goBack() {
@@ -154,80 +205,6 @@ public class WCourseController {
             stage.setTitle("Main Menu");
             stage.show();
         } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void loadCoursesFromExcel() {
-        try (FileInputStream file = new FileInputStream(new File(EXCEL_FILE_PATH));
-             Workbook workbook = new XSSFWorkbook(file)) {
-
-            Sheet sheet = workbook.getSheetAt(0);
-            Iterator<Row> rowIterator = sheet.iterator();
-
-            // Skip header row
-            if (rowIterator.hasNext()) {
-                rowIterator.next();
-            }
-
-            while (rowIterator.hasNext()) {
-                Row row = rowIterator.next();
-                if (row.getCell(0) == null || row.getCell(0).getStringCellValue().isEmpty()) {
-                    continue; // Skip empty rows
-                }
-
-                String courseCode = row.getCell(0).getStringCellValue();
-                String courseName = row.getCell(1).getStringCellValue();
-                String subjectCode = row.getCell(2).getStringCellValue();
-                String sectionNumber = String.valueOf((int) row.getCell(3).getNumericCellValue());
-                int capacity = (int) row.getCell(4).getNumericCellValue();
-                String lectureTime = row.getCell(5).getStringCellValue();
-                String examDate = row.getCell(6).getStringCellValue();
-                String location = row.getCell(7).getStringCellValue();
-                String teacherName = row.getCell(8).getStringCellValue();
-
-                WCourse course = new WCourse(courseCode, courseName, subjectCode, sectionNumber, capacity, lectureTime, examDate, location, teacherName);
-                courseData.add(course);
-            }
-        } catch (IOException e) {
-            showAlert("Error", "Error loading data from Excel file: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
-    private void updateCoursesInExcel() {
-        try (Workbook workbook = new XSSFWorkbook()) {
-            Sheet sheet = workbook.createSheet("Courses");
-
-            // Create header row
-            Row headerRow = sheet.createRow(0);
-            String[] headers = {"Course Code", "Course Name", "Subject Code", "Section Number", "Capacity", "Lecture Time", "Exam Date", "Location", "Teacher Name"};
-            for (int i = 0; i < headers.length; i++) {
-                Cell cell = headerRow.createCell(i);
-                cell.setCellValue(headers[i]);
-            }
-
-            // Create data rows
-            int rowNum = 1;
-            for (WCourse course : courseData) {
-                Row row = sheet.createRow(rowNum++);
-                row.createCell(0).setCellValue(course.getCourseCode());
-                row.createCell(1).setCellValue(course.getCourseName());
-                row.createCell(2).setCellValue(course.getSubjectCode());
-                row.createCell(3).setCellValue(course.getSectionNumber());
-                row.createCell(4).setCellValue(course.getCapacity());
-                row.createCell(5).setCellValue(course.getLectureTime());
-                row.createCell(6).setCellValue(course.getExamDate());
-                row.createCell(7).setCellValue(course.getLocation());
-                row.createCell(8).setCellValue(course.getTeacherName());
-            }
-
-            // Write the workbook to the file system
-            try (FileOutputStream outputStream = new FileOutputStream(EXCEL_FILE_PATH)) {
-                workbook.write(outputStream);
-            }
-        } catch (IOException e) {
-            showAlert("Error", "Error updating Excel file: " + e.getMessage());
             e.printStackTrace();
         }
     }
