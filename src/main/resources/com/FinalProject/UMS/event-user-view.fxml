@@ -1,18 +1,78 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<VBox alignment="CENTER" spacing="20" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.FinalProject.UMS.EventUserController">
-    <Text text="User View - Event Registration">
+<VBox alignment="CENTER" spacing="20" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.FinalProject.UMS.EventUserController" style="-fx-background-color: #f4f4f4;">
+    <!-- Header -->
+    <Text text="Event Registration System" style="-fx-fill: #2c3e50; -fx-font-weight: bold;">
         <font>
-            <Font name="Arial" size="24" />
+            <Font name="Arial" size="28" />
         </font>
     </Text>
-    <ListView fx:id="eventListView" prefWidth="400" prefHeight="200" />
-    <Button fx:id="registerButton" text="Register for Event" onAction="#registerForEvent" />
-    <Button fx:id="returnButton" text="Return to Main Menu" onAction="#onReturnButtonClick" />
+
+    <!-- TableView for Events -->
+    <TableView fx:id="eventTableView" prefWidth="800" prefHeight="300" style="-fx-background-color: white; -fx-border-color: #bdc3c7; -fx-border-width: 1;">
+        <columns>
+            <!-- Event Code Column -->
+            <TableColumn text="Event Code" prefWidth="100">
+                <cellValueFactory>
+                    <PropertyValueFactory property="eventCode" />
+                </cellValueFactory>
+            </TableColumn>
+
+            <!-- Event Name Column -->
+            <TableColumn text="Event Name" prefWidth="150">
+                <cellValueFactory>
+                    <PropertyValueFactory property="title" />
+                </cellValueFactory>
+            </TableColumn>
+
+            <!-- Description Column -->
+            <TableColumn text="Description" prefWidth="200">
+                <cellValueFactory>
+                    <PropertyValueFactory property="description" />
+                </cellValueFactory>
+            </TableColumn>
+
+            <!-- Location Column -->
+            <TableColumn text="Location" prefWidth="120">
+                <cellValueFactory>
+                    <PropertyValueFactory property="location" />
+                </cellValueFactory>
+            </TableColumn>
+
+            <!-- Date and Time Column -->
+            <TableColumn text="Date and Time" prefWidth="150">
+                <cellValueFactory>
+                    <PropertyValueFactory property="date" />
+                </cellValueFactory>
+            </TableColumn>
+
+            <!-- Capacity Column -->
+            <TableColumn text="Capacity" prefWidth="80">
+                <cellValueFactory>
+                    <PropertyValueFactory property="capacity" />
+                </cellValueFactory>
+            </TableColumn>
+
+            <!-- Cost Column -->
+            <TableColumn text="Cost" prefWidth="100">
+                <cellValueFactory>
+                    <PropertyValueFactory property="cost" />
+                </cellValueFactory>
+            </TableColumn>
+        </columns>
+    </TableView>
+
+    <!-- Buttons -->
+    <Button fx:id="registerButton" text="Register for Event" onAction="#registerForEvent" style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 5;" />
+    <Button fx:id="returnButton" text="Return to Main Menu" onAction="#onReturnButtonClick" style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 5;" />
+
 </VBox>

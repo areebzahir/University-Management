@@ -1,27 +1,69 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<VBox alignment="CENTER" spacing="20" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.FinalProject.UMS.EventAdminController">
-    <Text text="Admin View - Event Management">
+<VBox alignment="CENTER" spacing="20" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.FinalProject.UMS.EventAdminController" style="-fx-background-color: #f4f4f4;">
+    <!-- Header -->
+    <Text text="Admin View - Event Management" style="-fx-fill: #2c3e50; -fx-font-weight: bold;">
         <font>
-            <Font name="Arial" size="24" />
+            <Font name="Arial" size="28" />
         </font>
     </Text>
-    <TextField fx:id="eventCodeField" promptText="Event Code" />
-    <TextField fx:id="eventTitle" promptText="Event Title" />
-    <TextField fx:id="eventDescription" promptText="Event Description" />
-    <TextField fx:id="eventDate" promptText="Event Date" />
-    <TextField fx:id="eventLocation" promptText="Event Location" />
-    <TextField fx:id="eventImageUrl" promptText="Event Image URL" />
-    <TextField fx:id="eventCapacity" promptText="Event Capacity" />
-    <TextField fx:id="eventCost" promptText="Event Cost" />
-    <Button fx:id="addEventButton" text="Add Event" onAction="#addEvent" />
-    <ListView fx:id="eventListView" prefWidth="400" prefHeight="200" />
-    <Button fx:id="returnButton" text="Return to Main Menu" onAction="#onReturnButtonClick" />
+
+    <!-- Input Fields -->
+    <HBox spacing="10" alignment="CENTER">
+        <TextField fx:id="eventCodeField" promptText="Event Code" style="-fx-pref-width: 150;" />
+        <TextField fx:id="eventTitle" promptText="Event Title" style="-fx-pref-width: 200;" />
+        <TextField fx:id="eventDescription" promptText="Event Description" style="-fx-pref-width: 250;" />
+    </HBox>
+    <HBox spacing="10" alignment="CENTER">
+        <TextField fx:id="eventDate" promptText="Event Date" style="-fx-pref-width: 150;" />
+        <TextField fx:id="eventLocation" promptText="Event Location" style="-fx-pref-width: 200;" />
+        <TextField fx:id="eventImageUrl" promptText="Header Image URL" style="-fx-pref-width: 250;" />
+    </HBox>
+    <HBox spacing="10" alignment="CENTER">
+        <TextField fx:id="eventCapacity" promptText="Event Capacity" style="-fx-pref-width: 150;" />
+        <TextField fx:id="eventCost" promptText="Event Cost" style="-fx-pref-width: 150;" />
+    </HBox>
+
+    <!-- Buttons -->
+    <HBox spacing="10" alignment="CENTER">
+        <Button fx:id="addEventButton" text="Add Event" onAction="#addEvent" style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 5;" />
+        <Button fx:id="editEventButton" text="Edit Event" onAction="#editEvent" style="-fx-background-color: #f39c12; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 5;" />
+        <Button fx:id="deleteEventButton" text="Delete Event" onAction="#deleteEvent" style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 5;" />
+    </HBox>
+
+    <!-- TableView for Events -->
+    <TableView fx:id="eventTableView" prefWidth="1000" prefHeight="300" style="-fx-background-color: white; -fx-border-color: #bdc3c7; -fx-border-width: 1;">
+        <columns>
+            <TableColumn fx:id="eventCodeColumn" text="Event Code" prefWidth="100" />
+            <TableColumn fx:id="eventNameColumn" text="Event Name" prefWidth="150" />
+            <TableColumn fx:id="descriptionColumn" text="Description" prefWidth="200" />
+            <TableColumn fx:id="locationColumn" text="Location" prefWidth="120" />
+            <TableColumn fx:id="dateColumn" text="Date and Time" prefWidth="150" />
+            <TableColumn fx:id="capacityColumn" text="Capacity" prefWidth="80" />
+            <TableColumn fx:id="costColumn" text="Cost" prefWidth="100" />
+            <TableColumn fx:id="headerImageColumn" text="Header Image" prefWidth="150" />
+            <TableColumn fx:id="registeredStudentsColumn" text="Registered Students" prefWidth="250" />
+        </columns>
+    </TableView>
+
+    <!-- Return Button -->
+    <Button fx:id="returnButton" text="Return to Main Menu" onAction="#onReturnButtonClick" style="-fx-background-color: #7f8c8d; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 5;" />
+
+    <!-- Footer -->
+    <Text text="© 2023 Event Management System" style="-fx-fill: #7f8c8d; -fx-font-size: 12;">
+        <font>
+            <Font name="Arial" />
+        </font>
+    </Text>
 </VBox>
