@@ -10,7 +10,6 @@ import javafx.collections.ObservableList;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.List;
 
 public class StudentInfoController {
     @FXML
@@ -20,9 +19,12 @@ public class StudentInfoController {
 
     @FXML
     public void initialize() {
-        // Load students from Excel
-        List<Student> students = ExcelDatabase.loadStudents();
-        ObservableList<Student> studentData = FXCollections.observableArrayList(students);
+        // Hardcoded student data
+        ObservableList<Student> studentData = FXCollections.observableArrayList(
+                new Student("S20250001", "Alice Smith", "123 Maple St.", "555-1234", "alice@example.edu", "Undergraduate", "Fall 2025", "default", "ENG101", "", "40%", "default123")
+        );
+
+        // Set the data to the TableView
         studentTable.setItems(studentData);
 
         adjustVisibilityBasedOnRole(); // Adjust UI based on user role
