@@ -52,23 +52,9 @@ public class MenuController {
     @FXML
     private void handleSubjectManagement(ActionEvent event) {
         LOGGER.log(Level.INFO, "Subject Management button clicked");
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("SubjectManagement.fxml"));
-            Parent root = fxmlLoader.load();
-
-            Stage stage = new Stage();
-            stage.setTitle("Subject Management");
-            stage.setScene(new Scene(root));
-            stage.show();
-
-            ((Node)(event.getSource())).getScene().getWindow().hide();
-
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Error loading SubjectManagement.fxml: " + e.getMessage(), e);
-            e.printStackTrace(); // Add this to print the stack trace
-            showAlert("Error", "Failed to load Subject Management window.");
-        }
+        loadScene("/com/FinalProject/UMS/SubjectManagement.fxml", "Subject Management", event);  // Corrected path and using loadScene
     }
+
     @FXML
     private void handleAddSubject(ActionEvent event) {
         loadScene("addSubject.fxml", "Add Subject", event);
@@ -88,8 +74,6 @@ public class MenuController {
     private void handleViewSubject(ActionEvent event) {
         loadScene("viewSubject.fxml", "View Subject", event);
     }
-
-
     @FXML
     private void handleCourseManagement(ActionEvent event) {
         loadScene("CourseManagement-view.fxml", "Course Management", event);
@@ -125,18 +109,15 @@ public class MenuController {
         loadScene("manageEnrollments.fxml", "Manage Enrollments", event);
     }
 
-
     @FXML
     private void handleStudentManage(ActionEvent event) {
         loadScene("studentmanagecontroller.fxml", "Manage Enrollments", event);
     }
 
-
     @FXML
     private void handleFacultyManagement(ActionEvent event) {
         loadScene("faculty-view.fxml", "Faculty Management", event);
     }
-
 
     @FXML
     private void handleAssignFacultyCourses(ActionEvent event) {
@@ -147,9 +128,6 @@ public class MenuController {
     private void handleEventManagement(ActionEvent event) {
         loadScene("event-menu-view.fxml", "Event Management", event);
     }
-
-
-
 
     @FXML
     private void handleEditEvent(ActionEvent event) {
@@ -200,6 +178,7 @@ public class MenuController {
             stage.setScene(new Scene(root));
             stage.show();
 
+            // Close the current window
             ((Node) (event.getSource())).getScene().getWindow().hide();
 
         } catch (IOException e) {

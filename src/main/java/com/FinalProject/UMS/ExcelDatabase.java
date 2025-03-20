@@ -11,10 +11,12 @@ import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 public class ExcelDatabase {
+
     private static final String FILE_PATH = "src/main/resources/UMS_Data.xlsx";
     private static final String STUDENT_SHEET_NAME = "Students";
     private static final String SUBJECT_SHEET_NAME = "Subjects";
     private static final String TUITION_SHEET_NAME = "Tuition"; //Sheet name for tuition
+    private static final String COURSE_SHEET_NAME = "Subjects";
     private static final int ID_COLUMN = 0;
     private static final int NAME_COLUMN = 1;
     private static final int ADDRESS_COLUMN = 2;
@@ -331,6 +333,7 @@ public class ExcelDatabase {
 
         return enrolledCourses; // Return an empty list if the student is not found or an error occurs
     }
+
     // Method to add a course to a student's enrolled courses in Excel
     public static void addCourseToStudent(String studentId, String newCourse) {
         File excelFile = new File(FILE_PATH);
