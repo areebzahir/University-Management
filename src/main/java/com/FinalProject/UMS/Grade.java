@@ -1,6 +1,6 @@
 package com.FinalProject.UMS;
 
-public class Grade {
+public class Grade {//
     private String courseSection;
     private String title;
     private String credits;
