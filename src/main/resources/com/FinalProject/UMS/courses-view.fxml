@@ -12,7 +12,7 @@
 
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.FinalProject.UMS.CoursesController"
+            fx:controller="com.FinalProject.UMS.CourseController"
             prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #f4f4f4;">
     <children>
         <VBox alignment="CENTER" spacing="10.0" AnchorPane.topAnchor="10.0" AnchorPane.bottomAnchor="10.0"

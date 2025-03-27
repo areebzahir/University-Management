@@ -8,15 +8,21 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class MenuController {
 
     private static final Logger LOGGER = Logger.getLogger(MenuController.class.getName());
+
+    @FXML
+    private VBox menuVBox;
 
     @FXML
     private Button subjectManagementButton;
@@ -34,6 +40,7 @@ public class MenuController {
     private Button eventManagementButton;
 
     private String userRole;
+    private String loggedInStudentId;
 
     public void initialize() {
         // Initialization code, if needed
@@ -43,6 +50,11 @@ public class MenuController {
         this.userRole = role;
         // You can update the UI based on the user role here
     }
+    public void setLoggedInStudentId(String studentId) { // Add this method
+        this.loggedInStudentId = studentId;
+    }
+
+
 
     @FXML
     private void handleDashboard(ActionEvent event) {
@@ -111,7 +123,32 @@ public class MenuController {
 
     @FXML
     private void handleStudentManage(ActionEvent event) {
-        loadScene("studentmanagecontroller.fxml", "Manage Enrollments", event);
+        // Load student data and print to console
+        List<Student> students = StudentDatabase.loadStudentsFromExcel();
+        System.out.println("Loaded Students:");
+        for (Student student : students) {
+            System.out.println(student.getStudentId() + " " + student.getName() + " " + student.getAddress() + " " + student.getEmail());
+        }
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("studentmanagecontroller.fxml"));
+            Parent root = loader.load();
+
+            // Get the controller for the student management view
+            StudentManagementMenuController studentManagementController = loader.getController();
+
+            // Pass the logged-in student ID to the student management controller
+            studentManagementController.setLoggedInStudentId(loggedInStudentId);
+
+            Stage stage = (Stage) studentManagementButton.getScene().getWindow();
+            Scene scene = new Scene(root, 1920, 1080);
+            stage.setScene(scene);
+            stage.setTitle("Student Management");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @FXML
@@ -160,8 +197,34 @@ public class MenuController {
         // Add code here to log the user out and return to the login screen
     }
 
+    @FXML
+    private void handleOpenChatbot() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("chatbot-popup.fxml"));
+            Parent root = loader.load();
+
+            Stage chatbotStage = new Stage();
+            chatbotStage.initModality(Modality.APPLICATION_MODAL);
+            chatbotStage.initOwner(menuVBox.getScene().getWindow());
+            chatbotStage.setTitle("UMS Assistant");
+            chatbotStage.setScene(new Scene(root, 400, 600));
+            chatbotStage.show();
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Failed to open chatbot", e);
+            showError("Error", "Failed to open chatbot: " + e.getMessage());
+        }
+    }
+
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    private void showError(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
@@ -173,13 +236,21 @@ public class MenuController {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxmlFile));
             Parent root = fxmlLoader.load();
 
-            Stage stage = new Stage();
+            Stage stage;
+            if (event != null) {
+                stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+            } else {
+                stage = (Stage) menuVBox.getScene().getWindow();
+            }
+
             stage.setTitle(title);
-            stage.setScene(new Scene(root));
+            stage.setScene(new Scene(root, 1366, 768));
             stage.show();
 
             // Close the current window
-            ((Node) (event.getSource())).getScene().getWindow().hide();
+            if (event != null) {
+                ((Node) (event.getSource())).getScene().getWindow().hide();
+            }
 
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Error loading " + fxmlFile + ": " + e.getMessage(), e);

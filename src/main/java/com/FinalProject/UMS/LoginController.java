@@ -53,7 +53,7 @@ public class LoginController {
         LOGGER.log(Level.INFO, "Attempting login for user: {0}", username); // Log the login attempt
 
         // Check for admin login first (hardcoded check for admin credentials)
-        if ("a".equals(username) && "a".equals(password)) {
+        if ("admin@uoguelph.ca".equals(username) && "admin123".equals(password)) {
             LOGGER.info("Admin login successful"); // Log admin login success
             showPopup("Login Successful", "Welcome, Admin!", Alert.AlertType.INFORMATION); // Show success popup
             navigateToAdminDashboard(event); // Navigate to the admin dashboard

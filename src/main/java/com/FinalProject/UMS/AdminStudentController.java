@@ -1,6 +1,5 @@
-package com.FinalProject.UMS; // Declaring the package for this class
+package com.FinalProject.UMS;
 
-// Importing necessary JavaFX classes for the GUI
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -8,17 +7,58 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
+import javafx.collections.ObservableList;
+import javafx.collections.FXCollections;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.cell.PropertyValueFactory;
+
+import java.io.IOException;
+import java.util.List;
+
 public class AdminStudentController {
 
-    // FXML annotation marks this variable as linked to a Button in the FXML layout
     @FXML
     private Button backButton;
+
+    @FXML
+    private TableView<Student> studentTable;
+
+    @FXML
+    private TableColumn<Student, String> studentIdColumn;
+
+    @FXML
+    private TableColumn<Student, String> nameColumn;
+
+    @FXML
+    private TableColumn<Student, String> emailColumn;
+
+    private ObservableList<Student> studentList = FXCollections.observableArrayList();
+
+    @FXML
+    public void initialize() {
+        // Initialize the table columns
+        studentIdColumn.setCellValueFactory(new PropertyValueFactory<>("studentId"));
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
+
+        // Load data from Excel and populate the table
+        loadStudentData();
+    }
+
+    private void loadStudentData() {
+        List<Student> students = StudentDatabase.loadStudentsFromExcel();
+        studentList.addAll(students);
+        studentTable.setItems(studentList);
+    }
 
     // Method to handle adding a new student
     @FXML
     private void handleAddStudent() {
         // Calls the method to load the "add student" view
         loadPage("add-student-view.fxml", "Add Student");
+        // After adding a student, refresh the table
+        loadStudentData();
     }
 
     // Method to handle editing a student's information
@@ -26,6 +66,8 @@ public class AdminStudentController {
     private void handleEditStudent() {
         // Loads the "edit student" view
         loadPage("edit-student-view.fxml", "Edit Student");
+        // After editing a student, refresh the table
+        loadStudentData();
     }
 
     // Method to handle deleting a student
@@ -33,6 +75,8 @@ public class AdminStudentController {
     private void handleDeleteStudent() {
         // Loads the "delete student" view
         loadPage("delete-student-view.fxml", "Delete Student");
+        // After deleting a student, refresh the table
+        loadStudentData();
     }
 
     // Method to handle viewing a student's profile

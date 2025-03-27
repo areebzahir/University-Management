@@ -2,47 +2,64 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.paint.Color?>
-<?import javafx.scene.effect.DropShadow?>
 
-<VBox alignment="CENTER" prefHeight="400.0" prefWidth="350.0" spacing="20.0"
+<VBox alignment="CENTER" prefHeight="550.0" prefWidth="400.0" spacing="20.0"
       xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.FinalProject.UMS.LoginController"
-      style="-fx-background-color: #ffffff; -fx-padding: 30px; -fx-border-radius: 15; -fx-alignment: center;">
-
-    <effect>
-        <DropShadow color="#9ecaed" radius="20.0" width="200.0" height="200.0"/>
-    </effect>
-
-    <Label text="University Login" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" />
-
-    <Label text="Welcome Back!" style="-fx-font-size: 14px; -fx-text-fill: #777777;"/>
-
-    <TextField fx:id="usernameField" promptText="Username"
-               style="-fx-border-color: #ced4da; -fx-border-width: 1px; -fx-border-radius: 5; -fx-padding: 12px; -fx-font-size: 14px; -fx-text-fill: #495057;"/>
-
-    <PasswordField fx:id="passwordField" promptText="Password"
-                   style="-fx-border-color: #ced4da; -fx-border-width: 1px; -fx-border-radius: 5; -fx-padding: 12px; -fx-font-size: 14px; -fx-text-fill: #495057;"/>
-
-    <Button text="Login" onAction="#handleLogin"
-            style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-size: 16px;
-                   -fx-padding: 12px 30px; -fx-border-radius: 8; -fx-cursor: hand; -fx-font-weight: bold;">
-        <effect>
-            <DropShadow color="#3498db" radius="5.0" width="10.0" height="10.0"/>
-        </effect>
-    </Button>
-
-    <Label fx:id="errorMessageLabel" text="" textFill="#e74c3c" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
-
+      style="-fx-background-color: #121212;"> <!-- Dark background color -->
     <padding>
-        <Insets bottom="30.0" left="30.0" right="30.0" top="30.0"/>
+        <Insets bottom="20.0" left="30.0" right="30.0" top="30.0"/>
     </padding>
 
+    <Label text="Student Management System" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #FFFFFF;">
+        <!-- White text -->
+    </Label>
+    <Label text="Welcome back! Please login to your account." style="-fx-font-size: 14px; -fx-text-fill: #BDBDBD;"/>
+    <!-- Light gray text -->
+
+    <HBox alignment="CENTER" spacing="10.0">
+        <Button text="Student" style="-fx-background-color: #4CAF50; -fx-text-fill: #FFFFFF; -fx-padding: 8px 20px; -fx-background-radius: 8px; -fx-font-weight: bold;"/>
+        <!-- Green button -->
+        <Button text="Faculty" style="-fx-background-color: #212121; -fx-text-fill: #BDBDBD; -fx-padding: 8px 20px; -fx-background-radius: 8px;"/>
+        <!-- Dark gray button -->
+    </HBox>
+
+    <VBox spacing="8.0">
+        <Label text="Student ID" alignment="CENTER_LEFT" style="-fx-font-size: 14px; -fx-text-fill: #BDBDBD;"/>
+        <TextField fx:id="usernameField" promptText="Enter your student ID" style="-fx-padding: 10px; -fx-border-radius: 5px; -fx-background-color: #212121; -fx-text-fill: #BDBDBD; -fx-prompt-text-fill: #616161;"/>
+        <!-- Dark input fields -->
+    </VBox>
+
+    <VBox spacing="8.0">
+        <Label text="Password" alignment="CENTER_LEFT" style="-fx-font-size: 14px; -fx-text-fill: #BDBDBD;"/>
+        <PasswordField fx:id = "passwordField" promptText="Enter your password" style="-fx-padding: 10px; -fx-border-radius: 5px; -fx-background-color: #212121; -fx-text-fill: #BDBDBD; -fx-prompt-text-fill: #616161;"/>
+        <!-- Dark input fields -->
+    </VBox>
+
+    <HBox alignment="CENTER_LEFT" spacing="10.0">
+        <CheckBox text="Remember me" style="-fx-text-fill: #BDBDBD;"/>
+        <Label text="Forgot password?" style="-fx-text-fill: #64B5F6; -fx-cursor: hand;"/>
+    </HBox>
+
+    <Button fx:id="loginButton" text="Sign In" style="-fx-background-color: #4CAF50; -fx-text-fill: #FFFFFF; -fx-padding: 10px 30px; -fx-background-radius: 8px; -fx-font-weight: bold;" onAction="#handleLogin"/>
+    <!-- Green Sign In button -->
+    <Label fx:id="errorMessageLabel" text="" textFill="Red" style="-fx-font-size: 14px;"/>
+
+    <VBox alignment="CENTER" spacing="5">
+        <Label text="© 2025 University of Guelph. All rights reserved." style="-fx-font-size: 12px; -fx-text-fill: #BDBDBD;"/>
+
+        <HBox alignment="CENTER" spacing="20.0">
+            <Label text="Privacy Policy" style="-fx-font-size: 12px; -fx-text-fill: #64B5F6; -fx-underline: true; -fx-cursor: hand;"/>
+            <Label text="Terms of Service" style="-fx-font-size: 12px; -fx-text-fill: #64B5F6; -fx-underline: true; -fx-cursor: hand;"/>
+            <Label text="Contact Support" style="-fx-font-size: 12px; -fx-text-fill: #64B5F6; -fx-underline: true; -fx-cursor: hand;"/>
+        </HBox>
+    </VBox>
 </VBox>
-
-

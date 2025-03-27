@@ -13,13 +13,25 @@ import java.io.IOException;
 // Controller for managing student-related views in the University Management System
 public class StudentManagementMenuController {
 
-    // Label to display a welcome message or text
     @FXML
     private Label welcomeText;
 
-    // Button for navigating back to the previous menu
     @FXML
     private Button backButton;
+
+    private String loggedInStudentId; // Store the logged-in student's ID
+
+    public void setLoggedInStudentId(String studentId) {
+        this.loggedInStudentId = studentId;
+        // You can also load the student's name and display a personalized welcome message
+        // For example:
+        // Student student = ExcelDataManager.getStudentById(studentId);
+        // if (student != null) {
+        //     welcomeText.setText("Welcome, " + student.getName() + "!");
+        // } else {
+        //     welcomeText.setText("Welcome!");
+        // }
+    }
 
     // Handles the button click to open the second page (Student Information)
     @FXML
@@ -76,8 +88,21 @@ public class StudentManagementMenuController {
             System.out.println("Loading FXML file: " + fxmlFile); // Debug statement
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
             Parent root = loader.load();
+
+            // Pass the loggedInStudentId to the controllers of the loaded pages
+            Object controller = loader.getController();
+            if (controller instanceof ProfileController) {
+                ((ProfileController) controller).setLoggedInStudentId(loggedInStudentId);
+            } else if (controller instanceof CourseController) {
+                ((CourseController) controller).setLoggedInStudentId(loggedInStudentId);
+            } else if (controller instanceof GradesController) {
+                ((GradesController) controller).setLoggedInStudentId(loggedInStudentId);
+            } else if (controller instanceof TuitionController) {
+                ((TuitionController) controller).setLoggedInStudentId(loggedInStudentId);
+            }
+
             Stage stage = (Stage) welcomeText.getScene().getWindow();
-            Scene scene = new Scene(root, 1920, 1080); // Set scene size to 1920x1080
+            Scene scene = new Scene(root, 1920, 1080); // Set scene size to 1920, 1080
             stage.setScene(scene);
             stage.setTitle(title); // Set the window title based on the page
             stage.show();

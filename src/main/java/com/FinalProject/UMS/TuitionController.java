@@ -1,35 +1,59 @@
 package com.FinalProject.UMS;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.List;
 
 public class TuitionController {
     @FXML
     private TableView<Tuition> tuitionTable;
 
+    @FXML
+    private TableColumn<Tuition, String> semesterColumn;
+
+    @FXML
+    private TableColumn<Tuition, Double> amountDueColumn;
+
+    @FXML
+    private TableColumn<Tuition, Double> amountPaidColumn;
+
+    @FXML
+    private TableColumn<Tuition, String> statusColumn;
+
     private String userRole; // Add userRole field
+    private String loggedInStudentId;
+
+    public void setLoggedInStudentId(String studentId) {
+        this.loggedInStudentId = studentId;
+        loadTuitionData();
+    }
 
     @FXML
     public void initialize() {
-        // Hardcoded test values (no arrays or external data)
-        Tuition tuition1 = new Tuition("Fall 2023", 5000.0, 2500.0, "Partially Paid");
-        Tuition tuition2 = new Tuition("Spring 2024", 4000.0, 4000.0, "Fully Paid");
-
-        // Add test values directly to the table
-        ObservableList<Tuition> tuitionData = FXCollections.observableArrayList();
-        tuitionData.add(tuition1);
-        tuitionData.add(tuition2);
-        tuitionTable.setItems(tuitionData);
+        // Initialize the table columns
+        semesterColumn.setCellValueFactory(new PropertyValueFactory<>("semester"));
+        amountDueColumn.setCellValueFactory(new PropertyValueFactory<>("amountDue"));
+        amountPaidColumn.setCellValueFactory(new PropertyValueFactory<>("amountPaid"));
+        statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
 
         adjustVisibilityBasedOnRole(); // Adjust UI based on user role
+    }
+
+    private void loadTuitionData() {
+        // Load tuition data from Excel
+        List<Tuition> tuitionList = StudentDatabase.loadTuitionDataFromExcel();
+        ObservableList<Tuition> tuitionData = FXCollections.observableArrayList(tuitionList);
+        tuitionTable.setItems(tuitionData);
     }
 
     public void setUserRole(String role) {
