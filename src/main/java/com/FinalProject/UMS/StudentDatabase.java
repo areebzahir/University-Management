@@ -18,41 +18,7 @@ public class StudentDatabase {
     private static final String TUITION_SHEET_NAME = "Tuition";
 
     // Method to read tuition data from Excel
-    public static List<Tuition> loadTuitionDataFromExcel() {
-        List<Tuition> tuitions = new ArrayList<>();
-        try (FileInputStream fileInputStream = new FileInputStream(new File(EXCEL_FILE_PATH));
-             Workbook workbook = new XSSFWorkbook(fileInputStream)) {
 
-            Sheet sheet = workbook.getSheet(TUITION_SHEET_NAME);
-            if (sheet == null) {
-                System.out.println("Sheet not found: " + TUITION_SHEET_NAME);
-                return tuitions; // Return empty list
-            }
-
-            for (int rowIndex = 1; rowIndex <= sheet.getLastRowNum(); rowIndex++) { // Start from row 1 (skip header)
-                Row row = sheet.getRow(rowIndex);
-                if (row != null) {
-                    try {
-                        String semester = getStringCellValue(row.getCell(0));
-                        double amountDue = Double.parseDouble(getStringCellValue(row.getCell(1)));
-                        double amountPaid = Double.parseDouble(getStringCellValue(row.getCell(2)));
-                        String status = getStringCellValue(row.getCell(3));
-
-                        Tuition tuition = new Tuition(semester, amountDue, amountPaid, status);
-                        tuitions.add(tuition);
-                    } catch (Exception e) {
-                        System.err.println("Error reading row " + rowIndex + ": " + e.getMessage());
-                        e.printStackTrace(); // Print the full stack trace for debugging
-                    }
-                }
-            }
-
-        } catch (IOException e) {
-            System.err.println("Error loading tuition data from Excel: " + e.getMessage());
-            e.printStackTrace();
-        }
-        return tuitions;
-    }
 
     // Method to read student data from Excel
     public static List<Student> loadStudentsFromExcel() {

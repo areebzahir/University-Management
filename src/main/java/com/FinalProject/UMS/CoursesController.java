@@ -1,15 +1,12 @@
 package com.FinalProject.UMS;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.ListView;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.scene.control.Label;
 
 import java.io.IOException;
 import java.util.List;
@@ -18,20 +15,10 @@ import java.util.logging.Logger;
 
 public class CoursesController {
     @FXML
-    private TableView<CourseRegistration> coursesTable; // TableView to display enrolled courses
+    private ListView<String> coursesList; // ListView to display enrolled courses
 
     @FXML
-    private TableColumn<CourseRegistration, String> studentIdColumn; // Column for Student ID
-    @FXML
-    private TableColumn<CourseRegistration, String> courseCodeColumn; // Column for Course Code
-    @FXML
-    private TableColumn<CourseRegistration, String> courseNameColumn; // Column for Course Name
-    @FXML
-    private TableColumn<CourseRegistration, String> semesterColumn; // Column for Semester
-    @FXML
-    private TableColumn<CourseRegistration, String> academicLevelColumn; // Column for Academic Level
-    @FXML
-    private TableColumn<CourseRegistration, String> currentSemesterColumn; // Column for Current Semester
+    private Label selectedCourseLabel; // Label to display the selected course
 
     private String studentId; // Field to store the student ID
 
@@ -39,30 +26,15 @@ public class CoursesController {
 
     @FXML
     public void initialize() {
-        // Set up the TableView columns
-        studentIdColumn.setCellValueFactory(new PropertyValueFactory<>("studentId"));
-        courseCodeColumn.setCellValueFactory(new PropertyValueFactory<>("courseCode"));
-        courseNameColumn.setCellValueFactory(new PropertyValueFactory<>("courseName"));
-        semesterColumn.setCellValueFactory(new PropertyValueFactory<>("semester"));
-        academicLevelColumn.setCellValueFactory(new PropertyValueFactory<>("academicLevel"));
-        currentSemesterColumn.setCellValueFactory(new PropertyValueFactory<>("currentSemester"));
+        // Add event listener for course selection
+        coursesList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                selectedCourseLabel.setText("Selected Course: " + newValue);
+            }
+        });
     }
 
-    /**
-     * Loads test data into the TableView for demonstration purposes.
-     */
-    public void loadTestData() {
-        // Create test values
-        List<CourseRegistration> testCourses = List.of(
-                new CourseRegistration("S20250001", "ENG101", "English 101", "Fall 2025", "Undergraduate", "Fall 2025")
-        );
 
-        // Convert the list to an ObservableList
-        ObservableList<CourseRegistration> courseData = FXCollections.observableArrayList(testCourses);
-
-        // Set the data to the TableView
-        coursesTable.setItems(courseData);
-    }
 
     // Handle return button click
     @FXML
@@ -71,13 +43,14 @@ public class CoursesController {
             LOGGER.info("Return button clicked. Loading student management page.");
             FXMLLoader loader = new FXMLLoader(getClass().getResource("studentmanagecontroller.fxml"));
             Parent root = loader.load();
-            Stage stage = (Stage) coursesTable.getScene().getWindow();
+            Stage stage = (Stage) coursesList.getScene().getWindow();
             Scene scene = new Scene(root, 1366, 768);
             stage.setScene(scene);
             stage.setTitle("Student Management");
             stage.show();
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Error loading student management page: " + e.getMessage(), e);
+            selectedCourseLabel.setText("Error: Failed to load the student management page.");
         }
     }
 }

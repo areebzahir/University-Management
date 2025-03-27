@@ -59,11 +59,8 @@ public class StudentManagementMenuController {
 
     // Handles the button click to open the tuition status view
     @FXML
-    protected void onOpenTuitionButtonClick() {
-        loadPage("tuition-view.fxml", "Tuition Status");
-    }
+    protected void onOpenTuitionButtonClick() { loadPage("tuition-view.fxml", "Tuition"); }
 
-    // Handles the button click to open the admin dashboard view
     @FXML
     protected void onOpenAdminDashboardButtonClick() {
         loadPage("admin-student-view.fxml", "Admin Dashboard");
@@ -95,11 +92,8 @@ public class StudentManagementMenuController {
                 ((ProfileController) controller).setLoggedInStudentId(loggedInStudentId);
             } else if (controller instanceof CourseController) {
                 ((CourseController) controller).setLoggedInStudentId(loggedInStudentId);
-            } else if (controller instanceof GradesController) {
-                ((GradesController) controller).setLoggedInStudentId(loggedInStudentId);
-            } else if (controller instanceof TuitionController) {
-                ((TuitionController) controller).setLoggedInStudentId(loggedInStudentId);
             }
+
 
             Stage stage = (Stage) welcomeText.getScene().getWindow();
             Scene scene = new Scene(root, 1920, 1080); // Set scene size to 1920, 1080
