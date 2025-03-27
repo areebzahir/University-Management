@@ -31,13 +31,7 @@ public class ExcelDatabase {
     private static final int PASSWORD_COLUMN = 11;
     private static final boolean HAS_HEADER_ROW = true;
 
-    // Tuition Sheet Column Definitions
-    private static final int TUITION_SEMESTER_COLUMN = 0;
-    private static final int TUITION_AMOUNT_DUE_COLUMN = 1;
-    private static final int TUITION_AMOUNT_PAID_COLUMN = 2;
-    private static final int TUITION_STATUS_COLUMN = 3;
-    private static final int TUITION_STUDENT_ID_COLUMN = 4; //Column for student ID in Tuition sheet
-    private static final boolean HAS_TUITION_HEADER_ROW = true;
+
 
     // Subject Sheet Column Definitions
     private static final int SUBJECT_CODE_COLUMN = 0;
@@ -119,6 +113,7 @@ public class ExcelDatabase {
         }
         return users;
     }
+
 
     public static List<String> loadEnrolledCourses(String studentId) {
         List<String> enrolledCourses = new ArrayList<>();
@@ -499,13 +494,6 @@ public class ExcelDatabase {
             if (workbook.getSheet(TUITION_SHEET_NAME) == null) {
                 Sheet subjectSheet = workbook.createSheet(TUITION_SHEET_NAME);
 
-                // Create header row
-                Row headerRow = subjectSheet.createRow(0);
-                headerRow.createCell(TUITION_SEMESTER_COLUMN).setCellValue("Semester");
-                headerRow.createCell(TUITION_AMOUNT_DUE_COLUMN).setCellValue("Amount Due");
-                headerRow.createCell(TUITION_AMOUNT_PAID_COLUMN).setCellValue("Amount Paid");
-                headerRow.createCell(TUITION_STATUS_COLUMN).setCellValue("Status");
-                headerRow.createCell(TUITION_STUDENT_ID_COLUMN).setCellValue("Student ID");
 
                 // Write the changes back to the Excel file
                 try (FileOutputStream fileOut = new FileOutputStream(excelFile)) {

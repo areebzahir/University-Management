@@ -86,8 +86,6 @@ public class SubjectManagementController implements Initializable {
             deleteButton.setDisable(true);
             subjectNameField.setDisable(true);
             subjectCodeField.setDisable(true);
-
-//hey
         }
     }
 

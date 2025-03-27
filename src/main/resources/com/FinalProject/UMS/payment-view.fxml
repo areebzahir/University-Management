@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/16"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.FinalProject.UMS.PaymentController"
+            style="-fx-background-color: #f5f7fa; -fx-padding: 20;">
+
+    <VBox spacing="15" alignment="TOP_CENTER" AnchorPane.topAnchor="20" AnchorPane.bottomAnchor="20"
+          AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20">
+        <Label text="Make a Payment" style="-fx-font-size: 20; -fx-font-weight: bold;"/>
+
+        <Label fx:id="studentIdLabel" style="-fx-font-size: 14;"/>
+
+        <GridPane hgap="10" vgap="10">
+            <columnConstraints>
+                <ColumnConstraints prefWidth="150" halignment="RIGHT"/>
+                <ColumnConstraints prefWidth="200"/>
+            </columnConstraints>
+
+            <rowConstraints>
+                <RowConstraints prefHeight="30"/>
+                <RowConstraints prefHeight="30"/>
+                <RowConstraints prefHeight="30"/>
+            </rowConstraints>
+
+            <Label text="Amount:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+            <TextField fx:id="amountField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+            <Label text="Payment Method:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+            <ChoiceBox fx:id="paymentMethod" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+        </GridPane>
+
+        <HBox spacing="10" alignment="CENTER_RIGHT">
+            <Button text="Cancel" onAction="#handleCancel"
+                    style="-fx-background-color: #95a5a6; -fx-text-fill: white;"/>
+            <Button text="Submit Payment" onAction="#handleSubmitPayment"
+                    style="-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-font-weight: bold;"/>
+        </HBox>
+    </VBox>
+</AnchorPane>
