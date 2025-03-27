@@ -1,7 +1,6 @@
 package com.FinalProject.UMS;
 
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.*;
@@ -15,34 +14,16 @@ public class ExcelDatabase {
     private static final String FILE_PATH = "src/main/resources/UMS_Data.xlsx";
     private static final String STUDENT_SHEET_NAME = "Students";
     private static final String SUBJECT_SHEET_NAME = "Subjects";
-    private static final String TUITION_SHEET_NAME = "Tuition"; //Sheet name for tuition
-    private static final String COURSE_SHEET_NAME = "Subjects";
     private static final int ID_COLUMN = 0;
     private static final int NAME_COLUMN = 1;
-    private static final int ADDRESS_COLUMN = 2;
-    private static final int TELEPHONE_COLUMN = 3;
     private static final int EMAIL_COLUMN = 4;
-    private static final int ACADEMIC_LEVEL_COLUMN = 5;
-    private static final int CURRENT_SEMESTER_COLUMN = 6;
-    private static final int PROFILE_PHOTO_COLUMN = 7;
-    private static final int SUBJECT_REGISTERED_COLUMN = 8;
-    private static final int THESIS_TITLE_COLUMN = 9;
-    private static final int PROGRESS_COLUMN = 10;
     private static final int PASSWORD_COLUMN = 11;
     private static final boolean HAS_HEADER_ROW = true;
-
-    // Tuition Sheet Column Definitions
-    private static final int TUITION_SEMESTER_COLUMN = 0;
-    private static final int TUITION_AMOUNT_DUE_COLUMN = 1;
-    private static final int TUITION_AMOUNT_PAID_COLUMN = 2;
-    private static final int TUITION_STATUS_COLUMN = 3;
-    private static final int TUITION_STUDENT_ID_COLUMN = 4; //Column for student ID in Tuition sheet
-    private static final boolean HAS_TUITION_HEADER_ROW = true;
 
     // Subject Sheet Column Definitions
     private static final int SUBJECT_CODE_COLUMN = 0;
     private static final int SUBJECT_NAME_COLUMN = 1;
-    private static final boolean HAS_SUBJECT_HEADER_ROW = true; //Header row for subject
+    private static final boolean HAS_SUBJECT_HEADER_ROW = true;
 
     private static final Pattern EMAIL_PATTERN = Pattern.compile(
             "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"
@@ -63,14 +44,12 @@ public class ExcelDatabase {
                 String sheetName = sheet.getSheetName();
                 LOGGER.log(Level.INFO, "Processing sheet: {0}", sheetName);
 
-                // Check if this is the "Students" sheet
                 if (sheetName.trim().equals(STUDENT_SHEET_NAME)) {
-                    // Process the "Students" sheet
                     Iterator<Row> rowIterator = sheet.rowIterator();
                     while (rowIterator.hasNext()) {
                         Row row = rowIterator.next();
 
-                        if (HAS_HEADER_ROW && row.getRowNum() == 0) continue; // Skip header
+                        if (HAS_HEADER_ROW && row.getRowNum() == 0) continue;
 
                         try {
                             Cell idCell = row.getCell(ID_COLUMN);
@@ -82,9 +61,6 @@ public class ExcelDatabase {
                             Cell passwordCell = row.getCell(PASSWORD_COLUMN);
                             String password = (passwordCell != null) ? getCellValueAsString(passwordCell) : null;
 
-                            LOGGER.info(id + " " + email + " " + password);
-
-                            // Basic validation
                             if ((id == null || id.isEmpty()) && (email == null || email.isEmpty())) {
                                 LOGGER.warning("Skipping row " + row.getRowNum() + " due to missing ID and email.");
                                 continue;
@@ -99,13 +75,11 @@ public class ExcelDatabase {
                                 continue;
                             }
 
-                            LOGGER.log(Level.FINE, "Loaded user: id={0}, email={1}, password={2}", new Object[]{id, email, password});
-
-                            User user = new User(id, email, password); // Store both ID and email
+                            User user = new User(id, email, password);
                             if (id != null && !id.isEmpty())
-                                users.put(id, user); // Store the user by ID
+                                users.put(id, user);
                             if (email != null && !email.isEmpty())
-                                users.put(email, user); // Store the user by email
+                                users.put(email, user);
                         } catch (Exception e) {
                             LOGGER.log(Level.SEVERE, "Error processing row " + row.getRowNum() + ": " + e.getMessage(), e);
                         }
@@ -114,138 +88,10 @@ public class ExcelDatabase {
             }
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Error loading Excel file: " + e.getMessage(), e);
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Error loading the file object: " + e.getMessage(), e);
         }
         return users;
     }
 
-    public static List<String> loadEnrolledCourses(String studentId) {
-        List<String> enrolledCourses = new ArrayList<>();
-        File excelFile = new File(FILE_PATH);
-
-        // Check if the Excel file exists
-        if (!excelFile.exists()) {
-            LOGGER.severe("Excel file not found at path: " + FILE_PATH);
-            return enrolledCourses;
-        }
-
-        try (FileInputStream fis = new FileInputStream(excelFile);
-             Workbook workbook = new XSSFWorkbook(fis)) {
-
-            LOGGER.info("Loading Excel file: " + FILE_PATH);
-            Sheet sheet = workbook.getSheet(STUDENT_SHEET_NAME);
-
-            // Check if the sheet exists
-            if (sheet == null) {
-                LOGGER.warning("Sheet '" + STUDENT_SHEET_NAME + "' not found in Excel file.");
-                return enrolledCourses;
-            }
-
-            Iterator<Row> rowIterator = sheet.rowIterator();
-
-            // Skip the header row if it exists
-            if (HAS_HEADER_ROW && rowIterator.hasNext()) {
-                rowIterator.next();
-            }
-
-            // Iterate through rows to find the student
-            while (rowIterator.hasNext()) {
-                Row row = rowIterator.next();
-                try {
-                    // Get the student ID from the current row
-                    String currentStudentId = getCellValueAsString(row.getCell(ID_COLUMN)).trim();
-                    LOGGER.info("Processing Student ID: " + currentStudentId);
-
-                    // Check if the current row matches the provided student ID
-                    if (studentId.trim().equals(currentStudentId)) {
-                        // Get the subjects registered for the student
-                        String subjectsRegistered = getCellValueAsString(row.getCell(SUBJECT_REGISTERED_COLUMN)).trim();
-                        LOGGER.info("Subjects Registered: " + subjectsRegistered);
-
-                        // Handle empty or invalid subject data
-                        if (subjectsRegistered == null || subjectsRegistered.isEmpty() || subjectsRegistered.equals("-") || subjectsRegistered.equals("_")) {
-                            LOGGER.info("No subjects found for Student ID: " + studentId);
-                            return enrolledCourses; // Return empty list if no subjects are registered
-                        }
-
-                        // Split the subjects by comma and trim whitespace
-                        String[] subjects = subjectsRegistered.split(",");
-                        for (String subject : subjects) {
-                            enrolledCourses.add(subject.trim());
-                        }
-
-                        LOGGER.info("Enrolled courses for Student ID " + studentId + ": " + enrolledCourses);
-                        return enrolledCourses; // Return the list once the student is found
-                    }
-                } catch (Exception e) {
-                    LOGGER.log(Level.WARNING, "Error processing row: " + row.getRowNum() + " - " + e.getMessage(), e);
-                }
-            }
-
-            // Log if the student ID is not found
-            LOGGER.warning("Student ID " + studentId + " not found in the Excel file.");
-
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Error loading Excel file: " + e.getMessage(), e);
-        }
-
-        return enrolledCourses; // Return an empty list if the student is not found or an error occurs
-    }
-
-    // Method to add a course to a student's enrolled courses in Excel
-    public static void addCourseToStudent(String studentId, String newCourse) {
-        File excelFile = new File(FILE_PATH);
-        try (FileInputStream fis = new FileInputStream(excelFile);
-             Workbook workbook = new XSSFWorkbook(fis)) {
-
-            Sheet sheet = workbook.getSheet(STUDENT_SHEET_NAME);
-            if (sheet == null) {
-                LOGGER.warning("Sheet '" + STUDENT_SHEET_NAME + "' not found in Excel file.");
-                return;
-            }
-
-            Iterator<Row> rowIterator = sheet.rowIterator();
-            if (HAS_HEADER_ROW && rowIterator.hasNext()) {
-                rowIterator.next(); // Skip header row
-            }
-
-            while (rowIterator.hasNext()) {
-                Row row = rowIterator.next();
-                try {
-                    String currentStudentId = getCellValueAsString(row.getCell(ID_COLUMN));
-                    if (studentId.equals(currentStudentId)) {
-                        String subjectsRegistered = getCellValueAsString(row.getCell(SUBJECT_REGISTERED_COLUMN));
-                        String updatedSubjectsRegistered;
-                        if (subjectsRegistered == null || subjectsRegistered.isEmpty()) {
-                            updatedSubjectsRegistered = newCourse;
-                        } else {
-                            updatedSubjectsRegistered = subjectsRegistered + ", " + newCourse;
-                        }
-                        row.getCell(SUBJECT_REGISTERED_COLUMN).setCellValue(updatedSubjectsRegistered);
-
-                        // Write the workbook changes to the file
-                        try (FileOutputStream fileOut = new FileOutputStream(excelFile)) {
-                            workbook.write(fileOut);
-                            LOGGER.info("Course '" + newCourse + "' added to student ID: " + studentId);
-                        } catch (IOException e) {
-                            LOGGER.log(Level.SEVERE, "Error writing to Excel file: " + e.getMessage(), e);
-                        }
-                        return; // Exit after updating the student
-                    }
-                } catch (Exception e) {
-                    LOGGER.log(Level.WARNING, "Error processing row: " + row.getRowNum() + " - " + e.getMessage(), e);
-                }
-            }
-
-            LOGGER.warning("Student with ID " + studentId + " not found in Excel file.");
-
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Error loading Excel file: " + e.getMessage(), e);
-        }
-    }
-
-    //Method to load subject
     public static Map<String, String> loadSubjects() {
         Map<String, String> subjects = new HashMap<>();
         File excelFile = new File(FILE_PATH);
@@ -256,14 +102,14 @@ public class ExcelDatabase {
             Sheet subjectSheet = workbook.getSheet(SUBJECT_SHEET_NAME);
             if (subjectSheet == null) {
                 LOGGER.warning("Sheet '" + SUBJECT_SHEET_NAME + "' not found in Excel file.");
-                return subjects; // Return empty map if sheet doesn't exist
+                return subjects;
             }
 
             Iterator<Row> rowIterator = subjectSheet.rowIterator();
             while (rowIterator.hasNext()) {
                 Row row = rowIterator.next();
 
-                if (HAS_SUBJECT_HEADER_ROW && row.getRowNum() == 0) continue; // Skip header row
+                if (HAS_SUBJECT_HEADER_ROW && row.getRowNum() == 0) continue;
 
                 try {
                     Cell subjectCodeCell = row.getCell(SUBJECT_CODE_COLUMN);
@@ -272,7 +118,6 @@ public class ExcelDatabase {
                     Cell subjectNameCell = row.getCell(SUBJECT_NAME_COLUMN);
                     String subjectName = (subjectNameCell != null) ? getCellValueAsString(subjectNameCell) : null;
 
-                    // Basic validation
                     if (subjectCode == null || subjectCode.isEmpty()) {
                         LOGGER.warning("Skipping row " + row.getRowNum() + " due to missing subject code.");
                         continue;
@@ -283,7 +128,6 @@ public class ExcelDatabase {
                     }
 
                     subjects.put(subjectCode, subjectName);
-                    LOGGER.log(Level.FINE, "Loaded subject: code={0}, name={1}", new Object[]{subjectCode, subjectName});
 
                 } catch (Exception e) {
                     LOGGER.log(Level.SEVERE, "Error processing subject row " + row.getRowNum() + ": " + e.getMessage(), e);
@@ -294,150 +138,6 @@ public class ExcelDatabase {
             LOGGER.log(Level.SEVERE, "Error loading Excel file for subjects: " + e.getMessage(), e);
         }
         return subjects;
-    }
-
-    // Method to add a subject to the Excel file
-    public static void addSubjectToExcel(Subject subject, String filePath, String sheetName) {
-        File excelFile = new File(filePath);
-        Workbook workbook = null;
-        Sheet sheet = null;
-        FileInputStream fis = null;
-        FileOutputStream fos = null;
-
-        try {
-            fis = new FileInputStream(excelFile);
-            workbook = new XSSFWorkbook(fis);
-            sheet = workbook.getSheet(sheetName);
-
-            if (sheet == null) {
-                sheet = workbook.createSheet(sheetName);
-                // If the sheet is newly created, add headers
-                Row headerRow = sheet.createRow(0);
-                headerRow.createCell(SUBJECT_CODE_COLUMN).setCellValue("Subject Code");
-                headerRow.createCell(SUBJECT_NAME_COLUMN).setCellValue("Subject Name");
-            }
-
-            int nextRow = sheet.getLastRowNum() + 1;
-            Row row = sheet.createRow(nextRow);
-            row.createCell(SUBJECT_CODE_COLUMN).setCellValue(subject.getCode());
-            row.createCell(SUBJECT_NAME_COLUMN).setCellValue(subject.getName());
-
-            fos = new FileOutputStream(excelFile);
-            workbook.write(fos);
-
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Error adding subject to Excel: " + e.getMessage(), e);
-        } finally {
-            closeResources(fis, fos, workbook);
-        }
-    }
-
-    // Delete subject from Excel
-    public static void deleteSubjectFromExcel(Subject subject, String filePath, String sheetName) {
-        File excelFile = new File(filePath);
-        Workbook workbook = null;
-        FileInputStream fis = null;
-        FileOutputStream fos = null;
-
-        try {
-            fis = new FileInputStream(excelFile);
-            workbook = new XSSFWorkbook(fis);
-            Sheet sheet = workbook.getSheet(sheetName);
-
-            if (sheet == null) {
-                LOGGER.warning("Sheet " + sheetName + " not found in Excel file.");
-                return;
-            }
-
-            // Find the row to delete
-            int rowToDelete = -1;
-            for (int i = 1; i <= sheet.getLastRowNum(); i++) { // Start from index 1 to skip header row
-                Row row = sheet.getRow(i);
-                if (row != null) {
-                    String code = getCellValueAsString(row.getCell(SUBJECT_CODE_COLUMN));
-                    String name = getCellValueAsString(row.getCell(SUBJECT_NAME_COLUMN));
-
-                    if (subject.getCode().equals(code) && subject.getName().equals(name)) {
-                        rowToDelete = i;
-                        break;
-                    }
-                }
-            }
-
-            if (rowToDelete != -1) {
-                // Remove the row
-                sheet.removeRow(sheet.getRow(rowToDelete));
-
-                // Shift rows up to fill the gap
-                int lastRowNum = sheet.getLastRowNum();
-                if (rowToDelete < lastRowNum) {
-                    sheet.shiftRows(rowToDelete + 1, lastRowNum, -1);
-                }
-
-                fos = new FileOutputStream(excelFile);
-                workbook.write(fos);
-                LOGGER.info("Subject " + subject.getName() + " deleted from Excel.");
-            } else {
-                LOGGER.warning("Subject " + subject.getName() + " not found in Excel for deletion.");
-            }
-
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Error deleting subject from Excel: " + e.getMessage(), e);
-        } finally {
-            closeResources(fis, fos, workbook);
-        }
-    }
-
-    //Edit Subject Method
-    public static void editSubjectInExcel(Subject oldSubject, Subject newSubject, String filePath, String sheetName) {
-        File excelFile = new File(filePath);
-        Workbook workbook = null;
-        FileInputStream fis = null;
-        FileOutputStream fos = null;
-
-        try {
-            fis = new FileInputStream(excelFile);
-            workbook = new XSSFWorkbook(fis);
-            Sheet sheet = workbook.getSheet(sheetName);
-
-            if (sheet == null) {
-                LOGGER.warning("Sheet " + sheetName + " not found in Excel file.");
-                return;
-            }
-
-            // Find the row to edit
-            int rowToEdit = -1;
-            for (int i = 1; i <= sheet.getLastRowNum(); i++) { // Start from index 1 to skip header row
-                Row row = sheet.getRow(i);
-                if (row != null) {
-                    String code = getCellValueAsString(row.getCell(SUBJECT_CODE_COLUMN));
-                    String name = getCellValueAsString(row.getCell(SUBJECT_NAME_COLUMN));
-
-                    if (oldSubject.getCode().equals(code) && oldSubject.getName().equals(name)) {
-                        rowToEdit = i;
-                        break;
-                    }
-                }
-            }
-
-            if (rowToEdit != -1) {
-                // Update the row with new subject information
-                Row row = sheet.getRow(rowToEdit);
-                row.getCell(SUBJECT_CODE_COLUMN).setCellValue(newSubject.getCode());
-                row.getCell(SUBJECT_NAME_COLUMN).setCellValue(newSubject.getName());
-
-                fos = new FileOutputStream(excelFile);
-                workbook.write(fos);
-                LOGGER.info("Subject " + oldSubject.getName() + " updated to " + newSubject.getName() + " in Excel.");
-            } else {
-                LOGGER.warning("Subject " + oldSubject.getName() + " not found in Excel for editing.");
-            }
-
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Error editing subject in Excel: " + e.getMessage(), e);
-        } finally {
-            closeResources(fis, fos, workbook);
-        }
     }
 
     private static String getCellValueAsString(Cell cell) {
@@ -461,65 +161,136 @@ public class ExcelDatabase {
         }
     }
 
-    // Method to add the "Subjects" sheet if it doesn't exist.  Helpful for initial setup.
-    public static void addSubjectsSheetIfMissing() {
-        File excelFile = new File(FILE_PATH);
-        try (FileInputStream fis = new FileInputStream(excelFile);
-             Workbook workbook = new XSSFWorkbook(fis)) {
+    public static void addSubjectToExcel(Subject subject, String filePath, String sheetName) {
+        File excelFile = new File(filePath);
+        Workbook workbook = null;
+        Sheet sheet = null;
+        FileInputStream fis = null;
+        FileOutputStream fos = null;
 
-            if (workbook.getSheet(SUBJECT_SHEET_NAME) == null) {
-                Sheet subjectSheet = workbook.createSheet(SUBJECT_SHEET_NAME);
+        try {
+            fis = new FileInputStream(excelFile);
+            workbook = new XSSFWorkbook(fis);
+            sheet = workbook.getSheet(sheetName);
 
-                // Create header row
-                Row headerRow = subjectSheet.createRow(0);
+            if (sheet == null) {
+                sheet = workbook.createSheet(sheetName);
+                Row headerRow = sheet.createRow(0);
                 headerRow.createCell(SUBJECT_CODE_COLUMN).setCellValue("Subject Code");
                 headerRow.createCell(SUBJECT_NAME_COLUMN).setCellValue("Subject Name");
-
-                // Write the changes back to the Excel file
-                try (FileOutputStream fileOut = new FileOutputStream(excelFile)) {
-                    workbook.write(fileOut);
-                    LOGGER.info("Added 'Subjects' sheet to " + FILE_PATH);
-                } catch (IOException e) {
-                    LOGGER.log(Level.SEVERE, "Error writing to Excel file: " + e.getMessage(), e);
-                }
-            } else {
-                LOGGER.info("Sheet '" + SUBJECT_SHEET_NAME + "' already exists.");
             }
 
+            int nextRow = sheet.getLastRowNum() + 1;
+            Row row = sheet.createRow(nextRow);
+            row.createCell(SUBJECT_CODE_COLUMN).setCellValue(subject.getCode());
+            row.createCell(SUBJECT_NAME_COLUMN).setCellValue(subject.getName());
+
+            fos = new FileOutputStream(excelFile);
+            workbook.write(fos);
+
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Error loading Excel file: " + e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, "Error adding subject to Excel: " + e.getMessage(), e);
+        } finally {
+            closeResources(fis, fos, workbook);
         }
     }
-    // Method to add the "Tuition" sheet if it doesn't exist.  Helpful for initial setup.
-    public static void addTuitionSheetIfMissing() {
-        File excelFile = new File(FILE_PATH);
-        try (FileInputStream fis = new FileInputStream(excelFile);
-             Workbook workbook = new XSSFWorkbook(fis)) {
 
-            if (workbook.getSheet(TUITION_SHEET_NAME) == null) {
-                Sheet subjectSheet = workbook.createSheet(TUITION_SHEET_NAME);
+    public static void deleteSubjectFromExcel(Subject subject, String filePath, String sheetName) {
+        File excelFile = new File(filePath);
+        Workbook workbook = null;
+        FileInputStream fis = null;
+        FileOutputStream fos = null;
 
-                // Create header row
-                Row headerRow = subjectSheet.createRow(0);
-                headerRow.createCell(TUITION_SEMESTER_COLUMN).setCellValue("Semester");
-                headerRow.createCell(TUITION_AMOUNT_DUE_COLUMN).setCellValue("Amount Due");
-                headerRow.createCell(TUITION_AMOUNT_PAID_COLUMN).setCellValue("Amount Paid");
-                headerRow.createCell(TUITION_STATUS_COLUMN).setCellValue("Status");
-                headerRow.createCell(TUITION_STUDENT_ID_COLUMN).setCellValue("Student ID");
+        try {
+            fis = new FileInputStream(excelFile);
+            workbook = new XSSFWorkbook(fis);
+            Sheet sheet = workbook.getSheet(sheetName);
 
-                // Write the changes back to the Excel file
-                try (FileOutputStream fileOut = new FileOutputStream(excelFile)) {
-                    workbook.write(fileOut);
-                    LOGGER.info("Added 'Tuition' sheet to " + FILE_PATH);
-                } catch (IOException e) {
-                    LOGGER.log(Level.SEVERE, "Error writing to Excel file: " + e.getMessage(), e);
+            if (sheet == null) {
+                LOGGER.warning("Sheet " + sheetName + " not found in Excel file.");
+                return;
+            }
+
+            int rowToDelete = -1;
+            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+                Row row = sheet.getRow(i);
+                if (row != null) {
+                    String code = getCellValueAsString(row.getCell(SUBJECT_CODE_COLUMN));
+                    String name = getCellValueAsString(row.getCell(SUBJECT_NAME_COLUMN));
+
+                    if (subject.getCode().equals(code) && subject.getName().equals(name)) {
+                        rowToDelete = i;
+                        break;
+                    }
                 }
+            }
+
+            if (rowToDelete != -1) {
+                sheet.removeRow(sheet.getRow(rowToDelete));
+                if (rowToDelete < sheet.getLastRowNum()) {
+                    sheet.shiftRows(rowToDelete + 1, sheet.getLastRowNum(), -1);
+                }
+
+                fos = new FileOutputStream(excelFile);
+                workbook.write(fos);
+                LOGGER.info("Subject " + subject.getName() + " deleted from Excel.");
             } else {
-                LOGGER.info("Sheet '" + TUITION_SHEET_NAME + "' already exists.");
+                LOGGER.warning("Subject " + subject.getName() + " not found in Excel for deletion.");
             }
 
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Error loading Excel file: " + e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, "Error deleting subject from Excel: " + e.getMessage(), e);
+        } finally {
+            closeResources(fis, fos, workbook);
+        }
+    }
+
+    public static void editSubjectInExcel(Subject oldSubject, Subject newSubject, String filePath, String sheetName) {
+        File excelFile = new File(filePath);
+        Workbook workbook = null;
+        FileInputStream fis = null;
+        FileOutputStream fos = null;
+
+        try {
+            fis = new FileInputStream(excelFile);
+            workbook = new XSSFWorkbook(fis);
+            Sheet sheet = workbook.getSheet(sheetName);
+
+            if (sheet == null) {
+                LOGGER.warning("Sheet " + sheetName + " not found in Excel file.");
+                return;
+            }
+
+            int rowToEdit = -1;
+            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+                Row row = sheet.getRow(i);
+                if (row != null) {
+                    String code = getCellValueAsString(row.getCell(SUBJECT_CODE_COLUMN));
+                    String name = getCellValueAsString(row.getCell(SUBJECT_NAME_COLUMN));
+
+                    if (oldSubject.getCode().equals(code) && oldSubject.getName().equals(name)) {
+                        rowToEdit = i;
+                        break;
+                    }
+                }
+            }
+
+            if (rowToEdit != -1) {
+                Row row = sheet.getRow(rowToEdit);
+                row.getCell(SUBJECT_CODE_COLUMN).setCellValue(newSubject.getCode());
+                row.getCell(SUBJECT_NAME_COLUMN).setCellValue(newSubject.getName());
+
+                fos = new FileOutputStream(excelFile);
+                workbook.write(fos);
+                LOGGER.info("Subject " + oldSubject.getName() + " updated to " + newSubject.getName() + " in Excel.");
+            } else {
+                LOGGER.warning("Subject " + oldSubject.getName() + " not found in Excel for editing.");
+            }
+
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Error editing subject in Excel: " + e.getMessage(), e);
+        } finally {
+            closeResources(fis, fos, workbook);
         }
     }
 }

@@ -23,7 +23,7 @@ public class ProfileController {
         this.loggedInStudentId = studentId;
         loadStudentData();
     }
-//
+
     private void loadStudentData() {
         Student student = StudentDatabase.getStudentById(loggedInStudentId);
         if (student != null) {
