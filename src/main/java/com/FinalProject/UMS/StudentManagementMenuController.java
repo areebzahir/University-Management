@@ -23,14 +23,7 @@ public class StudentManagementMenuController {
 
     public void setLoggedInStudentId(String studentId) {
         this.loggedInStudentId = studentId;
-        // You can also load the student's name and display a personalized welcome message
-        // For example:
-        // Student student = ExcelDataManager.getStudentById(studentId);
-        // if (student != null) {
-        //     welcomeText.setText("Welcome, " + student.getName() + "!");
-        // } else {
-        //     welcomeText.setText("Welcome!");
-        // }
+
     }
 
     // Handles the button click to open the second page (Student Information)

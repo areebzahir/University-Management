@@ -1,5 +1,6 @@
 package com.FinalProject.UMS;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -9,16 +10,15 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 import javafx.scene.Node;
-import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-//
+
 public class LoginController {
-    // FXML elements representing the input fields and buttons in the login form
     @FXML
     private TextField usernameField;
     @FXML
@@ -53,7 +53,7 @@ public class LoginController {
         LOGGER.log(Level.INFO, "Attempting login for user: {0}", username); // Log the login attempt
 
         // Check for admin login first (hardcoded check for admin credentials)
-        if ("admin@uoguelph.ca".equals(username) && "admin123".equals(password)) {
+        if ("a".equals(username) && "a".equals(password)) {
             LOGGER.info("Admin login successful"); // Log admin login success
             showPopup("Login Successful", "Welcome, Admin!", Alert.AlertType.INFORMATION); // Show success popup
             navigateToAdminDashboard(event); // Navigate to the admin dashboard
@@ -135,5 +135,27 @@ public class LoginController {
         alert.setHeaderText(null); // Set header text to null
         alert.setContentText(message); // Set the content message of the alert
         alert.showAndWait(); // Display the alert and wait for user interaction
+    }
+
+    // New method to navigate to the profile view and pass the student data
+    @FXML
+    private void navigateToProfileView(String studentId, ActionEvent event) {
+        LOGGER.log(Level.INFO, "Navigating to ProfileView for student id: {0}", studentId);
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("profile-view.fxml"));
+            Parent root = loader.load();
+
+            ProfileController profileController = loader.getController();
+            profileController.setLoggedInStudentId(studentId);
+
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Student Profile");
+            stage.show();
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Error loading profile FXML: " + e.getMessage(), e);
+            showPopup("Error", "Failed to load profile FXML.", Alert.AlertType.ERROR);
+        }
     }
 }

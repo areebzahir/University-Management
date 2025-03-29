@@ -15,9 +15,7 @@ public class StudentDatabase {
     private static final String EXCEL_FILE_PATH = "UMS_Data.xlsx"; // Replace with your actual file path
     private static final String STUDENT_SHEET_NAME = "Students";
     private static final String COURSE_SHEET_NAME = "Courses";
-    private static final String TUITION_SHEET_NAME = "Tuition";
 
-    // Method to read tuition data from Excel
 
 
     // Method to read student data from Excel

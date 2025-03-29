@@ -1,5 +1,5 @@
 package com.FinalProject.UMS;
-//
+
 public class Student {
     private String studentId;
     private String name;
@@ -42,4 +42,20 @@ public class Student {
     public String getThesisTitle() { return thesisTitle; }
     public String getProgress() { return progress; }
     public String getPassword() { return password; }
+
+    // Setters for email, address, and telephone
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public void setTelephone(String telephone) {
+        this.telephone = telephone;
+    }
+    public void setProfilePhoto(String profilePhoto) {
+        this.profilePhoto = profilePhoto;
+    }
 }
