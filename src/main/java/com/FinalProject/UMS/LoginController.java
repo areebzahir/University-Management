@@ -5,15 +5,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -47,8 +43,11 @@ public class LoginController {
     // Method to handle login logic when the login button is clicked
     @FXML
     private void handleLogin(ActionEvent event) {
-        String username = usernameField.getText().trim(); // Get the entered username
-        String password = passwordField.getText().trim(); // Get the entered password
+//        String username = usernameField.getText().trim(); // Get the entered username
+//        String password = passwordField.getText().trim(); // Get the entered password
+
+        String username = "S20250003";
+        String password = "default123";
 
         LOGGER.log(Level.INFO, "Attempting login for user: {0}", username); // Log the login attempt
 
@@ -74,6 +73,12 @@ public class LoginController {
             if (user.authenticate(password)) { // If password is correct
                 LOGGER.log(Level.INFO, "User {0} authenticated successfully", username); // Log successful authentication
                 showPopup("Login Successful", "Welcome, " + username + "!", Alert.AlertType.INFORMATION); // Show success popup
+
+                // Store the logged-in user in the global state
+                GlobalState.getInstance().setLoggedInUser(user);
+                System.out.println("User set in GlobalState: " + GlobalState.getInstance().getLoggedInUser()); // Debug statement
+
+                // After successful auth:
                 navigateToDashboard(user, event); // Navigate to the user dashboard
             } else {
                 LOGGER.warning("Incorrect password for user: " + username); // Log incorrect password attempt
@@ -98,6 +103,10 @@ public class LoginController {
             String userRole = determineUserRole(user.getId()); // Determine the role of the user (e.g., admin, faculty)
             menuController.setUserRole(userRole); // Set the user role in the menu controller
 
+            // Pass the logged-in user to the MenuController
+            menuController.setLoggedInUser(GlobalState.getInstance().getLoggedInUser());
+            System.out.println("Logged in user: " + GlobalState.getInstance().getLoggedInUser());//DEBUG
+
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root)); // Set the new scene for the stage
         } catch (IOException e) {
@@ -106,7 +115,7 @@ public class LoginController {
         }
     }
 
-    // Method to navigate to the admin dashboard after successful admin logjin
+    // Method to navigate to the admin dashboard after successful admin login
     private void navigateToAdminDashboard(ActionEvent event) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("menu-view.fxml"));
@@ -143,6 +152,7 @@ public class LoginController {
         LOGGER.log(Level.INFO, "Navigating to ProfileView for student id: {0}", studentId);
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("profile-view.fxml"));
+
             Parent root = loader.load();
 
             ProfileController profileController = loader.getController();

@@ -32,6 +32,10 @@ public class StudentManagementMenuController {
         loadPage("student-info-view.fxml", "Student Information");
     }
 
+    @FXML
+    protected void onOpenAdminDashboardButtonClick() {
+        loadPage("admin-student-view.fxml", "Admin Dashboard");
+    }
     // Handles the button click to open the profile view
     @FXML
     protected void onOpenProfileButtonClick() {
@@ -54,10 +58,6 @@ public class StudentManagementMenuController {
     @FXML
     protected void onOpenTuitionButtonClick() { loadPage("tuition-view.fxml", "Tuition"); }
 
-    @FXML
-    protected void onOpenAdminDashboardButtonClick() {
-        loadPage("admin-student-view.fxml", "Admin Dashboard");
-    }
 
     // Handles the back button action to go back to the main menu
     @FXML
@@ -83,10 +83,7 @@ public class StudentManagementMenuController {
             Object controller = loader.getController();
             if (controller instanceof ProfileController) {
                 ((ProfileController) controller).setLoggedInStudentId(loggedInStudentId);
-            } else if (controller instanceof CourseController) {
-                ((CourseController) controller).setLoggedInStudentId(loggedInStudentId);
             }
-
 
             Stage stage = (Stage) welcomeText.getScene().getWindow();
             Scene scene = new Scene(root, 1920, 1080); // Set scene size to 1920, 1080

@@ -1,71 +1,95 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.cell.PropertyValueFactory?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.FinalProject.UMS.CourseController"
-            prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #f4f4f4;">
-    <children>
-        <VBox alignment="CENTER" spacing="10.0" AnchorPane.topAnchor="10.0" AnchorPane.bottomAnchor="10.0"
-              AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
-            <!-- Header -->
-            <Label text="Enrolled Courses" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;">
-                <font>
-                    <Font name="System Bold" size="24" />
-                </font>
-            </Label>
-
-            <!-- TableView for Enrolled Courses -->
-            <TableView fx:id="coursesTable" prefHeight="300.0" prefWidth="550.0" style="-fx-background-color: white; -fx-border-color: #bdc3c7; -fx-border-width: 1;">
-                <columns>
-                    <TableColumn fx:id="studentIdColumn" text="Student ID" prefWidth="100">
-                        <cellValueFactory>
-                            <PropertyValueFactory property="studentId" />
-                        </cellValueFactory>
-                    </TableColumn>
-                    <TableColumn fx:id="courseCodeColumn" text="Course Code" prefWidth="100">
-                        <cellValueFactory>
-                            <PropertyValueFactory property="courseCode" />
-                        </cellValueFactory>
-                    </TableColumn>
-                    <TableColumn fx:id="courseNameColumn" text="Course Name" prefWidth="200">
-                        <cellValueFactory>
-                            <PropertyValueFactory property="courseName" />
-                        </cellValueFactory>
-                    </TableColumn>
-                    <TableColumn fx:id="semesterColumn" text="Semester" prefWidth="150">
-                        <cellValueFactory>
-                            <PropertyValueFactory property="semester" />
-                        </cellValueFactory>
-                    </TableColumn>
-                    <TableColumn fx:id="academicLevelColumn" text="Academic Level" prefWidth="150">
-                        <cellValueFactory>
-                            <PropertyValueFactory property="academicLevel" />
-                        </cellValueFactory>
-                    </TableColumn>
-                    <TableColumn fx:id="currentSemesterColumn" text="Current Semester" prefWidth="150">
-                        <cellValueFactory>
-                            <PropertyValueFactory property="currentSemester" />
-                        </cellValueFactory>
-                    </TableColumn>
-                </columns>
-            </TableView>
-
-            <!-- Return Button -->
-            <Button text="Return to Previous Page" onAction="#onReturnButtonClick" style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 5;">
-                <padding>
-                    <Insets top="5.0" bottom="5.0" left="10.0" right="10.0" />
-                </padding>
-            </Button>
+<BorderPane prefWidth="800.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.FinalProject.UMS.CoursesController">
+    <top>
+        <VBox fx:id="headerContainer" spacing="10.0" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 5);">
+            <children>
+                <HBox alignment="CENTER_LEFT" spacing="15.0">
+                    <children>
+                        <VBox spacing="5.0">
+                            <children>
+                                <Label fx:id="studentNameLabel" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Student Name" />
+                                <HBox spacing="15.0">
+                                    <children>
+                                        <Label fx:id="studentIdLabel" style="-fx-text-fill: #34495e; -fx-font-size: 14px;" text="ID: 12345" />
+                                        <Label fx:id="academicLevelLabel" style="-fx-text-fill: #34495e; -fx-font-size: 14px;" text="Undergraduate" />
+                                        <Label fx:id="semesterLabel" style="-fx-text-fill: #34495e; -fx-font-size: 14px;" text="Spring 2025" />
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
+                    </children>
+                </HBox>
+            </children>
+            <padding>
+                <Insets bottom="15.0" left="20.0" right="20.0" top="15.0" />
+            </padding>
         </VBox>
-    </children>
-</AnchorPane>
+    </top>
+
+    <center>
+        <StackPane>
+            <children>
+                <VBox fx:id="mainContainer" spacing="15.0" style="-fx-background-color: linear-gradient(to bottom, #f5f7fa, #c3cfe2);">
+                    <children>
+                        <HBox alignment="CENTER_LEFT" spacing="10.0" style="-fx-background-color: rgba(255, 255, 255, 0.7); -fx-background-radius: 5px;">
+                            <children>
+                                <Label style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Registered Courses" />
+                                <Label fx:id="totalCoursesLabel" style="-fx-text-fill: #7f8c8d; -fx-font-style: italic;" text="Total: 0 courses">
+                                    <HBox.margin>
+                                        <Insets left="15.0" />
+                                    </HBox.margin>
+                                </Label>
+                                <Region HBox.hgrow="ALWAYS" />
+                                <Button mnemonicParsing="false" onAction="#refreshCourses" style="-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-background-radius: 5;" text="Refresh" />
+                            </children>
+                            <padding>
+                                <Insets bottom="8.0" left="12.0" right="12.0" top="8.0" />
+                            </padding>
+                        </HBox>
+
+                        <TableView fx:id="coursesTableView" style="-fx-background-color: white; -fx-background-radius: 8px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 8, 0, 0, 0);" VBox.vgrow="ALWAYS">
+                            <columns>
+                                <TableColumn fx:id="codeColumn" prefWidth="120.0" text="Course Code" />
+                                <TableColumn fx:id="nameColumn" prefWidth="300.0" text="Course Name" />
+                                <TableColumn fx:id="departmentColumn" prefWidth="200.0" text="Department" />
+                                <TableColumn fx:id="creditsColumn" prefWidth="80.0" text="Credits" />
+                            </columns>
+                            <placeholder>
+                                <Label text="No courses registered" />
+                            </placeholder>
+                        </TableView>
+
+                        <Label style="-fx-text-fill: #7f8c8d; -fx-font-style: italic; -fx-font-size: 12px;" text="Double-click on a course to view details" />
+                    </children>
+                    <padding>
+                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                    </padding>
+                </VBox>
+
+                <ProgressIndicator fx:id="loadingIndicator" maxHeight="80.0" maxWidth="80.0" style="-fx-progress-color: #3498db;" visible="false" />
+            </children>
+        </StackPane>
+    </center>
+
+    <bottom>
+        <HBox alignment="CENTER_RIGHT" spacing="15.0" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 5);">
+            <children>
+                <Label fx:id="lastUpdatedLabel" style="-fx-text-fill: #95a5a6; -fx-font-style: italic; -fx-font-size: 12px;" text="Last updated: Mar 29, 2025 12:00 PM" HBox.hgrow="ALWAYS" />
+                <HBox alignment="CENTER_RIGHT" spacing="10.0">
+                    <children>
+                        <Button fx:id="returnButton" mnemonicParsing="false" onAction="#handleReturnButton" style="-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-background-radius: 5;" text="Back to Dashboard" />
+                        <Button fx:id="printButton" mnemonicParsing="false" onAction="#handlePrintButton" style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-background-radius: 5;" text="Print Course List" />
+                    </children>
+                </HBox>
+            </children>
+            <padding>
+                <Insets bottom="15.0" left="20.0" right="20.0" top="15.0" />
+            </padding>
+        </HBox>
+    </bottom>
+</BorderPane>

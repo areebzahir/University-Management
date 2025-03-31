@@ -41,6 +41,8 @@ public class MenuController {
 
     private String userRole;
     private String loggedInStudentId;
+    private User loggedInUser;
+
 
     public void initialize() {
         // Initialization code, if needed
@@ -52,6 +54,21 @@ public class MenuController {
     }
     public void setLoggedInStudentId(String studentId) { // Add this method
         this.loggedInStudentId = studentId;
+    }
+
+    // Add this method to receive the logged-in user
+    public void setLoggedInUser(User user) {
+        this.loggedInUser = user;
+        LOGGER.log(Level.INFO, "Logged in user received in MenuController: {0}", user.getId());
+
+        //  Determine if the user is a student and get their student ID
+        if (user.getStudentId() != null && !user.getStudentId().isEmpty()) {
+            loggedInStudentId = user.getStudentId();
+            LOGGER.log(Level.INFO, "User is a student with ID: {0}", loggedInStudentId);
+        } else {
+            LOGGER.warning("User is not a student or student ID is missing.");
+            loggedInStudentId = null; // Or handle the non-student case as needed
+        }
     }
 
 
@@ -113,7 +130,7 @@ public class MenuController {
 
     @FXML
     private void handleAssignFaculty(ActionEvent event) {
-        loadScene("assignFaculty.fxml", "Assign Faculty", event);
+        loadScene("assignFaculty.fxml", "Assign Faculty Courses", event);
     }
 
     @FXML
@@ -183,12 +200,26 @@ public class MenuController {
 
     @FXML
     private void handleManageEventRegistrations(ActionEvent event) {
-        loadScene("manageEventRegistrations.fxml", "Manage Event Registrations", event);
+        loadScene("manageEventRegistrations.fxml", "ManageEventRegistrations", event);
     }
 
     @FXML
     private void handleViewProfile(ActionEvent event) {
-        loadScene("viewProfile.fxml", "View Profile", event);
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("profile-view.fxml"));
+            Parent root = loader.load();
+            //ProfileController profileController = loader.getController();
+            //profileController.setLoggedInStudentId(loggedInUser.getId()); // Remove this line!!
+
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("User Profile");
+            stage.show();
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Error loading profile FXML: " + e.getMessage(), e);
+            showError("Error", "Failed to load profile FXML.");
+        }
     }
 
     @FXML

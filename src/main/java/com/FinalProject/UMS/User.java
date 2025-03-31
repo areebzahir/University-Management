@@ -6,11 +6,25 @@ public class User {
     private String email;      // User's email address
     private String password;   // User's password (should be securely stored in a real application)
 
-    // Constructor to initialize user attributes
-    public User(String id, String email, String password) {
+    private String name;
+    private String address;
+    private String telephone;
+    private String academicLevel;
+    private String currentSemester;
+    private String profilePhoto;
+    private String subjectsRegistered;
+    private String thesisTitle;
+    private String progress;
+
+    public User(String id, String email, String password) { //Overload the constructor
         this.id = id;
         this.email = email;
         this.password = password;
+
+    }
+
+    public String getStudentId() {
+        return this.id;
     }
 
     // Getter method to retrieve the user's ID
@@ -26,6 +40,10 @@ public class User {
     // Getter method to retrieve the user's password
     public String getPassword() {
         return password;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     // Method to authenticate the user by comparing passwords
@@ -44,5 +62,77 @@ public class User {
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' + // Note: Password should not be displayed in real-world scenarios
                 '}';
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getTelephone() {
+        return telephone;
+    }
+
+    public void setTelephone(String telephone) {
+        this.telephone = telephone;
+    }
+
+    public String getAcademicLevel() {
+        return academicLevel;
+    }
+
+    public void setAcademicLevel(String academicLevel) {
+        this.academicLevel = academicLevel;
+    }
+
+    public String getCurrentSemester() {
+        return currentSemester;
+    }
+
+    public void setCurrentSemester(String currentSemester) {
+        this.currentSemester = currentSemester;
+    }
+
+    public String getProfilePhoto() {
+        return profilePhoto;
+    }
+
+    public void setProfilePhoto(String profilePhoto) {
+        this.profilePhoto = profilePhoto;
+    }
+
+    public String getSubjectsRegistered() {
+        return subjectsRegistered;
+    }
+
+    public void setSubjectsRegistered(String subjectsRegistered) {
+        this.subjectsRegistered = subjectsRegistered;
+    }
+
+    public String getThesisTitle() {
+        return thesisTitle;
+    }
+
+    public void setThesisTitle(String thesisTitle) {
+        this.thesisTitle = thesisTitle;
+    }
+
+    public String getProgress() {
+        return progress;
+    }
+
+    public void setProgress(String progress) {
+        this.progress = progress;
     }
 }
