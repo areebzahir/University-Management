@@ -77,6 +77,34 @@
                 style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 15; -fx-background-radius: 5;"/>
         <Button text="View Profile" onAction="#viewProfile"
                 style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 15; -fx-background-radius: 5;"/>
-        <Button fx:id="returnButton" text="Return to Dashboard" style="-fx-background-color: #3238db; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 15;" onAction="#handleReturnToDashboard"/>
+        <Button fx:id="returnButton" text="Return to Dashboard"
+                style="-fx-background-color: #3238db; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 15; -fx-background-radius: 5;"
+                onAction="#handleReturnToDashboard"
+
+
+
+        />
+
+
+    </HBox>
+
+    <!-- New Feature Buttons -->
+    <HBox spacing="10" alignment="CENTER">
+        <Text text="Student Management Features:" style="-fx-fill: #2c3e50; -fx-font-weight: bold;">
+            <font>
+                <Font name="Arial" size="14"/>
+            </font>
+        </Text>
+    </HBox>
+
+
+    <!-- Add this button to your existing HBox in the Student Management Features section -->
+    <HBox spacing="10" alignment="CENTER">
+        <Button fx:id="tuitionManagementButton" text="Manage Tuition" onAction="#handleTuitionManagement"
+                style="-fx-background-color: #2980b9; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 15; -fx-background-radius: 5;"/>
+        <Button text="Academic Progress" onAction="#handleAcademicProgress"
+                style="-fx-background-color: #9b59b6; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 15; -fx-background-radius: 5;"/>
+        <Button fx:id="courseRegistrationButton" text="Register for Courses" onAction="#handleCourseRegistration"
+                style="-fx-background-color: #16a085; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 15; -fx-background-radius: 5;"/>
     </HBox>
 </VBox>

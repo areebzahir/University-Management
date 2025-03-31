@@ -333,8 +333,90 @@ public class CoursesController implements Initializable {
         alert.setContentText("Printing course list...");
         alert.showAndWait();
     }
+    // Add these to your CoursesController.java or create separate files
+
+    // Model for academic progress by semester
+    public static class AcademicProgress {
+        private final String semester;
+        private final ObservableList<CourseGrade> courses;
+        private final double semesterGPA;
+        private final int creditsEarned;
+        private final int creditsAttempted;
+
+        public AcademicProgress(String semester, ObservableList<CourseGrade> courses,
+                                double semesterGPA, int creditsEarned, int creditsAttempted) {
+            this.semester = semester;
+            this.courses = courses;
+            this.semesterGPA = semesterGPA;
+            this.creditsEarned = creditsEarned;
+            this.creditsAttempted = creditsAttempted;
+        }
+
+        // Getters
+        public String getSemester() { return semester; }
+        public ObservableList<CourseGrade> getCourses() { return courses; }
+        public double getSemesterGPA() { return semesterGPA; }
+        public int getCreditsEarned() { return creditsEarned; }
+        public int getCreditsAttempted() { return creditsAttempted; }
+    }
+
+    // Model for course grades
+    public static class CourseGrade {
+        private final String courseCode;
+        private final String courseName;
+        private final int credits;
+        private final String grade;
+        private final boolean passed;
+
+        public CourseGrade(String courseCode, String courseName, int credits, String grade) {
+            this.courseCode = courseCode;
+            this.courseName = courseName;
+            this.credits = credits;
+            this.grade = grade;
+            this.passed = calculatePassed(grade);
+        }
+
+        private boolean calculatePassed(String grade) {
+            // Define which grades are passing
+            return !(grade.equals("F") || grade.equals("W") || grade.equals("U"));
+        }
+
+        // Getters
+        public String getCourseCode() { return courseCode; }
+        public String getCourseName() { return courseName; }
+        public int getCredits() { return credits; }
+        public String getGrade() { return grade; }
+        public boolean isPassed() { return passed; }
+    }
+
+    // Model for graduation progress
+    public static class GraduationProgress {
+        private final int totalCreditsEarned;
+        private final int totalCreditsRequired;
+        private final double cumulativeGPA;
+        private final Map<String, Boolean> requirements; // e.g., "Core Courses", "Electives", etc.
+
+        public GraduationProgress(int totalCreditsEarned, int totalCreditsRequired,
+                                  double cumulativeGPA, Map<String, Boolean> requirements) {
+            this.totalCreditsEarned = totalCreditsEarned;
+            this.totalCreditsRequired = totalCreditsRequired;
+            this.cumulativeGPA = cumulativeGPA;
+            this.requirements = requirements;
+        }
+
+        // Getters
+        public int getTotalCreditsEarned() { return totalCreditsEarned; }
+        public int getTotalCreditsRequired() { return totalCreditsRequired; }
+        public double getCumulativeGPA() { return cumulativeGPA; }
+        public Map<String, Boolean> getRequirements() { return requirements; }
+
+        public double getProgressPercentage() {
+            return (double) totalCreditsEarned / totalCreditsRequired * 100;
+        }
+    }
 
     /**
+     *
      * Handle return button click
      */
     @FXML

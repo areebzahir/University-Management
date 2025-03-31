@@ -254,6 +254,213 @@ public class ExcelDatabase {
             LOGGER.info("New student " + student.getName() + " added to Excel database.");
         }
     }
+    public static boolean registerStudentForCourse(String studentId, String courseCode) {
+        // Validate inputs
+        if (studentId == null || studentId.isEmpty() || courseCode == null || courseCode.isEmpty()) {
+            LOGGER.log(Level.WARNING, "Invalid student ID or course code provided");
+            return false;
+        }
+
+        // Check if the course exists
+        boolean courseExists = checkIfCourseExists(courseCode);
+        if (!courseExists) {
+            LOGGER.log(Level.WARNING, "Course " + courseCode + " does not exist");
+            return false;
+        }
+
+        // Load current users
+        Map<String, User> users = loadUsers();
+        User student = null;
+
+        // Find the student
+        for (User user : users.values()) {
+            if (user.getId() != null && user.getId().equals(studentId)) {
+                student = user;
+                break;
+            }
+        }
+
+        if (student == null) {
+            LOGGER.log(Level.WARNING, "Student with ID " + studentId + " not found");
+            return false;
+        }
+
+        // Get current subjects registered
+        String currentSubjects = student.getSubjectsRegistered();
+
+        // Check if already registered for this course
+        if (currentSubjects != null && !currentSubjects.isEmpty()) {
+            String[] subjectArray = currentSubjects.split(",");
+            for (String subject : subjectArray) {
+                if (subject.trim().equals(courseCode)) {
+                    LOGGER.log(Level.WARNING, "Student already registered for course " + courseCode);
+                    return false;
+                }
+            }
+
+            // Add the new course to existing courses
+            currentSubjects = currentSubjects.trim() + "," + courseCode;
+        } else {
+            // First course for this student
+            currentSubjects = courseCode;
+        }
+
+        // Update the subjects registered
+        student.setSubjectsRegistered(currentSubjects);
+
+        // Save the updated user information back to Excel
+        saveUser(student);
+
+        LOGGER.log(Level.INFO, "Student " + studentId + " successfully registered for course " + courseCode);
+        return true;
+    }
+
+    /**
+     * Checks if a course exists in the subjects sheet.
+     *
+     * @param courseCode The course code to check
+     * @return true if the course exists, false otherwise
+     */
+    private static boolean checkIfCourseExists(String courseCode) {
+        File excelFile = new File(FILE_PATH);
+        try (FileInputStream fis = new FileInputStream(excelFile);
+             Workbook workbook = new XSSFWorkbook(fis)) {
+
+            Sheet subjectSheet = workbook.getSheet(SUBJECT_SHEET_NAME);
+            if (subjectSheet == null) {
+                LOGGER.log(Level.SEVERE, "Subject sheet not found");
+                return false;
+            }
+
+            Iterator<Row> rowIterator = subjectSheet.rowIterator();
+            // Skip header if exists
+            if (HAS_SUBJECT_HEADER_ROW && rowIterator.hasNext()) {
+                rowIterator.next();
+            }
+
+            while (rowIterator.hasNext()) {
+                Row row = rowIterator.next();
+                Cell codeCell = row.getCell(SUBJECT_CODE_COLUMN);
+
+                if (codeCell != null) {
+                    String code = getCellValueAsString(codeCell);
+                    if (code != null && code.equals(courseCode)) {
+                        return true;
+                    }
+                }
+            }
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Error checking if course exists: " + e.getMessage(), e);
+        }
+
+        return false;
+    }
+
+    /**
+     * Unregisters a student from a course and updates the Excel database.
+     *
+     * @param studentId The ID of the student to unregister
+     * @param courseCode The course code to unregister the student from
+     * @return true if unregistration was successful, false otherwise
+     */
+    public static boolean unregisterStudentFromCourse(String studentId, String courseCode) {
+        // Validate inputs
+        if (studentId == null || studentId.isEmpty() || courseCode == null || courseCode.isEmpty()) {
+            LOGGER.log(Level.WARNING, "Invalid student ID or course code provided");
+            return false;
+        }
+
+        // Load current users
+        Map<String, User> users = loadUsers();
+        User student = null;
+
+        // Find the student
+        for (User user : users.values()) {
+            if (user.getId() != null && user.getId().equals(studentId)) {
+                student = user;
+                break;
+            }
+        }
+
+        if (student == null) {
+            LOGGER.log(Level.WARNING, "Student with ID " + studentId + " not found");
+            return false;
+        }
+
+        // Get current subjects registered
+        String currentSubjects = student.getSubjectsRegistered();
+
+        if (currentSubjects == null || currentSubjects.isEmpty()) {
+            LOGGER.log(Level.WARNING, "Student not registered for any courses");
+            return false;
+        }
+
+        // Check if registered for this course and remove it
+        String[] subjectArray = currentSubjects.split(",");
+        StringBuilder updatedSubjects = new StringBuilder();
+        boolean courseFound = false;
+
+        for (String subject : subjectArray) {
+            String trimmedSubject = subject.trim();
+            if (!trimmedSubject.equals(courseCode)) {
+                // Keep this course in the list
+                if (updatedSubjects.length() > 0) {
+                    updatedSubjects.append(",");
+                }
+                updatedSubjects.append(trimmedSubject);
+            } else {
+                courseFound = true;
+            }
+        }
+
+        if (!courseFound) {
+            LOGGER.log(Level.WARNING, "Student not registered for course " + courseCode);
+            return false;
+        }
+
+        // Update the subjects registered
+        student.setSubjectsRegistered(updatedSubjects.toString());
+
+        // Save the updated user information back to Excel
+        saveUser(student);
+
+        LOGGER.log(Level.INFO, "Student " + studentId + " successfully unregistered from course " + courseCode);
+        return true;
+    }
+
+    /**
+     * Gets all courses a student is currently registered for.
+     *
+     * @param studentId The ID of the student
+     * @return String array of course codes, or null if student not found
+     */
+    public static String[] getStudentCourses(String studentId) {
+        if (studentId == null || studentId.isEmpty()) {
+            return null;
+        }
+
+        // Load current users
+        Map<String, User> users = loadUsers();
+
+        // Find the student
+        for (User user : users.values()) {
+            if (user.getId() != null && user.getId().equals(studentId)) {
+                String courses = user.getSubjectsRegistered();
+                if (courses == null || courses.isEmpty()) {
+                    return new String[0];
+                }
+
+                String[] courseArray = courses.split(",");
+                for (int i = 0; i < courseArray.length; i++) {
+                    courseArray[i] = courseArray[i].trim();
+                }
+
+                return courseArray;
+            }
+        }
+
+        return null;
+    }
 
     // Improve the deleteStudentFromExcel method for better integration
     public static boolean deleteStudent(String studentId) {
