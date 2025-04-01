@@ -82,7 +82,8 @@
                 <Label fx:id="lastUpdatedLabel" style="-fx-text-fill: #95a5a6; -fx-font-style: italic; -fx-font-size: 12px;" text="Last updated: Mar 29, 2025 12:00 PM" HBox.hgrow="ALWAYS" />
                 <HBox alignment="CENTER_RIGHT" spacing="10.0">
                     <children>
-                        <Button fx:id="returnButton" mnemonicParsing="false" onAction="#handleReturnButton" style="-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-background-radius: 5;" text="Back to Dashboard" />
+                        <Button fx:id="returnButton" text="Back to Main Menu" onAction="#handleReturnButton"
+                                style="-fx-background-color: #555555; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 15; -fx-background-radius: 5;"/>
                         <Button fx:id="printButton" mnemonicParsing="false" onAction="#handlePrintButton" style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-background-radius: 5;" text="Print Course List" />
                     </children>
                 </HBox>

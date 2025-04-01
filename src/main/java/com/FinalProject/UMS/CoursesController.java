@@ -4,9 +4,14 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -421,6 +426,12 @@ public class CoursesController implements Initializable {
      */
     @FXML
     private void handleReturnButton() {
-        // Implementation for return button if needed
+        try {
+            Stage stage = (Stage) returnButton.getScene().getWindow();
+            Parent root = FXMLLoader.load(getClass().getResource("studentmanagecontroller.fxml"));
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (Exception e) {
+        }
     }
 }
