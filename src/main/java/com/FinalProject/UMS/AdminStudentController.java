@@ -19,29 +19,10 @@ public class AdminStudentController {
         switchToView("add-student-view.fxml", "Add Student");
     }
 
-    @FXML
-    private void handleViewStudentProfile() {
-        switchToView("view-student-profile.fxml", "View Student Profile");
-    }
-
-    @FXML
-    private void handleManageEnrollments() {
-        switchToView("manage-enrollments-view.fxml", "Manage Enrollments");
-    }
-
-    @FXML
-    private void handleAcademicProgressTracking() {
-        switchToView("academic-progress-view.fxml", "Academic Progress Tracking");
-    }
-
-    @FXML
-    private void handleTuitionManagement() {
-        switchToView("tuition-management-view.fxml", "Tuition Management");
-    }
 
     @FXML
     private void handleBackButton() {
-        switchToView("menu-view.fxml", "University Management System - Main Screen");
+        switchToView("studentmanagecontroller.fxml", "University Management System - Main Screen");
     }
 
     private void switchToView(String fxmlFile, String title) {

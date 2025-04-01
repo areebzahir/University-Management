@@ -28,24 +28,10 @@
         <Label text="Student Management Actions:" style="-fx-font-weight: bold; -fx-font-size: 16;"/>
 
         <HBox spacing="15" alignment="CENTER">
-            <Button text="Add Student" onAction="#handleAddStudent"
+            <Button text="Admin Student Controls" onAction="#handleAddStudent"
                     style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 15; -fx-background-radius: 5;"/>
 
-            <Button text="View Profile" onAction="#handleViewStudentProfile"
-                    style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 15; -fx-background-radius: 5;"/>
-        </HBox>
 
-        <HBox spacing="15" alignment="CENTER">
-            <Button text="Manage Enrollments" onAction="#handleManageEnrollments"
-                    style="-fx-background-color: #f39c12; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 15; -fx-background-radius: 5;"/>
-
-            <Button text="Academic Progress" onAction="#handleAcademicProgressTracking"
-                    style="-fx-background-color: #9b59b6; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 15; -fx-background-radius: 5;"/>
-        </HBox>
-
-        <HBox spacing="15" alignment="CENTER">
-            <Button text="Tuition Management" onAction="#handleTuitionManagement"
-                    style="-fx-background-color: #607D8B; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 15; -fx-background-radius: 5;"/>
 
             <Button fx:id="backButton" text="Back to Main Menu" onAction="#handleBackButton"
                     style="-fx-background-color: #555555; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 15; -fx-background-radius: 5;"/>

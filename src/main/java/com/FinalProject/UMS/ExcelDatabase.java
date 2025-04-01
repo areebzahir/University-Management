@@ -251,7 +251,9 @@ public class ExcelDatabase {
         } else {
             // Add new student
             addStudentToExcel(student, FILE_PATH, STUDENT_SHEET_NAME);
-            LOGGER.info("New student " + student.getName() + " added to Excel database.");
+            LOGGER.info(
+
+                    "New student " + student.getName() + " added to Excel database.");
         }
     }
     public static boolean registerStudentForCourse(String studentId, String courseCode) {
