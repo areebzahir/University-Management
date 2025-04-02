@@ -2,45 +2,137 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.FinalProject.UMS.SubjectManagementController" prefWidth="800" prefHeight="600">
-    <VBox spacing="10" alignment="CENTER" prefWidth="760.0">
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.FinalProject.UMS.SubjectManagementController" prefWidth="800" prefHeight="600" style="-fx-background-color: #f8f9fa;">
+    <VBox spacing="20" alignment="CENTER" prefWidth="760.0" AnchorPane.topAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0">
         <padding>
             <Insets top="20" right="20" bottom="20" left="20"/>
         </padding>
 
-        <Label text="Subject Management" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
-
-        <!-- Add Subject Section -->
-        <HBox spacing="10" alignment="CENTER">
-            <Label text="Subject Name:"/>
-            <TextField fx:id="subjectNameField" promptText="Enter Subject Name"/>
-            <Label text="Subject Code:"/>
-            <TextField fx:id="subjectCodeField" promptText="Enter Subject Code"/>
-            <Button fx:id="addButton" text="Add Subject" onAction="#addSubject"/>
+        <!-- Header with Title -->
+        <HBox alignment="CENTER" style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 10;">
+            <effect>
+                <DropShadow color="#00000022" radius="10" spread="0.1"/>
+            </effect>
+            <Circle radius="25" style="-fx-fill: #9B001C;">
+                <effect>
+                    <InnerShadow/>
+                </effect>
+            </Circle>
+            <Label text="Subject Management" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #9B001C; -fx-padding: 0 0 0 15;"/>
         </HBox>
 
-        <!-- Search Section -->
-        <HBox spacing="10" alignment="CENTER">
-            <Label text="Search:"/>
-            <TextField fx:id="searchField" promptText="Search by Name or Code"/>
-            <Button fx:id="searchButton" text="Search" onAction="#searchSubject"/>
-        </HBox>
+        <!-- Add Subject Section - Keeping original structure but enhancing visuals -->
+        <VBox spacing="15" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 10;">
+            <effect>
+                <DropShadow color="#00000022" radius="10" spread="0.1"/>
+            </effect>
 
-        <!-- Subject Table -->
-        <TableView fx:id="subjectTable" prefHeight="400.0" prefWidth="760.0">
-            <columns>
-                <TableColumn fx:id="nameColumn" text="Subject Name" prefWidth="380.0"/>
-                <TableColumn fx:id="codeColumn" text="Subject Code" prefWidth="380.0"/>
-            </columns>
-        </TableView>
+            <Label text="Add New Subject" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #F2BA30;"/>
 
-        <!-- Delete Button -->
-        <Button fx:id="deleteButton" text="Delete Selected Subject" onAction="#deleteSubject"/>
+            <!-- Original HBox preserved -->
+            <HBox spacing="10" alignment="CENTER">
+                <Label text="Subject Name:" style="-fx-font-weight: bold; -fx-text-fill: #333333;"/>
+                <TextField fx:id="subjectNameField" promptText="Enter Subject Name"
+                           style="-fx-padding: 8; -fx-background-radius: 5; -fx-border-color: #e0e0e0; -fx-border-radius: 5;" HBox.hgrow="ALWAYS"/>
+                <Label text="Subject Code:" style="-fx-font-weight: bold; -fx-text-fill: #333333;"/>
+                <TextField fx:id="subjectCodeField" promptText="Enter Subject Code"
+                           style="-fx-padding: 8; -fx-background-radius: 5; -fx-border-color: #e0e0e0; -fx-border-radius: 5;" HBox.hgrow="ALWAYS"/>
+                <Button fx:id="addButton" text="Add Subject" onAction="#addSubject"
+                        style="-fx-background-color: #F2BA30;
+                               -fx-text-fill: white;
+                               -fx-font-size: 14px;
+                               -fx-padding: 8 15;
+                               -fx-background-radius: 5;
+                               -fx-cursor: hand;">
+                    <effect>
+                        <DropShadow color="#00000040" radius="5" spread="0.05"/>
+                    </effect>
+                </Button>
+            </HBox>
+        </VBox>
 
-        <!-- Back Button -->
-        <Button fx:id="backButton" text="Back to Menu" onAction="#backToMenu"/>
+        <!-- Search Section - Keeping original structure but enhancing visuals -->
+        <VBox spacing="15" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 10;">
+            <effect>
+                <DropShadow color="#00000022" radius="10" spread="0.1"/>
+            </effect>
+
+            <Label text="Search Subjects" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #9B001C;"/>
+
+            <!-- Original HBox preserved -->
+            <HBox spacing="10" alignment="CENTER">
+                <Label text="Search:" style="-fx-font-weight: bold; -fx-text-fill: #333333;"/>
+                <TextField fx:id="searchField" promptText="Search by Name or Code"
+                           style="-fx-padding: 8; -fx-background-radius: 5; -fx-border-color: #e0e0e0; -fx-border-radius: 5;" HBox.hgrow="ALWAYS"/>
+                <Button fx:id="searchButton" text="Search" onAction="#searchSubject"
+                        style="-fx-background-color: #9B001C;
+                               -fx-text-fill: white;
+                               -fx-font-size: 14px;
+                               -fx-padding: 8 15;
+                               -fx-background-radius: 5;
+                               -fx-cursor: hand;">
+                    <effect>
+                        <DropShadow color="#00000040" radius="5" spread="0.05"/>
+                    </effect>
+                </Button>
+            </HBox>
+        </VBox>
+
+        <!-- Subject Table - Enhanced visuals but keeping original structure -->
+        <VBox spacing="10" VBox.vgrow="ALWAYS" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 10;">
+            <effect>
+                <DropShadow color="#00000022" radius="10" spread="0.1"/>
+            </effect>
+
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Label text="Subject List" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #007bff;"/>
+            </HBox>
+
+            <!-- Original TableView preserved -->
+            <TableView fx:id="subjectTable" prefHeight="400.0" prefWidth="760.0" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="nameColumn" text="Subject Name" prefWidth="380.0"/>
+                    <TableColumn fx:id="codeColumn" text="Subject Code" prefWidth="380.0"/>
+                </columns>
+                <placeholder>
+                    <Label text="No subjects found. Add a new subject or modify your search." style="-fx-text-fill: #666666;"/>
+                </placeholder>
+                <style>
+                    -fx-background-color: white;
+                    -fx-border-color: #e0e0e0;
+                    -fx-border-radius: 5;
+                </style>
+            </TableView>
+        </VBox>
+
+        <!-- Delete Button - Preserved exactly as in original -->
+        <Button fx:id="deleteButton" text="Delete Selected Subject" onAction="#deleteSubject"
+                style="-fx-background-color: #dc3545;
+                       -fx-text-fill: white;
+                       -fx-font-size: 14px;
+                       -fx-padding: 8 15;
+                       -fx-background-radius: 5;
+                       -fx-cursor: hand;">
+            <effect>
+                <DropShadow color="#00000040" radius="5" spread="0.05"/>
+            </effect>
+        </Button>
+
+        <!-- Back Button - Preserved exactly as in original -->
+        <Button fx:id="backButton" text="Back to Menu" onAction="#backToMenu"
+                style="-fx-background-color: #9B001C;
+                       -fx-text-fill: white;
+                       -fx-font-size: 14px;
+                       -fx-padding: 8 15;
+                       -fx-background-radius: 5;
+                       -fx-cursor: hand;">
+            <effect>
+                <DropShadow color="#00000040" radius="5" spread="0.05"/>
+            </effect>
+        </Button>
     </VBox>
 </AnchorPane>
-
-
