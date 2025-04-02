@@ -4,213 +4,33 @@
 <?import javafx.geometry.Pos?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Separator?>
-<?import javafx.scene.effect.DropShadow?>
-<?import javafx.scene.effect.InnerShadow?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.FontWeight?>
 
-<VBox alignment="TOP_CENTER" spacing="25.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1"
-      fx:controller="com.FinalProject.UMS.StudentManagementMenuController"
-      style="-fx-background-color: linear-gradient(to bottom, #f8f9fa, #e9ecef);">
+<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1" fx:controller="com.FinalProject.UMS.StudentManagementMenuController" style="-fx-background-color: #f4f4f4;">
     <padding>
-        <Insets bottom="30.0" left="40.0" right="40.0" top="30.0" />
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
 
-    <!-- Header with Logo -->
-    <HBox alignment="CENTER" spacing="15">
-        <Circle radius="40" style="-fx-fill: #9B001C;">
-            <effect>
-                <InnerShadow/>
-            </effect>
-        </Circle>
-        <VBox alignment="CENTER_LEFT">
-            <Label fx:id="welcomeText" text="Student Management" style="-fx-text-fill: #9B001C; -fx-font-weight: bold;">
-                <font>
-                    <Font name="Arial" size="32" />
-                </font>
-            </Label>
-            <Label text="Access and manage all student information" style="-fx-text-fill: #666666; -fx-font-style: italic;">
-                <font>
-                    <Font name="Arial" size="16" />
-                </font>
-            </Label>
-        </VBox>
-    </HBox>
+    <!-- Header -->
+    <Label fx:id="welcomeText" text="Student Management System" style="-fx-text-fill: #2c3e50; -fx-font-weight: bold;">
+        <font>
+            <Font name="Arial" size="24" />
+        </font>
+    </Label>
 
-    <Separator style="-fx-background-color: #F2BA30; -fx-opacity: 0.6;"/>
-
-    <!-- Buttons in Grid Layout (Side by Side) -->
-    <GridPane hgap="20" vgap="20" alignment="CENTER">
-        <columnConstraints>
-            <ColumnConstraints percentWidth="50" />
-            <ColumnConstraints percentWidth="50" />
-        </columnConstraints>
-
-        <!-- Profile Button -->
-        <StackPane style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 5;"
-                   GridPane.columnIndex="0" GridPane.rowIndex="0">
-            <effect>
-                <DropShadow color="#00000022" radius="10" spread="0.05"/>
-            </effect>
-            <Button onAction="#onOpenProfileButtonClick" text="View/Edit Profile"
-                    style="-fx-background-color: transparent; -fx-text-fill: #333333; -fx-font-size: 16; -fx-font-weight: bold; -fx-padding: 15; -fx-alignment: CENTER_LEFT; -fx-graphic-text-gap: 15; -fx-content-display: RIGHT; -fx-cursor: hand;"
-                    maxWidth="Infinity" maxHeight="Infinity">
-                <graphic>
-                    <HBox alignment="CENTER_LEFT" spacing="15">
-                        <StackPane>
-                            <Circle radius="25" style="-fx-fill: rgba(52, 152, 219, 0.2);"/>
-                            <Text text="👤" style="-fx-font-size: 20;"/>
-                        </StackPane>
-                        <VBox>
-                            <Label text="View/Edit Profile" style="-fx-text-fill: #333333; -fx-font-weight: bold; -fx-font-size: 16;"/>
-                            <Label text="Manage your personal information" style="-fx-text-fill: #666666; -fx-font-size: 12;"/>
-                        </VBox>
-                    </HBox>
-                </graphic>
-            </Button>
-        </StackPane>
-
-        <!-- Courses Button -->
-        <StackPane style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 5;"
-                   GridPane.columnIndex="1" GridPane.rowIndex="0">
-            <effect>
-                <DropShadow color="#00000022" radius="10" spread="0.05"/>
-            </effect>
-            <Button onAction="#onOpenCoursesButtonClick" text="View Enrolled Courses"
-                    style="-fx-background-color: transparent; -fx-text-fill: #333333; -fx-font-size: 16; -fx-font-weight: bold; -fx-padding: 15; -fx-alignment: CENTER_LEFT; -fx-graphic-text-gap: 15; -fx-content-display: RIGHT; -fx-cursor: hand;"
-                    maxWidth="Infinity" maxHeight="Infinity">
-                <graphic>
-                    <HBox alignment="CENTER_LEFT" spacing="15">
-                        <StackPane>
-                            <Circle radius="25" style="-fx-fill: rgba(46, 204, 113, 0.2);"/>
-                            <Text text="📚" style="-fx-font-size: 20;"/>
-                        </StackPane>
-                        <VBox>
-                            <Label text="View Enrolled Courses" style="-fx-text-fill: #333333; -fx-font-weight: bold; -fx-font-size: 16;"/>
-                            <Label text="See your current course schedule" style="-fx-text-fill: #666666; -fx-font-size: 12;"/>
-                        </VBox>
-                    </HBox>
-                </graphic>
-            </Button>
-        </StackPane>
-
-        <!-- Grades Button -->
-        <StackPane style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 5;"
-                   GridPane.columnIndex="0" GridPane.rowIndex="1">
-            <effect>
-                <DropShadow color="#00000022" radius="10" spread="0.05"/>
-            </effect>
-            <Button onAction="#onOpenGradesButtonClick" text="View Grades"
-                    style="-fx-background-color: transparent; -fx-text-fill: #333333; -fx-font-size: 16; -fx-font-weight: bold; -fx-padding: 15; -fx-alignment: CENTER_LEFT; -fx-graphic-text-gap: 15; -fx-content-display: RIGHT; -fx-cursor: hand;"
-                    maxWidth="Infinity" maxHeight="Infinity">
-                <graphic>
-                    <HBox alignment="CENTER_LEFT" spacing="15">
-                        <StackPane>
-                            <Circle radius="25" style="-fx-fill: rgba(230, 126, 34, 0.2);"/>
-                            <Text text="📊" style="-fx-font-size: 20;"/>
-                        </StackPane>
-                        <VBox>
-                            <Label text="View Grades" style="-fx-text-fill: #333333; -fx-font-weight: bold; -fx-font-size: 16;"/>
-                            <Label text="Check your academic performance" style="-fx-text-fill: #666666; -fx-font-size: 12;"/>
-                        </VBox>
-                    </HBox>
-                </graphic>
-            </Button>
-        </StackPane>
-
-        <!-- Tuition Button -->
-        <StackPane style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 5;"
-                   GridPane.columnIndex="1" GridPane.rowIndex="1">
-            <effect>
-                <DropShadow color="#00000022" radius="10" spread="0.05"/>
-            </effect>
-            <Button onAction="#onOpenTuitionButtonClick" text="View Tuition Status"
-                    style="-fx-background-color: transparent; -fx-text-fill: #333333; -fx-font-size: 16; -fx-font-weight: bold; -fx-padding: 15; -fx-alignment: CENTER_LEFT; -fx-graphic-text-gap: 15; -fx-content-display: RIGHT; -fx-cursor: hand;"
-                    maxWidth="Infinity" maxHeight="Infinity">
-                <graphic>
-                    <HBox alignment="CENTER_LEFT" spacing="15">
-                        <StackPane>
-                            <Circle radius="25" style="-fx-fill: rgba(155, 89, 182, 0.2);"/>
-                            <Text text="💰" style="-fx-font-size: 20;"/>
-                        </StackPane>
-                        <VBox>
-                            <Label text="View Tuition Status" style="-fx-text-fill: #333333; -fx-font-weight: bold; -fx-font-size: 16;"/>
-                            <Label text="Check your financial information" style="-fx-text-fill: #666666; -fx-font-size: 12;"/>
-                        </VBox>
-                    </HBox>
-                </graphic>
-            </Button>
-        </StackPane>
-
-        <!-- Student Info Button -->
-        <StackPane style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 5;"
-                   GridPane.columnIndex="0" GridPane.rowIndex="2">
-            <effect>
-                <DropShadow color="#00000022" radius="10" spread="0.05"/>
-            </effect>
-            <Button onAction="#onOpenSecondPageButtonClick" text="Open Student Info"
-                    style="-fx-background-color: transparent; -fx-text-fill: #333333; -fx-font-size: 16; -fx-font-weight: bold; -fx-padding: 15; -fx-alignment: CENTER_LEFT; -fx-graphic-text-gap: 15; -fx-content-display: RIGHT; -fx-cursor: hand;"
-                    maxWidth="Infinity" maxHeight="Infinity">
-                <graphic>
-                    <HBox alignment="CENTER_LEFT" spacing="15">
-                        <StackPane>
-                            <Circle radius="25" style="-fx-fill: rgba(52, 73, 94, 0.2);"/>
-                            <Text text="📝" style="-fx-font-size: 20;"/>
-                        </StackPane>
-                        <VBox>
-                            <Label text="Open Student Info" style="-fx-text-fill: #333333; -fx-font-weight: bold; -fx-font-size: 16;"/>
-                            <Label text="View detailed student information" style="-fx-text-fill: #666666; -fx-font-size: 12;"/>
-                        </VBox>
-                    </HBox>
-                </graphic>
-            </Button>
-        </StackPane>
-
-        <!-- Admin Dashboard Button -->
-        <StackPane style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 5;"
-                   GridPane.columnIndex="1" GridPane.rowIndex="2">
-            <effect>
-                <DropShadow color="#00000022" radius="10" spread="0.05"/>
-            </effect>
-            <Button onAction="#onOpenAdminDashboardButtonClick" text="Admin Dashboard"
-                    style="-fx-background-color: transparent; -fx-text-fill: #333333; -fx-font-size: 16; -fx-font-weight: bold; -fx-padding: 15; -fx-alignment: CENTER_LEFT; -fx-graphic-text-gap: 15; -fx-content-display: RIGHT; -fx-cursor: hand;"
-                    maxWidth="Infinity" maxHeight="Infinity">
-                <graphic>
-                    <HBox alignment="CENTER_LEFT" spacing="15">
-                        <StackPane>
-                            <Circle radius="25" style="-fx-fill: rgba(231, 76, 60, 0.2);"/>
-                            <Text text="⚙️" style="-fx-font-size: 20;"/>
-                        </StackPane>
-                        <VBox>
-                            <Label text="Admin Dashboard" style="-fx-text-fill: #333333; -fx-font-weight: bold; -fx-font-size: 16;"/>
-                            <Label text="Access administrative controls" style="-fx-text-fill: #666666; -fx-font-size: 12;"/>
-                        </VBox>
-                    </HBox>
-                </graphic>
-            </Button>
-        </StackPane>
-    </GridPane>
-
-    <Separator style="-fx-background-color: #F2BA30; -fx-opacity: 0.6;"/>
+    <!-- Buttons -->
+    <VBox alignment="CENTER" spacing="10">
+        <Button onAction="#onOpenProfileButtonClick" text="View/Edit Profile" style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 5;" />
+        <Button onAction="#onOpenCoursesButtonClick" text="View Enrolled Courses" style="-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 5;" />
+        <Button onAction="#onOpenGradesButtonClick" text="View Grades" style="-fx-background-color: #e67e22; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 5;" />
+        <Button onAction="#onOpenTuitionButtonClick" text="View Tuition Status" style="-fx-background-color: #9b59b6; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 5;" />
+        <Button onAction="#onOpenSecondPageButtonClick" text="Open Student Info" style="-fx-background-color: #34495e; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 5;" />
+        <Button onAction="#onOpenAdminDashboardButtonClick" text="Admin Dashboard" style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 5;" />
+    </VBox>
 
     <!-- Back Button -->
-    <HBox alignment="CENTER">
-        <Button text="Back to Main Screen" fx:id="backButton" onAction="#handleBackButton"
-                style="-fx-background-color: #9B001C; -fx-text-fill: white; -fx-font-size: 16; -fx-font-weight: bold; -fx-padding: 12 25; -fx-background-radius: 5; -fx-cursor: hand;">
-            <effect>
-                <DropShadow color="#00000040" radius="5" spread="0.05"/>
-            </effect>
-        </Button>
-    </HBox>
+    <Button text="Back to Main Screen" fx:id="backButton" onAction="#handleBackButton" style="-fx-background-color: #7f8c8d; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 5;" />
 
-    <!-- Footer -->
-    <Label text="© 2024 University Management System" style="-fx-text-fill: #666666; -fx-font-size: 12;"/>
 </VBox>
