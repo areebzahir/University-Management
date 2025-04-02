@@ -81,16 +81,36 @@ public class SubjectManagementController implements Initializable {
 
     private void adjustVisibilityBasedOnRole() {
         if ("USER".equals(userRole)) {
-            // Disable or hide buttons for the USER role
+            // Disable and hide buttons/fields for the USER role
             addButton.setDisable(true);
-            deleteButton.setDisable(true);
-            subjectNameField.setDisable(true);
-            subjectCodeField.setDisable(true);
+            addButton.setVisible(false);
 
-//hey
+            deleteButton.setDisable(true);
+            deleteButton.setVisible(false);
+
+            subjectNameField.setDisable(true);
+            subjectNameField.setVisible(false);
+
+            subjectCodeField.setDisable(true);
+            subjectCodeField.setVisible(false);
+        } else {
+            // Enable and show buttons/fields for other roles (e.g., ADMIN)
+            addButton.setDisable(false);
+            addButton.setVisible(true);
+
+            deleteButton.setDisable(false);
+            deleteButton.setVisible(true);
+
+            subjectNameField.setDisable(false);
+            subjectNameField.setVisible(true);
+
+            subjectCodeField.setDisable(false);
+            subjectCodeField.setVisible(true);
+
+            searchButton.setDisable(false);
+            searchButton.setVisible(true);
         }
     }
-
     // Load Subjects from Excel
     private void loadSubjectsFromExcel() {
         Map<String, String> subjects = ExcelDatabase.loadSubjects();
@@ -150,8 +170,7 @@ public class SubjectManagementController implements Initializable {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("menu-view.fxml"));
             Parent root = fxmlLoader.load();
-            MenuController menuController = fxmlLoader.getController();
-            menuController.setUserRole(userRole); // Pass the user role back to the menu
+
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);

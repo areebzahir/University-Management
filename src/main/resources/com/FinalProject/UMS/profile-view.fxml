@@ -10,49 +10,56 @@
       xmlns="http://javafx.com/javafx/23.0.1"
       fx:controller="com.FinalProject.UMS.ProfileController">
     <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+        <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
     </padding>
 
-    <Label text="Profile Information" style="-fx-font-size: 18; -fx-font-weight: bold;"/>
+    <Label text="Profile Information" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #333333;"/>
 
-    <GridPane hgap="10" vgap="10">
-        <columnConstraints>
-            <ColumnConstraints prefWidth="150"/>
-            <ColumnConstraints prefWidth="300"/>
-        </columnConstraints>
-
-        <Label text="Student ID:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-        <TextField fx:id="studentIdField" editable="false" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
-
-        <Label text="First Name:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-        <TextField fx:id="firstNameField" editable="false" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
-
-        <Label text="Last Name:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-        <TextField fx:id="lastNameField" editable="false" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
-
-        <Label text="Email:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-        <TextField fx:id="emailField"  GridPane.rowIndex="3" GridPane.columnIndex="1"/>
-
-        <Label text="Address:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
-        <TextField fx:id="addressField"  GridPane.rowIndex="4" GridPane.columnIndex="1"/>
-
-        <Label text="Phone:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
-        <TextField fx:id="phoneField"  GridPane.rowIndex="5" GridPane.columnIndex="1"/>
-
-        <Label text="Profile Picture:" GridPane.rowIndex="6" GridPane.columnIndex="0" />
-        <ImageView fx:id="profileImageView" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="6" GridPane.columnIndex="1">
+    <StackPane alignment="CENTER">
+        <ImageView fx:id="profileImageView" fitHeight="550.0" fitWidth="850.0" pickOnBounds="true" preserveRatio="true">
             <image>
                 <Image url="@default_profile.png" />
             </image>
         </ImageView>
+    </StackPane>
+
+    <GridPane hgap="12" vgap="12">
+        <columnConstraints>
+            <ColumnConstraints prefWidth="120"/>
+            <ColumnConstraints prefWidth="320"/>
+        </columnConstraints>
+        <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+        </padding>
+
+        <Label text="Student ID:" GridPane.rowIndex="0" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+        <TextField fx:id="studentIdField" editable="false" GridPane.rowIndex="0" GridPane.columnIndex="1" style="-fx-background-radius: 5; -fx-border-radius: 5;"/>
+
+        <Label text="First Name:" GridPane.rowIndex="1" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+        <TextField fx:id="firstNameField" editable="false" GridPane.rowIndex="1" GridPane.columnIndex="1" style="-fx-background-radius: 5; -fx-border-radius: 5;"/>
+
+        <Label text="Last Name:" GridPane.rowIndex="2" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+        <TextField fx:id="lastNameField" editable="false" GridPane.rowIndex="2" GridPane.columnIndex="1" style="-fx-background-radius: 5; -fx-border-radius: 5;"/>
+
+        <Label text="Email:" GridPane.rowIndex="3" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+        <TextField fx:id="emailField" GridPane.rowIndex="3" GridPane.columnIndex="1" style="-fx-background-radius: 5; -fx-border-radius: 5;"/>
+
+        <Label text="Address:" GridPane.rowIndex="4" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+        <TextField fx:id="addressField" GridPane.rowIndex="4" GridPane.columnIndex="1" style="-fx-background-radius: 5; -fx-border-radius: 5;"/>
+
+        <Label text="Phone:" GridPane.rowIndex="5" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+        <TextField fx:id="phoneField" GridPane.rowIndex="5" GridPane.columnIndex="1" style="-fx-background-radius: 5; -fx-border-radius: 5;"/>
 
     </GridPane>
 
-    <HBox spacing="10">
-        <Button fx:id="saveChangesButton" onAction="#onSaveChangesButtonClick" text="Save Changes" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
-        <Button onAction="#onChangePasswordButtonClick" text="Change Password" style="-fx-background-color: #2196F3; -fx-text-fill: white;"/>
-        <Button fx:id = "uploadPictureButton" onAction="#onUploadPictureButtonClick" text="Upload Picture" style="-fx-background-color: #FF9800; -fx-text-fill: white;"/>
+    <HBox spacing="15" alignment="CENTER">
+        <padding>
+            <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+        </padding>
+        <Button fx:id="saveChangesButton" onAction="#onSaveChangesButtonClick" text="Save Changes" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 7;"/>
+        <Button fx:id="changePasswordButton" onAction="#onChangePasswordButtonClick" text="Change Password" style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 7;"/>
+        <Button fx:id="uploadPictureButton" onAction="#onUploadPictureButtonClick" text="Upload Picture" style="-fx-background-color: #FF9800; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 7;"/>
     </HBox>
 
-    <Button onAction="#onReturnButtonClick" text="Return to Dashboard" style="-fx-background-color: #f44336; -fx-text-fill: white;"/>
+    <Button onAction="#onReturnButtonClick" text="Return to Dashboard" style="-fx-background-color: #f44336; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 7;"/>
 </VBox>

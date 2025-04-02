@@ -15,14 +15,23 @@ public class User {
     private String subjectsRegistered;
     private String thesisTitle;
     private String progress;
+    private String role;
 
-    public User(String id, String email, String password) { //Overload the constructor
+    public User(String id, String email, String password, String role) { //Overload the constructor
         this.id = id;
         this.email = email;
         this.password = password;
-
+        this.role = role;
     }
 
+    // Getters and setters
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
     public String getStudentId() {
         return this.id;
     }
@@ -134,5 +143,10 @@ public class User {
 
     public void setProgress(String progress) {
         this.progress = progress;
+    }
+
+    // Add this method to set the password
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

@@ -43,11 +43,11 @@ public class LoginController {
     // Method to handle login logic when the login button is clicked
     @FXML
     private void handleLogin(ActionEvent event) {
-//        String username = usernameField.getText().trim(); // Get the entered username
-//        String password = passwordField.getText().trim(); // Get the entered password
+        String username = usernameField.getText().trim(); // Get the entered username
+        String password = passwordField.getText().trim(); // Get the entered password
 
-        String username = "S20250003";
-        String password = "default123";
+        //String username = "S20250003";
+        //String password = "default123";
 
         LOGGER.log(Level.INFO, "Attempting login for user: {0}", username); // Log the login attempt
 
@@ -100,11 +100,11 @@ public class LoginController {
             Parent root = fxmlLoader.load(); // Load the menu FXML file
 
             MenuController menuController = fxmlLoader.getController(); // Get controller for the menu
-            String userRole = determineUserRole(user.getId()); // Determine the role of the user (e.g., admin, faculty)
-            menuController.setUserRole(userRole); // Set the user role in the menu controller
+//            String userRole = determineUserRole(user.getId()); // Determine the role of the user (e.g., admin, faculty)
+//            menuController.setUserRole(userRole); // Set the user role in the menu controller
 
             // Pass the logged-in user to the MenuController
-            menuController.setLoggedInUser(GlobalState.getInstance().getLoggedInUser());
+//            menuController.setLoggedInUser(GlobalState.getInstance().getLoggedInUser());
             System.out.println("Logged in user: " + GlobalState.getInstance().getLoggedInUser());//DEBUG
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -128,14 +128,6 @@ public class LoginController {
         }
     }
 
-    // Method to determine the user role based on the username
-    private String determineUserRole(String username) {
-        return switch (username) { // Switch to determine the user role
-            case "admin" -> "ADMIN"; // If username is "admin", return "ADMIN"
-            case "faculty" -> "FACULTY"; // If username is "faculty", return "FACULTY"
-            default -> "USER"; // Default case for regular users
-        };
-    }
 
     // Utility method to display pop-up messages for login success or failure
     private void showPopup(String title, String message, Alert.AlertType alertType) {

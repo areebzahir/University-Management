@@ -39,37 +39,36 @@ public class MenuController {
     @FXML
     private Button eventManagementButton;
 
-    private String userRole;
     private String loggedInStudentId;
-    private User loggedInUser;
-
 
     public void initialize() {
         // Initialization code, if needed
+        System.out.println("Initializing MenuController");
+
     }
 
-    public void setUserRole(String role) {
-        this.userRole = role;
-        // You can update the UI based on the user role here
-    }
     public void setLoggedInStudentId(String studentId) { // Add this method
         this.loggedInStudentId = studentId;
     }
 
     // Add this method to receive the logged-in user
-    public void setLoggedInUser(User user) {
-        this.loggedInUser = user;
-        LOGGER.log(Level.INFO, "Logged in user received in MenuController: {0}", user.getId());
-
-        //  Determine if the user is a student and get their student ID
-        if (user.getStudentId() != null && !user.getStudentId().isEmpty()) {
-            loggedInStudentId = user.getStudentId();
-            LOGGER.log(Level.INFO, "User is a student with ID: {0}", loggedInStudentId);
-        } else {
-            LOGGER.warning("User is not a student or student ID is missing.");
-            loggedInStudentId = null; // Or handle the non-student case as needed
-        }
-    }
+//    public void setLoggedInUser(User user) {
+//        this.loggedInUser = user;
+//        LOGGER.log(Level.INFO, "Logged in user received in MenuController: {0}", user.getId());
+//
+//
+//        //  Determine if the user is a student and get their student ID
+//        if (user.getStudentId() != null && !user.getStudentId().isEmpty()) {
+//            loggedInStudentId = user.getStudentId();
+//            LOGGER.log(Level.INFO, "User is a student with ID: {0}", loggedInStudentId);
+//        } else {
+//            LOGGER.warning("User is not a student or student ID is missing.");
+//            loggedInStudentId = null; // Or handle the non-student case as needed
+//        }
+//        String userRole = user.getRole();
+//        setUserRole(userRole);
+//
+//    }
 
 
 
@@ -277,7 +276,15 @@ public class MenuController {
             stage.setTitle(title);
             stage.setScene(new Scene(root, 1366, 768));
             stage.show();
+            // Get the controller for the loaded FXML
+            Object controller = fxmlLoader.getController();
+            // If it's the SubjectManagementController, pass the user role
+            if (controller instanceof SubjectManagementController) {
+                SubjectManagementController subjectManagementController = (SubjectManagementController) controller;
 
+                User user = GlobalState.getInstance().getLoggedInUser();
+                subjectManagementController.setUserRole(user.getRole());
+            }
             // Close the current window
             if (event != null) {
                 ((Node) (event.getSource())).getScene().getWindow().hide();
