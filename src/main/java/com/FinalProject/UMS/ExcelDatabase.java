@@ -116,94 +116,84 @@ public class ExcelDatabase {
              Workbook workbook = new XSSFWorkbook(fis)) {
 
             DataFormatter formatter = new DataFormatter();
-            Iterator<Sheet> sheetIterator = workbook.sheetIterator();
-            while (sheetIterator.hasNext()) {
-                Sheet sheet = sheetIterator.next();
-                String sheetName = sheet.getSheetName();
-                LOGGER.log(Level.INFO, "Processing sheet: {0}", sheetName);
+            Sheet sheet = workbook.getSheet(STUDENT_SHEET_NAME);
 
-                if (sheetName.trim().equals(STUDENT_SHEET_NAME)) {
-                    Iterator<Row> rowIterator = sheet.rowIterator();
-                    while (rowIterator.hasNext()) {
-                        Row row = rowIterator.next();
+            if (sheet != null) {
+                Iterator<Row> rowIterator = sheet.rowIterator();
+                while (rowIterator.hasNext()) {
+                    Row row = rowIterator.next();
 
-                        if (HAS_HEADER_ROW && row.getRowNum() == 0) continue;
+                    if (HAS_HEADER_ROW && row.getRowNum() == 0) continue;
 
-                        try {
+                    try {
+                        Cell idCell = row.getCell(ID_COLUMN);
+                        String id = (idCell != null) ? getCellValueAsString(idCell) : null;
 
-                            Cell idCell = row.getCell(ID_COLUMN);
-                            String id = (idCell != null) ? getCellValueAsString(idCell) : null;
-
-                            Cell nameCell = row.getCell(NAME_COLUMN);
-                            String name = (nameCell != null) ? getCellValueAsString(nameCell) : null;
-
-                            Cell addressCell = row.getCell(ADDRESS_COLUMN);
-                            String address = (addressCell != null) ? getCellValueAsString(addressCell) : null;
-
-                            Cell telephoneCell = row.getCell(TELEPHONE_COLUMN);
-                            String telephone = (telephoneCell != null) ? getCellValueAsString(telephoneCell) : null;
-
-                            Cell academicLevelCell = row.getCell(ACADEMIC_LEVEL_COLUMN);
-                            String academicLevel = (academicLevelCell != null) ? getCellValueAsString(academicLevelCell) : null;
-
-                            Cell currentSemesterCell = row.getCell(CURRENT_SEMESTER_COLUMN);
-                            String currentSemester = (currentSemesterCell != null) ? getCellValueAsString(currentSemesterCell) : null;
-
-                            Cell profilePhotoCell = row.getCell(PROFILE_PHOTO_COLUMN);
-                            String profilePhoto = (profilePhotoCell != null) ? getCellValueAsString(profilePhotoCell) : null;
-
-                            Cell subjectsRegisteredCell = row.getCell(SUBJECTS_REGISTERED_COLUMN);
-                            String subjectsRegistered = (subjectsRegisteredCell != null) ? getCellValueAsString(subjectsRegisteredCell) : null;
-
-                            Cell thesisTitleCell = row.getCell(THESIS_TITLE_COLUMN);
-                            String thesisTitle = (thesisTitleCell != null) ? getCellValueAsString(thesisTitleCell) : null;
-
-                            Cell progressCell = row.getCell(PROGRESS_COLUMN);
-                            String progress = (progressCell != null) ? getCellValueAsString(progressCell) : null;
-
-                            Cell emailCell = row.getCell(EMAIL_COLUMN);
-                            String email = (emailCell != null) ? getCellValueAsString(emailCell) : null;
-
-                            Cell passwordCell = row.getCell(PASSWORD_COLUMN);
-                            String password = (passwordCell != null) ? getCellValueAsString(passwordCell) : null;
-
-                            // Get the student ID
-                            Cell studentIdCell = row.getCell(0); // Assuming student ID is in the first column
-                            String studentId = (studentIdCell != null) ? getCellValueAsString(studentIdCell) : null;
-
-                            if ((id == null || id.isEmpty()) && (email == null || email.isEmpty())) {
-                                LOGGER.warning("Skipping row " + row.getRowNum() + " due to missing ID and email.");
-                                continue;
-                            }
-                            if (password == null || password.isEmpty()) {
-                                LOGGER.warning("Skipping row " + row.getRowNum() + " due to missing password.");
-                                continue;
-                            }
-
-                            if (email != null && !email.isEmpty() && !EMAIL_PATTERN.matcher(email).matches()) {
-                                LOGGER.warning("Skipping row " + row.getRowNum() + " due to invalid email format: " + email);
-                                continue;
-                            }
-
-                            User user = new User(id, email, password); // Updated constructor
-
-                            user.setName(name);
-                            user.setAddress(address);
-                            user.setTelephone(telephone);
-                            user.setAcademicLevel(academicLevel);
-                            user.setCurrentSemester(currentSemester);
-                            user.setProfilePhoto(profilePhoto);
-                            user.setSubjectsRegistered(subjectsRegistered);
-                            user.setThesisTitle(thesisTitle);
-                            user.setProgress(progress);
-
-                            if (id != null && !id.isEmpty())
-                                users.put(id, user);
-                            if (email != null && !email.isEmpty())
-                                users.put(email, user);
-                        } catch (Exception e) {
-                            LOGGER.log(Level.SEVERE, "Error processing row " + row.getRowNum() + ": " + e.getMessage(), e);
+                        // Skip empty rows
+                        if (id == null || id.isEmpty()) {
+                            continue;
                         }
+
+                        Cell nameCell = row.getCell(NAME_COLUMN);
+                        String name = (nameCell != null) ? getCellValueAsString(nameCell) : null;
+
+                        Cell addressCell = row.getCell(ADDRESS_COLUMN);
+                        String address = (addressCell != null) ? getCellValueAsString(addressCell) : null;
+
+                        Cell telephoneCell = row.getCell(TELEPHONE_COLUMN);
+                        String telephone = (telephoneCell != null) ? getCellValueAsString(telephoneCell) : null;
+
+                        Cell academicLevelCell = row.getCell(ACADEMIC_LEVEL_COLUMN);
+                        String academicLevel = (academicLevelCell != null) ? getCellValueAsString(academicLevelCell) : null;
+
+                        Cell currentSemesterCell = row.getCell(CURRENT_SEMESTER_COLUMN);
+                        String currentSemester = (currentSemesterCell != null) ? getCellValueAsString(currentSemesterCell) : null;
+
+                        Cell profilePhotoCell = row.getCell(PROFILE_PHOTO_COLUMN);
+                        String profilePhoto = (profilePhotoCell != null) ? getCellValueAsString(profilePhotoCell) : null;
+
+                        Cell subjectsRegisteredCell = row.getCell(SUBJECTS_REGISTERED_COLUMN);
+                        String subjectsRegistered = (subjectsRegisteredCell != null) ? getCellValueAsString(subjectsRegisteredCell) : null;
+
+                        Cell thesisTitleCell = row.getCell(THESIS_TITLE_COLUMN);
+                        String thesisTitle = (thesisTitleCell != null) ? getCellValueAsString(thesisTitleCell) : null;
+
+                        Cell progressCell = row.getCell(PROGRESS_COLUMN);
+                        String progress = (progressCell != null) ? getCellValueAsString(progressCell) : null;
+
+                        Cell emailCell = row.getCell(EMAIL_COLUMN);
+                        String email = (emailCell != null) ? getCellValueAsString(emailCell) : null;
+
+                        Cell passwordCell = row.getCell(PASSWORD_COLUMN);
+                        String password = (passwordCell != null) ? getCellValueAsString(passwordCell) : null;
+
+                        // Validate required fields
+                        if (password == null || password.isEmpty()) {
+                            LOGGER.warning("Skipping row " + row.getRowNum() + " due to missing password.");
+                            continue;
+                        }
+
+                        if (email != null && !email.isEmpty() && !EMAIL_PATTERN.matcher(email).matches()) {
+                            LOGGER.warning("Skipping row " + row.getRowNum() + " due to invalid email format: " + email);
+                            continue;
+                        }
+
+                        User user = new User(id, email, password);
+
+                        user.setName(name);
+                        user.setAddress(address);
+                        user.setTelephone(telephone);
+                        user.setAcademicLevel(academicLevel);
+                        user.setCurrentSemester(currentSemester);
+                        user.setProfilePhoto(profilePhoto);
+                        user.setSubjectsRegistered(subjectsRegistered);
+                        user.setThesisTitle(thesisTitle);
+                        user.setProgress(progress);
+
+                        // Store only by ID to avoid duplicates
+                        users.put(id, user);
+                    } catch (Exception e) {
+                        LOGGER.log(Level.SEVERE, "Error processing row " + row.getRowNum() + ": " + e.getMessage(), e);
                     }
                 }
             }

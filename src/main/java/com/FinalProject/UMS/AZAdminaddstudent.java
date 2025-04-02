@@ -158,13 +158,25 @@ public class AZAdminaddstudent {
             // Add student to database
             ExcelDatabase.updateStudent(newStudent);
 
-            // Refresh the table
-            loadStudentsFromExcel();
+            // Add the new student to the current list
+            studentList.add(newStudent);
+
+            // Update the table - create a new ObservableList from our updated studentList
+            ObservableList<Student> observableStudentList = FXCollections.observableArrayList(studentList);
+            studentTable.setItems(observableStudentList);
+
+            // Force a refresh of the table to show the new data
+            studentTable.refresh();
+
+            // Clear the form
             clearForm();
-            showAlert("Success", "Student add successfully");
+            showAlert("Success", "Student added successfully");
         } catch (Exception e) {
             e.printStackTrace();
             showAlert("Error", "Failed to add student: " + e.getMessage());
+
+            // If there was an error, reload from Excel to ensure consistency
+            loadStudentsFromExcel();
         }
     }
 
