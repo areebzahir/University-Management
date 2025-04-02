@@ -73,8 +73,8 @@
                 style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 15; -fx-background-radius: 5;"/>
         <Button text="Edit Student" onAction="#editStudent"
                 style="-fx-background-color: #f39c12; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 15; -fx-background-radius: 5;"/>
-        <Button text="Delete Student" onAction="#deleteStudent"
-                style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 15; -fx-background-radius: 5;"/>
+
+
         <Button text="View Profile" onAction="#viewProfile"
                 style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 15; -fx-background-radius: 5;"/>
         <Button fx:id="returnButton" text="Return to Dashboard"

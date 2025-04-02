@@ -214,47 +214,186 @@ public class ExcelDatabase {
     }
 
     public static void updateStudent(Student student) {
-        // This method will handle both adding new students and updating existing ones
-        Map<String, User> users = loadUsers();
-        boolean studentExists = false;
+        File excelFile = new File(FILE_PATH);
+    Workbook workbook = null;
+    FileInputStream fis = null;
+    FileOutputStream fos = null;
 
-        // Check if student already exists
-        for (User user : users.values()) {
-            if (user.getId() != null && user.getId().equals(student.getStudentId())) {
-                studentExists = true;
-                break;
+        try {
+            fis = new FileInputStream(excelFile);
+            workbook = new XSSFWorkbook(fis);
+            Sheet sheet = workbook.getSheet(STUDENT_SHEET_NAME);
+
+            if (sheet == null) {
+                // Sheet doesn't exist, create it with headers
+                sheet = workbook.createSheet(STUDENT_SHEET_NAME);
+                Row headerRow = sheet.createRow(0);
+                headerRow.createCell(ID_COLUMN).setCellValue("ID");
+                headerRow.createCell(NAME_COLUMN).setCellValue("Name");
+                headerRow.createCell(ADDRESS_COLUMN).setCellValue("Address");
+                headerRow.createCell(TELEPHONE_COLUMN).setCellValue("Telephone");
+                headerRow.createCell(EMAIL_COLUMN).setCellValue("Email");
+                headerRow.createCell(ACADEMIC_LEVEL_COLUMN).setCellValue("Academic Level");
+                headerRow.createCell(CURRENT_SEMESTER_COLUMN).setCellValue("Current Semester");
+                headerRow.createCell(PROFILE_PHOTO_COLUMN).setCellValue("Profile Photo");
+                headerRow.createCell(SUBJECTS_REGISTERED_COLUMN).setCellValue("Subjects Registered");
+                headerRow.createCell(THESIS_TITLE_COLUMN).setCellValue("Thesis Title");
+                headerRow.createCell(PROGRESS_COLUMN).setCellValue("Progress");
+                headerRow.createCell(PASSWORD_COLUMN).setCellValue("Password");
+            }
+
+            // Check if student already exists
+            int existingRow = -1;
+            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+                Row row = sheet.getRow(i);
+                if (row != null) {
+                    Cell idCell = row.getCell(ID_COLUMN);
+                    if (idCell != null) {
+                        String id = getCellValueAsString(idCell);
+                        if (student.getStudentId().equals(id)) {
+                            existingRow = i;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            Row row;
+            if (existingRow != -1) {
+                // Update existing student
+                row = sheet.getRow(existingRow);
+            } else {
+                // Add new student
+                // Find the last row with actual data (not empty)
+                int lastDataRow = 0;
+                for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+                    Row existingRowData = sheet.getRow(i);
+                    if (existingRowData != null) {
+                        Cell idCell = existingRowData.getCell(ID_COLUMN);
+                        if (idCell != null && !getCellValueAsString(idCell).trim().isEmpty()) {
+                            lastDataRow = i;
+                        }
+                    }
+                }
+
+                // Next available row is right after the last data row
+                int nextRow = lastDataRow + 1;
+
+                // If no data rows found (only header), start at row 1
+                if (nextRow == 1 && sheet.getRow(0) != null) {
+                    nextRow = 1;
+                }
+
+                // Create the new row
+                row = sheet.createRow(nextRow);
+                row.createCell(ID_COLUMN).setCellValue(student.getStudentId());
+
+                // Set default password for new students if not provided
+                if (student.getPassword() == null || student.getPassword().isEmpty()) {
+                    row.createCell(PASSWORD_COLUMN).setCellValue("default123");
+                } else {
+                    row.createCell(PASSWORD_COLUMN).setCellValue(student.getPassword());
+                }
+            }
+
+            // Update all fields
+            if (existingRow == -1 || row.getCell(NAME_COLUMN) == null) {
+                row.createCell(NAME_COLUMN).setCellValue(student.getName());
+            } else {
+                row.getCell(NAME_COLUMN).setCellValue(student.getName());
+            }
+
+            if (existingRow == -1 || row.getCell(ADDRESS_COLUMN) == null) {
+                row.createCell(ADDRESS_COLUMN).setCellValue(student.getAddress());
+            } else {
+                row.getCell(ADDRESS_COLUMN).setCellValue(student.getAddress());
+            }
+
+            if (existingRow == -1 || row.getCell(TELEPHONE_COLUMN) == null) {
+                row.createCell(TELEPHONE_COLUMN).setCellValue(student.getTelephone());
+            } else {
+                row.getCell(TELEPHONE_COLUMN).setCellValue(student.getTelephone());
+            }
+
+            if (existingRow == -1 || row.getCell(EMAIL_COLUMN) == null) {
+                row.createCell(EMAIL_COLUMN).setCellValue(student.getEmail());
+            } else {
+                row.getCell(EMAIL_COLUMN).setCellValue(student.getEmail());
+            }
+
+            if (existingRow == -1 || row.getCell(ACADEMIC_LEVEL_COLUMN) == null) {
+                row.createCell(ACADEMIC_LEVEL_COLUMN).setCellValue(student.getAcademicLevel());
+            } else {
+                row.getCell(ACADEMIC_LEVEL_COLUMN).setCellValue(student.getAcademicLevel());
+            }
+
+            if (existingRow == -1 || row.getCell(CURRENT_SEMESTER_COLUMN) == null) {
+                row.createCell(CURRENT_SEMESTER_COLUMN).setCellValue(student.getCurrentSemester());
+            } else {
+                row.getCell(CURRENT_SEMESTER_COLUMN).setCellValue(student.getCurrentSemester());
+            }
+
+            if (existingRow == -1 || row.getCell(PROFILE_PHOTO_COLUMN) == null) {
+                row.createCell(PROFILE_PHOTO_COLUMN).setCellValue(student.getProfilePhoto());
+            } else {
+                row.getCell(PROFILE_PHOTO_COLUMN).setCellValue(student.getProfilePhoto());
+            }
+
+            if (existingRow == -1 || row.getCell(SUBJECTS_REGISTERED_COLUMN) == null) {
+                row.createCell(SUBJECTS_REGISTERED_COLUMN).setCellValue(student.getSubjectsRegistered());
+            } else {
+                row.getCell(SUBJECTS_REGISTERED_COLUMN).setCellValue(student.getSubjectsRegistered());
+            }
+
+            if (existingRow == -1 || row.getCell(THESIS_TITLE_COLUMN) == null) {
+                row.createCell(THESIS_TITLE_COLUMN).setCellValue(student.getThesisTitle());
+            } else {
+                row.getCell(THESIS_TITLE_COLUMN).setCellValue(student.getThesisTitle());
+            }
+
+            if (existingRow == -1 || row.getCell(PROGRESS_COLUMN) == null) {
+                row.createCell(PROGRESS_COLUMN).setCellValue(student.getProgress());
+            } else {
+                row.getCell(PROGRESS_COLUMN).setCellValue(student.getProgress());
+            }
+
+            // Only update password during edits if explicitly provided
+            if (existingRow != -1 && student.getPassword() != null && !student.getPassword().isEmpty()) {
+                row.getCell(PASSWORD_COLUMN).setCellValue(student.getPassword());
+            }
+
+            fos = new FileOutputStream(FILE_PATH);
+            workbook.write(fos);
+
+            String action = (existingRow != -1) ? "updated" : "added";
+            LOGGER.info("Student " + student.getName() + " " + action + " in Excel.");
+
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Error updating student in Excel: " + e.getMessage(), e);
+        } finally {
+            closeResources(fis, fos, workbook);
+        }}
+    public static String generateUniqueStudentId() {
+        Map<String, User> users = loadUsers();
+        int highestId = 0;
+
+        for (String key : users.keySet()) {
+            User user = users.get(key);
+            if (user.getId() != null && user.getId().startsWith("S")) {
+                try {
+                    // Extract the numeric part after 'S'
+                    int id = Integer.parseInt(user.getId().substring(1));
+                    if (id > highestId) {
+                        highestId = id;
+                    }
+                } catch (NumberFormatException e) {
+                    // Ignore non-numeric IDs
+                }
             }
         }
 
-        if (studentExists) {
-            // Update existing student
-            User userToUpdate = new User(
-                    student.getStudentId(),
-                    student.getEmail(),
-                    student.getPassword()
-            );
-
-            // Copy all student properties to the user
-            userToUpdate.setName(student.getName());
-            userToUpdate.setAddress(student.getAddress());
-            userToUpdate.setTelephone(student.getTelephone());
-            userToUpdate.setAcademicLevel(student.getAcademicLevel());
-            userToUpdate.setCurrentSemester(student.getCurrentSemester());
-            userToUpdate.setProfilePhoto(student.getProfilePhoto());
-            userToUpdate.setSubjectsRegistered(student.getSubjectsRegistered());
-            userToUpdate.setThesisTitle(student.getThesisTitle());
-            userToUpdate.setProgress(student.getProgress());
-
-            // Save the updated user
-            saveUser(userToUpdate);
-            LOGGER.info("Student " + student.getName() + " updated in Excel database.");
-        } else {
-            // Add new student
-            addStudentToExcel(student, FILE_PATH, STUDENT_SHEET_NAME);
-            LOGGER.info(
-
-                    "New student " + student.getName() + " added to Excel database.");
-        }
+        // Generate new ID with the next number
+        return String.format("S%08d", highestId + 1);
     }
     public static boolean registerStudentForCourse(String studentId, String courseCode) {
         // Validate inputs
@@ -358,13 +497,61 @@ public class ExcelDatabase {
         return false;
     }
 
-    /**
-     * Unregisters a student from a course and updates the Excel database.
-     *
-     * @param studentId The ID of the student to unregister
-     * @param courseCode The course code to unregister the student from
-     * @return true if unregistration was successful, false otherwise
-     */
+
+    public static boolean deleteStudent(String studentId) {
+        File excelFile = new File(FILE_PATH);
+        Workbook workbook = null;
+        FileInputStream fis = null;
+        FileOutputStream fos = null;
+        boolean success = false;
+
+        try {
+            fis = new FileInputStream(excelFile);
+            workbook = new XSSFWorkbook(fis);
+            Sheet sheet = workbook.getSheet(STUDENT_SHEET_NAME);
+
+            if (sheet == null) {
+                LOGGER.warning("Sheet " + STUDENT_SHEET_NAME + " not found in Excel file.");
+                return false;
+            }
+
+            int rowToDelete = -1;
+            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+                Row row = sheet.getRow(i);
+                if (row != null) {
+                    Cell idCell = row.getCell(ID_COLUMN);
+                    if (idCell != null) {
+                        String id = getCellValueAsString(idCell);
+                        if (studentId.equals(id)) {
+                            rowToDelete = i;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (rowToDelete != -1) {
+                sheet.removeRow(sheet.getRow(rowToDelete));
+                if (rowToDelete < sheet.getLastRowNum()) {
+                    sheet.shiftRows(rowToDelete + 1, sheet.getLastRowNum(), -1);
+                }
+
+                fos = new FileOutputStream(FILE_PATH);
+                workbook.write(fos);
+                LOGGER.info("Student with ID " + studentId + " deleted from Excel.");
+                success = true;
+            } else {
+                LOGGER.warning("Student with ID " + studentId + " not found in Excel for deletion.");
+            }
+
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Error deleting student from Excel: " + e.getMessage(), e);
+        } finally {
+            closeResources(fis, fos, workbook);
+        }
+
+        return success;
+    }
     public static boolean unregisterStudentFromCourse(String studentId, String courseCode) {
         // Validate inputs
         if (studentId == null || studentId.isEmpty() || courseCode == null || courseCode.isEmpty()) {
@@ -465,56 +652,22 @@ public class ExcelDatabase {
     }
 
     // Improve the deleteStudentFromExcel method for better integration
-    public static boolean deleteStudent(String studentId) {
-        Map<String, User> users = loadUsers();
-        Student studentToDelete = null;
 
-        // Find the student to delete
-        for (User user : users.values()) {
-            if (user.getId() != null && user.getId().equals(studentId)) {
-                // Create a Student object from User
-                studentToDelete = new Student(
-                        user.getId(),
-                        user.getName(),
-                        user.getAddress(),
-                        user.getTelephone(),
-                        user.getEmail(),
-                        user.getAcademicLevel(),
-                        user.getCurrentSemester(),
-                        user.getProfilePhoto(),
-                        user.getSubjectsRegistered(),
-                        user.getThesisTitle(),
-                        user.getProgress(),
-                        user.getPassword()
-                );
-                break;
-            }
-        }
 
-        if (studentToDelete != null) {
-            deleteStudentFromExcel(studentToDelete, FILE_PATH, STUDENT_SHEET_NAME);
-            LOGGER.info("Student " + studentToDelete.getName() + " deleted from Excel database.");
-            return true;
-        } else {
-            LOGGER.warning("Student with ID " + studentId + " not found for deletion.");
-            return false;
-        }
-    }
-
-    public static void addStudentToExcel(Student student, String filePath, String sheetName) {
-        File excelFile = new File(filePath);
+    public static void addStudentToExcel(Student student) {
+        File excelFile = new File(FILE_PATH);
         Workbook workbook = null;
+        Sheet sheet = null;
         FileInputStream fis = null;
         FileOutputStream fos = null;
 
         try {
             fis = new FileInputStream(excelFile);
             workbook = new XSSFWorkbook(fis);
-            Sheet sheet = workbook.getSheet(sheetName);
+            sheet = workbook.getSheet(STUDENT_SHEET_NAME);
 
             if (sheet == null) {
-                sheet = workbook.createSheet(sheetName);
-                // Create header row if needed
+                sheet = workbook.createSheet(STUDENT_SHEET_NAME);
                 Row headerRow = sheet.createRow(0);
                 headerRow.createCell(ID_COLUMN).setCellValue("ID");
                 headerRow.createCell(NAME_COLUMN).setCellValue("Name");
@@ -530,8 +683,8 @@ public class ExcelDatabase {
                 headerRow.createCell(PASSWORD_COLUMN).setCellValue("Password");
             }
 
-            int newRowNum = sheet.getLastRowNum() + 1;
-            Row row = sheet.createRow(newRowNum);
+            int nextRow = sheet.getLastRowNum() + 1;
+            Row row = sheet.createRow(nextRow);
 
             row.createCell(ID_COLUMN).setCellValue(student.getStudentId());
             row.createCell(NAME_COLUMN).setCellValue(student.getName());
@@ -546,9 +699,9 @@ public class ExcelDatabase {
             row.createCell(PROGRESS_COLUMN).setCellValue(student.getProgress());
             row.createCell(PASSWORD_COLUMN).setCellValue(student.getPassword());
 
-            fos = new FileOutputStream(excelFile);
+            fos = new FileOutputStream(FILE_PATH);
             workbook.write(fos);
-            LOGGER.info("Student " + student.getName() + " added to Excel.");
+            LOGGER.info("Student " + student.getName() + " added to Excel successfully.");
 
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Error adding student to Excel: " + e.getMessage(), e);
@@ -557,8 +710,8 @@ public class ExcelDatabase {
         }
     }
 
-    public static void editStudentInExcel(Student student, String filePath, String sheetName) {
-        File excelFile = new File(filePath);
+    public static void editStudentInExcel(Student student) {
+        File excelFile = new File(FILE_PATH);
         Workbook workbook = null;
         FileInputStream fis = null;
         FileOutputStream fos = null;
@@ -566,22 +719,24 @@ public class ExcelDatabase {
         try {
             fis = new FileInputStream(excelFile);
             workbook = new XSSFWorkbook(fis);
-            Sheet sheet = workbook.getSheet(sheetName);
+            Sheet sheet = workbook.getSheet(STUDENT_SHEET_NAME);
 
             if (sheet == null) {
-                LOGGER.warning("Sheet " + sheetName + " not found in Excel file.");
+                LOGGER.warning("Sheet " + STUDENT_SHEET_NAME + " not found in Excel file.");
                 return;
             }
 
-            // Find the row with matching student ID
             int rowToEdit = -1;
             for (int i = 1; i <= sheet.getLastRowNum(); i++) {
                 Row row = sheet.getRow(i);
                 if (row != null) {
-                    String id = getCellValueAsString(row.getCell(ID_COLUMN));
-                    if (student.getStudentId().equals(id)) {
-                        rowToEdit = i;
-                        break;
+                    Cell idCell = row.getCell(ID_COLUMN);
+                    if (idCell != null) {
+                        String id = getCellValueAsString(idCell);
+                        if (student.getStudentId().equals(id)) {
+                            rowToEdit = i;
+                            break;
+                        }
                     }
                 }
             }
@@ -598,13 +753,17 @@ public class ExcelDatabase {
                 row.getCell(SUBJECTS_REGISTERED_COLUMN).setCellValue(student.getSubjectsRegistered());
                 row.getCell(THESIS_TITLE_COLUMN).setCellValue(student.getThesisTitle());
                 row.getCell(PROGRESS_COLUMN).setCellValue(student.getProgress());
-                row.getCell(PASSWORD_COLUMN).setCellValue(student.getPassword());
 
-                fos = new FileOutputStream(excelFile);
+                // Optionally update password if provided
+                if (student.getPassword() != null && !student.getPassword().isEmpty()) {
+                    row.getCell(PASSWORD_COLUMN).setCellValue(student.getPassword());
+                }
+
+                fos = new FileOutputStream(FILE_PATH);
                 workbook.write(fos);
                 LOGGER.info("Student " + student.getName() + " updated in Excel.");
             } else {
-                LOGGER.warning("Student with ID " + student.getStudentId() + " not found in Excel for editing.");
+                LOGGER.warning("Student " + student.getStudentId() + " not found in Excel for editing.");
             }
 
         } catch (IOException e) {

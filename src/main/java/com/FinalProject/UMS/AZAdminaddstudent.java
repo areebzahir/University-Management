@@ -86,11 +86,9 @@ public class AZAdminaddstudent {
         // Get all users from the database
         Map<String, User> users = ExcelDatabase.loadUsers();
 
-        // Process only unique students (users may be in the map twice - once by ID and once by email)
+        // Process only unique students
         for (User user : users.values()) {
-            // Check if this is a student by ID format (assuming student IDs start with 'S')
             if (user.getId() != null && user.getId().startsWith("S")) {
-                // Check if this student is already in our list
                 boolean exists = false;
                 for (Student existingStudent : studentList) {
                     if (existingStudent.getStudentId().equals(user.getId())) {
@@ -118,103 +116,134 @@ public class AZAdminaddstudent {
                 }
             }
         }
+
+        // Create a new ObservableList and set it to the table
+        ObservableList<Student> observableStudentList = FXCollections.observableArrayList(studentList);
+        studentTable.setItems(observableStudentList);
+        studentTable.refresh(); // Force a refresh of the table view
     }
+
     @FXML
     public void addStudent() {
         try {
-            Student newStudent = createStudentFromFields();
-            if (newStudent != null) {
-                // Generate a unique student ID if not already set
-                if (newStudent.getStudentId() == null || newStudent.getStudentId().isEmpty()) {
-                    newStudent.setStudentId(generateUniqueStudentId());
-                }
-
-                // Set default password if not specified
-                if (newStudent.getPassword() == null || newStudent.getPassword().isEmpty()) {
-                    newStudent.setPassword("defaultPassword"); // You can change this to whatever default you want
-                }
-
-                // Use the updateStudent method which handles both add and edit
-                ExcelDatabase.updateStudent(newStudent);
-
-                // Refresh the table
-                loadStudentsFromExcel();
-                clearForm();
-                showAlert("Success", "Student added successfully");
+            // Validate required fields
+            if (nameField.getText().isEmpty() || emailField.getText().isEmpty() ||
+                    academicLevelCombo.getValue() == null || semesterCombo.getValue() == null) {
+                showAlert("Input Error", "Please fill in all required fields (Name, Email, Academic Level, Semester)");
+                return;
             }
+
+            // Generate unique student ID if empty
+            String studentId = idField.getText();
+            if (studentId == null || studentId.isEmpty()) {
+                studentId = ExcelDatabase.generateUniqueStudentId();
+            }
+
+            // Create student object with default password
+            Student newStudent = new Student(
+                    studentId,
+                    nameField.getText(),
+                    addressField.getText(),
+                    telephoneField.getText(),
+                    emailField.getText(),
+                    academicLevelCombo.getValue(),
+                    semesterCombo.getValue(),
+                    "default", // Default profile photo
+                    subjectsField.getText(),
+                    thesisField.getText(),
+                    progressField.getText().isEmpty() ? "0.0" : progressField.getText(),
+                    "default123" // Default password
+            );
+
+            // Add student to database
+            ExcelDatabase.updateStudent(newStudent);
+
+            // Refresh the table
+            loadStudentsFromExcel();
+            clearForm();
+            showAlert("Success", "Student add successfully");
         } catch (Exception e) {
             e.printStackTrace();
             showAlert("Error", "Failed to add student: " + e.getMessage());
         }
     }
 
+
+
     @FXML
     private void editStudent() {
         Student selectedStudent = studentTable.getSelectionModel().getSelectedItem();
-        if (selectedStudent != null) {
-            try {
-                // Get values from form fields
-                Student updatedStudent = createStudentFromFields();
-
-                // Make sure to preserve the original student ID to update the correct record
-                if (updatedStudent.getStudentId() == null || updatedStudent.getStudentId().isEmpty()) {
-                    updatedStudent.setStudentId(selectedStudent.getStudentId());
-                }
-
-                // If password field is empty, keep the existing password
-                if (updatedStudent.getPassword() == null || updatedStudent.getPassword().isEmpty()) {
-                    updatedStudent.setPassword(selectedStudent.getPassword());
-                }
-
-                // Use the updateStudent method which handles both add and edit
-                ExcelDatabase.updateStudent(updatedStudent);
-
-                // Refresh the table
-                loadStudentsFromExcel();
-                clearForm();
-                showAlert("Success", "Student updated successfully");
-            } catch (Exception e) {
-                e.printStackTrace();
-                showAlert("Error", "Failed to update student: " + e.getMessage());
-            }
-        } else {
+        if (selectedStudent == null) {
             showAlert("No Selection", "Please select a student to edit.");
+            return;
+        }
+
+        try {
+            // Validate required fields
+            if (nameField.getText().isEmpty() || emailField.getText().isEmpty() ||
+                    academicLevelCombo.getValue() == null || semesterCombo.getValue() == null) {
+                showAlert("Input Error", "Please fill in all required fields (Name, Email, Academic Level, Semester)");
+                return;
+            }
+
+            // Create updated student object
+            // Keep the same ID and password
+            Student updatedStudent = new Student(
+                    selectedStudent.getStudentId(), // Keep original ID
+                    nameField.getText(),
+                    addressField.getText(),
+                    telephoneField.getText(),
+                    emailField.getText(),
+                    academicLevelCombo.getValue(),
+                    semesterCombo.getValue(),
+                    selectedStudent.getProfilePhoto(), // Keep original profile photo
+                    subjectsField.getText(),
+                    thesisField.getText(),
+                    progressField.getText().isEmpty() ? "0.0" : progressField.getText(),
+                    selectedStudent.getPassword() // Keep original password
+            );
+
+            // Update student in database
+            ExcelDatabase.updateStudent(updatedStudent);
+
+            // Refresh the table
+            loadStudentsFromExcel();
+            clearForm();
+            showAlert("Success", "Student updated successfully");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert("Error", "Failed to update student: " + e.getMessage());
         }
     }
 
-    @FXML
     private void deleteStudent() {
         Student selectedStudent = studentTable.getSelectionModel().getSelectedItem();
-        if (selectedStudent != null) {
-            // Confirm deletion
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Confirm Deletion");
-            alert.setHeaderText("Delete Student");
-            alert.setContentText("Are you sure you want to delete " + selectedStudent.getName() + "?");
-
-            alert.showAndWait().ifPresent(response -> {
-                if (response == ButtonType.OK) {
-                    try {
-                        // Use the deleteStudent method from ExcelDatabase
-                        boolean success = ExcelDatabase.deleteStudent(selectedStudent.getStudentId());
-
-                        if (success) {
-                            // Remove from list and refresh
-                            studentList.remove(selectedStudent);
-                            clearForm();
-                            showAlert("Success", "Student deleted successfully");
-                        } else {
-                            showAlert("Error", "Failed to delete student from database");
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        showAlert("Error", "Exception occurred while deleting student: " + e.getMessage());
-                    }
-                }
-            });
-        } else {
+        if (selectedStudent == null) {
             showAlert("No Selection", "Please select a student to delete.");
+            return;
         }
+
+        // Confirm deletion
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirm Deletion");
+        alert.setHeaderText("Delete Student");
+        alert.setContentText("Are you sure you want to delete " + selectedStudent.getName() + "?");
+
+        alert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                // Delete from database
+                boolean success = ExcelDatabase.deleteStudent(selectedStudent.getStudentId());
+
+                if (success) {
+                    // Remove from table and clear form
+                    studentList.remove(selectedStudent);
+                    clearForm();
+                    showAlert("Success", "Student deleted successfully");
+                } else {
+                    showAlert("Error", "Failed to delete student from database");
+                }
+            }
+        });
     }
 
     // Helper method to generate a unique student ID
