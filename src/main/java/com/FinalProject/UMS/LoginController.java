@@ -46,8 +46,8 @@ public class LoginController {
         String username = usernameField.getText().trim(); // Get the entered username
         String password = passwordField.getText().trim(); // Get the entered password
 
-        //String username = "S20250003";
-        //String password = "default123";
+       // String username = "S20250003";
+       //String password = "default123";
 
         LOGGER.log(Level.INFO, "Attempting login for user: {0}", username); // Log the login attempt
 

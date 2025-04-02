@@ -49,68 +49,104 @@ public class ExcelDatabase {
     }
 
     public static void saveUser(User user) {
-        File excelFile = new File(FILE_PATH); // Use constant for file path
+        if (user == null || user.getId() == null || user.getId().isEmpty()) {
+            LOGGER.log(Level.SEVERE, "Cannot save user with null or empty ID");
+            return;
+        }
 
+        File excelFile = new File(FILE_PATH);
         try (FileInputStream fis = new FileInputStream(excelFile);
              Workbook workbook = new XSSFWorkbook(fis)) {
 
-            Sheet sheet = workbook.getSheet(STUDENT_SHEET_NAME); //Use Constant for sheet name
+            boolean userFound = false;
 
-            if (sheet == null) {
-                LOGGER.severe("Sheet not found: " + STUDENT_SHEET_NAME);
-                return; // Exit if the sheet is not found
-            }
+            Iterator<Sheet> sheetIterator = workbook.sheetIterator();
+            while (sheetIterator.hasNext() && !userFound) {
+                Sheet sheet = sheetIterator.next();
+                String sheetName = sheet.getSheetName();
 
-            int firstRow = HAS_HEADER_ROW ? 1 : 0; // Start from the first data row
-
-            // Iterate through rows to find the user by ID
-            for (int rowNum = firstRow; rowNum <= sheet.getLastRowNum(); rowNum++) {
-                Row row = sheet.getRow(rowNum);
-                if (row == null) {
-                    continue; // Skip empty rows
+                if (!sheetName.trim().equals(STUDENT_SHEET_NAME)) {
+                    continue;
                 }
 
-                Cell idCell = row.getCell(ID_COLUMN);
-                if (idCell == null) {
-                    continue; // Skip rows without an ID
-                }
+                LOGGER.log(Level.INFO, "Processing sheet: {0}", sheetName);
 
-                String id = getCellValueAsString(idCell);
-                if (id.equals(user.getStudentId())) {  // Compare with studentId, not getId()
-                    // Found the user, update the row
+                Iterator<Row> rowIterator = sheet.rowIterator();
+                while (rowIterator.hasNext() && !userFound) {
+                    Row row = rowIterator.next();
+
+                    if (HAS_HEADER_ROW && row.getRowNum() == 0) continue;
+
+                    Cell idCell = row.getCell(ID_COLUMN);
+                    String id = (idCell != null) ? getCellValueAsString(idCell) : null;
+
+                    if (id == null || !id.equals(user.getId())) continue;
 
                     try {
-                        //Update each cell
-                        updateCell(row, NAME_COLUMN, user.getName(), workbook);
-                        updateCell(row, ADDRESS_COLUMN, user.getAddress(), workbook);
-                        updateCell(row, TELEPHONE_COLUMN, user.getTelephone(), workbook);
-                        updateCell(row, EMAIL_COLUMN, user.getEmail(), workbook);
-                        updateCell(row, ACADEMIC_LEVEL_COLUMN, user.getAcademicLevel(), workbook);
-                        updateCell(row, CURRENT_SEMESTER_COLUMN, user.getCurrentSemester(), workbook);
-                        updateCell(row, PROFILE_PHOTO_COLUMN, user.getProfilePhoto(), workbook); // Update Profile Photo
-                        updateCell(row, SUBJECTS_REGISTERED_COLUMN, user.getSubjectsRegistered(), workbook);
-                        updateCell(row, THESIS_TITLE_COLUMN, user.getThesisTitle(), workbook);
-                        updateCell(row, PROGRESS_COLUMN, String.valueOf(user.getProgress()), workbook);  // Use String.valueOf
-                        updateCell(row, PASSWORD_COLUMN, user.getPassword(), workbook);
+                        LOGGER.log(Level.INFO, "Updating user with ID: {0}", user.getId());
 
-                        // Write the changes to the file
-                        try (FileOutputStream fos = new FileOutputStream(FILE_PATH)) {
-                            workbook.write(fos);
-                            LOGGER.info("Excel file updated successfully for student ID: " + user.getStudentId());
+                        // Handle potentially null cells by creating them if they don't exist
+                        updateOrCreateCell(row, NAME_COLUMN, user.getName());
+                        updateOrCreateCell(row, ADDRESS_COLUMN, user.getAddress());
+                        updateOrCreateCell(row, TELEPHONE_COLUMN, user.getTelephone());
+                        updateOrCreateCell(row, EMAIL_COLUMN, user.getEmail());
+                        updateOrCreateCell(row, ACADEMIC_LEVEL_COLUMN, user.getAcademicLevel());
+                        updateOrCreateCell(row, CURRENT_SEMESTER_COLUMN, user.getCurrentSemester());
+                        updateOrCreateCell(row, PROFILE_PHOTO_COLUMN, user.getProfilePhoto());
+                        updateOrCreateCell(row, SUBJECTS_REGISTERED_COLUMN, user.getSubjectsRegistered());
+                        updateOrCreateCell(row, THESIS_TITLE_COLUMN, user.getThesisTitle());
+                        updateOrCreateCell(row, PROGRESS_COLUMN, user.getProgress());
+                        updateOrCreateCell(row, PASSWORD_COLUMN, user.getPassword());
+
+                        // Update role if the column exists and the User class has a role field
+                        if (ROLE_COLUMN >= 0) {
+                            try {
+                                String role = user.getRole();
+                                if (role != null) {
+                                    updateOrCreateCell(row, ROLE_COLUMN, role);
+                                }
+                            } catch (NoSuchMethodError e) {
+                                // Role might not be part of the User class, so we skip it
+                                LOGGER.log(Level.INFO, "Role field not available in User class");
+                            }
                         }
-                        return; // Exit after successful update
+
+                        userFound = true;
+
                     } catch (Exception e) {
-                        LOGGER.log(Level.SEVERE, "Error updating row " + rowNum + ": " + e.getMessage(), e);
-                        return;
+                        LOGGER.log(Level.SEVERE, "Error updating row " + row.getRowNum() + ": " + e.getMessage(), e);
                     }
                 }
             }
 
-            LOGGER.warning("Student with ID " + user.getStudentId() + " not found in the Excel sheet.");
+            if (userFound) {
+                // Save the workbook outside the loop to avoid multiple writes
+                try (FileOutputStream fos = new FileOutputStream(FILE_PATH)) {
+                    workbook.write(fos);
+                    LOGGER.log(Level.INFO, "Excel file updated successfully for user ID: {0}", user.getId());
+                }
+            } else {
+                LOGGER.log(Level.WARNING, "User with ID {0} not found in the Excel file", user.getId());
+            }
 
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Error loading or saving Excel file: " + e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, "Error accessing Excel file: " + e.getMessage(), e);
         }
+    }
+
+    /**
+     * Updates a cell with a value or creates it if it doesn't exist.
+     *
+     * @param row The row containing the cell
+     * @param columnIndex The column index of the cell
+     * @param value The value to set in the cell
+     */
+    private static void updateOrCreateCell(Row row, int columnIndex, String value) {
+        Cell cell = row.getCell(columnIndex);
+        if (cell == null) {
+            cell = row.createCell(columnIndex);
+        }
+        cell.setCellValue(value != null ? value : "");
     }
     //Helper method to update cell value
     private static void updateCell(Row row, int columnIndex, String value, Workbook workbook) {
@@ -222,9 +258,14 @@ public class ExcelDatabase {
                         if (HAS_HEADER_ROW && row.getRowNum() == 0) continue;
 
                         try {
-
                             Cell idCell = row.getCell(ID_COLUMN);
                             String id = (idCell != null) ? getCellValueAsString(idCell) : null;
+
+                            // Skip empty rows if ID is empty
+                            if (id == null || id.isEmpty()) {
+                                LOGGER.warning("Skipping row " + row.getRowNum() + " due to missing ID.");
+                                continue;
+                            }
 
                             Cell nameCell = row.getCell(NAME_COLUMN);
                             String name = (nameCell != null) ? getCellValueAsString(nameCell) : null;
@@ -245,7 +286,7 @@ public class ExcelDatabase {
                             String profilePhoto = (profilePhotoCell != null) ? getCellValueAsString(profilePhotoCell) : null;
 
                             Cell subjectsRegisteredCell = row.getCell(SUBJECTS_REGISTERED_COLUMN);
-                            String subjectsRegistered = (profilePhotoCell != null) ? getCellValueAsString(profilePhotoCell) : null;
+                            String subjectsRegistered = (subjectsRegisteredCell != null) ? getCellValueAsString(subjectsRegisteredCell) : null;
 
                             Cell thesisTitleCell = row.getCell(THESIS_TITLE_COLUMN);
                             String thesisTitle = (thesisTitleCell != null) ? getCellValueAsString(thesisTitleCell) : null;
@@ -259,16 +300,10 @@ public class ExcelDatabase {
                             Cell passwordCell = row.getCell(PASSWORD_COLUMN);
                             String password = (passwordCell != null) ? getCellValueAsString(passwordCell) : null;
 
-                            // Get the student ID
-                            Cell studentIdCell = row.getCell(0); // Assuming student ID is in the first column
-                            String studentId = (studentIdCell != null) ? getCellValueAsString(studentIdCell) : null;
-
                             Cell roleCell = row.getCell(ROLE_COLUMN);
                             String role = (roleCell != null) ? getCellValueAsString(roleCell) : "USER"; // Default role to "USER"
-                            if ((id == null || id.isEmpty()) && (email == null || email.isEmpty())) {
-                                LOGGER.warning("Skipping row " + row.getRowNum() + " due to missing ID and email.");
-                                continue;
-                            }
+
+                            // Validate required fields
                             if (password == null || password.isEmpty()) {
                                 LOGGER.warning("Skipping row " + row.getRowNum() + " due to missing password.");
                                 continue;
@@ -279,7 +314,7 @@ public class ExcelDatabase {
                                 continue;
                             }
 
-
+                            // Create user with role parameter (from second version)
                             User user = new User(id, email, password, role);
 
                             user.setName(name);
@@ -292,10 +327,18 @@ public class ExcelDatabase {
                             user.setThesisTitle(thesisTitle);
                             user.setProgress(progress);
 
-                            if (id != null && !id.isEmpty())
-                                users.put(id, user);
-                            if (email != null && !email.isEmpty())
-                                users.put(email, user);
+                            // Store by ID (primary key)
+                            users.put(id, user);
+
+                            // Also store by email if it exists and is not empty
+                            if (email != null && !email.isEmpty()) {
+                                // Only store by email if it doesn't conflict with another ID
+                                if (!users.containsKey(email)) {
+                                    users.put(email, user);
+                                } else {
+                                    LOGGER.warning("Duplicate key found for email: " + email + ". Only storing user by ID.");
+                                }
+                            }
                         } catch (Exception e) {
                             LOGGER.log(Level.SEVERE, "Error processing row " + row.getRowNum() + ": " + e.getMessage(), e);
                         }
@@ -307,7 +350,6 @@ public class ExcelDatabase {
         }
         return users;
     }
-
     public static void updateStudent(Student student) {
         File excelFile = new File(FILE_PATH);
         Workbook workbook = null;
