@@ -1,80 +1,242 @@
 package com.FinalProject.UMS;
 
-import java.util.ArrayList;
-import java.util.List;
 
-/**
- * The EventController class represents an event in the University Management System.
- * It stores details about an event such as title, description, date, location, and more.
- */
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Objects;
+
+
 public class EventController {
+    private String eventCode;
+    private String title;
+    private String description;
+    private String date;
+    private String location;
+    private int capacity;
+    private double cost;
+    private String headerImage;
+    private String registeredStudents;
 
-    // Private fields to store event details
-    private String eventCode;       // Unique code for the event
-    private String title;           // Event title
-    private String description;     // Event description
-    private String date;            // Event date
-    private String location;        // Event location
-    private int capacity;           // Maximum number of attendees
-    private double cost;            // Cost to attend the event
-    private String headerImage;     // URL for the header image
-    private String registeredStudents; // Comma-separated list of registered students
 
-    /**
-     * Constructor to initialize an EventController object with given details.
-     */
-    public EventController(String eventCode, String title, String description, String location, String date, int capacity, double cost) {
-        this(eventCode, title, description, location, date, capacity, cost, "", ""); // Call the main constructor with default values
-    }
-
-    public EventController(String eventCode, String title, String description, String location, String date, int capacity, double cost, String headerImage, String registeredStudents) {
-        this.eventCode = eventCode;
-        this.title = title;
-        this.description = description;
-        this.date = date;
-        this.location = location;
-        this.capacity = capacity;
-        this.cost = cost;
-        this.headerImage = headerImage;
-        this.registeredStudents = registeredStudents;
+    public EventController(String eventCode, String title, String description,
+                           String location, String date, int capacity, double cost) {
+        this(eventCode, title, description, location, date, capacity, cost, "", "");
     }
 
 
-    // Getters and Setters
+    public EventController(String eventCode, String title, String description,
+                           String location, String date, int capacity,
+                           double cost, String headerImage, String registeredStudents) {
+        setEventCode(eventCode);
+        setTitle(title);
+        setDescription(description);
+        setLocation(location);
+        setDate(date);
+        setCapacity(capacity);
+        setCost(cost);
+        setHeaderImage(headerImage);
+        setRegisteredStudents(registeredStudents);
+    }
+
+
+    // Getters
     public String getEventCode() { return eventCode; }
-    public void setEventCode(String eventCode) { this.eventCode = eventCode; }
-
     public String getTitle() { return title; }
-    public void setTitle(String title) { this.title = title; }
-
     public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
-
     public String getDate() { return date; }
-    public void setDate(String date) { this.date = date; }
-
     public String getLocation() { return location; }
-    public void setLocation(String location) { this.location = location; }
-
     public int getCapacity() { return capacity; }
-    public void setCapacity(int capacity) { this.capacity = capacity; }
-
     public double getCost() { return cost; }
-    public void setCost(double cost) { this.cost = cost; }
-
     public String getHeaderImage() { return headerImage; }
-    public void setHeaderImage(String headerImage) { this.headerImage = headerImage; }
-
     public String getRegisteredStudents() { return registeredStudents; }
-    public void setRegisteredStudents(String registeredStudents) { this.registeredStudents = registeredStudents; }
 
 
-    /**
-     * Returns a string representation of the event.
-     * @return A formatted string containing the event title, date, and location.
-     */
+    // Setters with validation
+    public void setEventCode(String eventCode) {
+        if (eventCode == null || eventCode.trim().isEmpty()) {
+            throw new IllegalArgumentException("Event code cannot be null or empty");
+        }
+        this.eventCode = eventCode.trim();
+    }
+
+
+    public void setTitle(String title) {
+        if (title == null || title.trim().isEmpty()) {
+            throw new IllegalArgumentException("Title cannot be null or empty");
+        }
+        this.title = title.trim();
+    }
+
+
+    public void setDescription(String description) {
+        this.description = description != null ? description.trim() : "";
+    }
+
+
+    public void setDate(String date) {
+        if (date == null || date.trim().isEmpty()) {
+            throw new IllegalArgumentException("Date cannot be null or empty");
+        }
+        this.date = date.trim();
+    }
+
+
+    public void setLocation(String location) {
+        if (location == null || location.trim().isEmpty()) {
+            throw new IllegalArgumentException("Location cannot be null or empty");
+        }
+        this.location = location.trim();
+    }
+
+
+    public void setCapacity(int capacity) {
+        if (capacity < 0) {
+            throw new IllegalArgumentException("Capacity cannot be negative");
+        }
+        this.capacity = capacity;
+    }
+
+
+    public void setCost(double cost) {
+        if (cost < 0) {
+            throw new IllegalArgumentException("Cost cannot be negative");
+        }
+        this.cost = cost;
+    }
+
+
+    public void setHeaderImage(String headerImage) {
+        this.headerImage = headerImage != null ? headerImage.trim() : "";
+    }
+
+
+    public void setRegisteredStudents(String registeredStudents) {
+        this.registeredStudents = registeredStudents != null ? registeredStudents.trim() : "";
+    }
+
+
     @Override
     public String toString() {
-        return eventCode + " - " + title + " (" + date + " at " + location + ") - Capacity: " + capacity + ", Cost: " + (cost == 0 ? "Free" : "$" + cost);
+        return String.format("%s - %s (%s at %s) - Capacity: %d, Cost: %s",
+                eventCode, title, date, location, capacity,
+                cost == 0 ? "Free" : String.format("$%.2f", cost));
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        EventController that = (EventController) o;
+        return capacity == that.capacity &&
+                Double.compare(that.cost, cost) == 0 &&
+                eventCode.equals(that.eventCode) &&
+                title.equals(that.title) &&
+                description.equals(that.description) &&
+                date.equals(that.date) &&
+                location.equals(that.location) &&
+                headerImage.equals(that.headerImage) &&
+                registeredStudents.equals(that.registeredStudents);
+    }
+
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(eventCode, title, description, date, location,
+                capacity, cost, headerImage, registeredStudents);
+    }
+
+
+    public void registerStudent(String studentId) {
+        if (studentId == null || studentId.trim().isEmpty()) {
+            throw new IllegalArgumentException("Student ID cannot be null or empty");
+        }
+
+
+        if (registeredStudents.isEmpty()) {
+            registeredStudents = studentId.trim();
+        } else {
+            registeredStudents += "," + studentId.trim();
+        }
+    }
+
+
+    public boolean isStudentRegistered(String studentId) {
+        if (studentId == null || studentId.trim().isEmpty() || registeredStudents.isEmpty()) {
+            return false;
+        }
+        String[] students = registeredStudents.split(",");
+        for (String id : students) {
+            if (id.trim().equals(studentId.trim())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    public boolean unregisterStudent(String studentId) {
+        if (studentId == null || studentId.trim().isEmpty() || registeredStudents.isEmpty()) {
+            return false;
+        }
+
+
+        String[] students = registeredStudents.split(",");
+        StringBuilder newList = new StringBuilder();
+
+
+        boolean removed = false;
+
+
+        for (String id : students) {
+            if (!id.trim().equals(studentId.trim())) {
+                if (newList.length() > 0) {
+                    newList.append(",");
+                }
+                newList.append(id.trim());
+            } else {
+                removed = true;
+            }
+        }
+
+
+        if (removed) {
+            registeredStudents = newList.toString();
+        }
+        return removed;
+    }
+
+
+    public LocalDate getLocalDate() {
+        try {
+            return LocalDate.parse(this.date.split(" ")[0]);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+
+    public String getTime() {
+        try {
+            return this.date.split(" ")[1];
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
+
+
+
+    public int getRegisteredStudentsCount() {
+        if (registeredStudents.isEmpty()) {
+            return 0;
+        }
+        return registeredStudents.split(",").length;
+    }
+
+
+    public boolean hasAvailableSpots() {
+        return getRegisteredStudentsCount() < capacity;
     }
 }

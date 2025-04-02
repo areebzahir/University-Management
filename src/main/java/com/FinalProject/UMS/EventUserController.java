@@ -1,4 +1,8 @@
+
 package com.FinalProject.UMS;
+
+
+
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -7,22 +11,102 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
+
+
+
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
+
+
+
 
 public class EventUserController {
     @FXML private TableView<EventController> eventTableView;
+    @FXML private TableColumn<EventController, String> eventCodeColumn;
+    @FXML private TableColumn<EventController, String> eventNameColumn;
+    @FXML private TableColumn<EventController, String> descriptionColumn;
+    @FXML private TableColumn<EventController, String> locationColumn;
+    @FXML private TableColumn<EventController, String> dateColumn;
+    @FXML private TableColumn<EventController, Integer> capacityColumn;
+
+
+
+
     @FXML private Button registerButton;
+    @FXML private Button calendarViewButton;
     @FXML private Button returnButton;
 
+
+
+
     private EventManagementExcel excelManager = new EventManagementExcel();
+    private DateTimeFormatter displayFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy 'at' HH:mm");
+    private DateTimeFormatter excelFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+
+
 
     @FXML
     public void initialize() {
+        setupTableColumns();
         loadEventsFromExcel();
     }
+
+
+
+
+    private void setupTableColumns() {
+        eventCodeColumn.setCellValueFactory(new PropertyValueFactory<>("eventCode"));
+        eventNameColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
+        descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
+        locationColumn.setCellValueFactory(new PropertyValueFactory<>("location"));
+        dateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
+        capacityColumn.setCellValueFactory(new PropertyValueFactory<>("capacity"));
+
+
+
+
+        dateColumn.setCellFactory(column -> new TableCell<EventController, String>() {
+            @Override
+            protected void updateItem(String date, boolean empty) {
+                super.updateItem(date, empty);
+                if (empty || date == null || date.isEmpty()) {
+                    setText(null);
+                } else {
+                    try {
+                        LocalDateTime dateTime = LocalDateTime.parse(date, excelFormatter);
+                        setText(dateTime.format(displayFormatter));
+                    } catch (DateTimeParseException e) {
+                        setText(date);
+                    }
+                }
+            }
+        });
+
+
+
+
+        capacityColumn.setCellFactory(column -> new TableCell<EventController, Integer>() {
+            @Override
+            protected void updateItem(Integer capacity, boolean empty) {
+                super.updateItem(capacity, empty);
+                if (empty || capacity == null || capacity == 0) {
+                    setText(null);
+                } else {
+                    setText(String.valueOf(capacity));
+                }
+            }
+        });
+    }
+
+
+
 
     private void loadEventsFromExcel() {
         List<EventController> events = excelManager.readEvents();
@@ -30,17 +114,46 @@ public class EventUserController {
         eventTableView.setItems(observableList);
     }
 
+
+
+
     @FXML
     protected void registerForEvent() {
         EventController selectedEvent = eventTableView.getSelectionModel().getSelectedItem();
-        if (selectedEvent != null) {
-            // In a real application, you would add the current student to the registered students list
-            showAlert("Registration Successful",
-                    "You have successfully registered for: " + selectedEvent.getTitle());
-        } else {
-            showAlert("No Event Selected", "Please select an event to register.");
+        if (selectedEvent == null) {
+            showAlert("Error", "Please select an event to register");
+            return;
+        }
+        // Add your registration logic here
+        showAlert("Success", "Registered for event: " + selectedEvent.getTitle());
+    }
+
+
+
+
+    @FXML
+    protected void showCalendarView() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("calendar-view.fxml"));
+            Parent root = loader.load();
+            CalendarViewController controller = loader.getController();
+            controller.setIsAdminView(true); // true for admin view
+
+
+
+
+            Stage stage = (Stage) eventTableView.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Event Calendar - Admin");
+            stage.show();
+        } catch (IOException e) {
+            showAlert("Error", "Failed to open calendar view: " + e.getMessage());
+            e.printStackTrace();
         }
     }
+
+
+
 
     @FXML
     protected void onReturnButtonClick() {
@@ -52,9 +165,13 @@ public class EventUserController {
             stage.setTitle("Event Management System");
             stage.show();
         } catch (IOException e) {
+            showAlert("Error", "Failed to return to menu: " + e.getMessage());
             e.printStackTrace();
         }
     }
+
+
+
 
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -63,5 +180,8 @@ public class EventUserController {
         alert.setContentText(message);
         alert.showAndWait();
     }
- }
+}
+
+
+
 

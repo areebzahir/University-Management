@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+
+
+
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<VBox xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.FinalProject.UMS.CalendarViewController" spacing="10" style="-fx-background-color: #f4f4f4;"
+      alignment="CENTER">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+
+
+
+    <Text text="Event Calendar" style="-fx-fill: #2c3e50; -fx-font-weight: bold;">
+        <font>
+            <Font name="Arial" size="24" />
+        </font>
+    </Text>
+
+
+
+
+    <HBox alignment="CENTER" spacing="20">
+        <Button fx:id="prevMonthButton" text="❮" onAction="#previousMonth"
+                style="-fx-background-color: #9b59b6; -fx-text-fill: white; -fx-font-size: 16; -fx-font-weight: bold; -fx-padding: 5 15;"/>
+
+
+
+
+        <Label fx:id="monthYearLabel" style="-fx-font-size: 18; -fx-font-weight: bold;"/>
+
+
+
+
+        <Button fx:id="nextMonthButton" text="❯" onAction="#nextMonth"
+                style="-fx-background-color: #9b59b6; -fx-text-fill: white; -fx-font-size: 16; -fx-font-weight: bold; -fx-padding: 5 15;"/>
+    </HBox>
+
+
+
+
+    <VBox fx:id="calendarContainer" alignment="TOP_CENTER" spacing="10">
+        <!-- Calendar grid will be generated here -->
+    </VBox>
+
+
+
+
+    <TableView fx:id="eventsTable" prefHeight="200" prefWidth="600" style="-fx-background-color: white;">
+        <columns>
+            <TableColumn text="Event Name" prefWidth="150">
+                <cellValueFactory><PropertyValueFactory property="title"/></cellValueFactory>
+            </TableColumn>
+            <TableColumn text="Time" prefWidth="100">
+                <cellValueFactory><PropertyValueFactory property="time"/></cellValueFactory>
+            </TableColumn>
+            <TableColumn text="Location" prefWidth="120">
+                <cellValueFactory><PropertyValueFactory property="location"/></cellValueFactory>
+            </TableColumn>
+            <TableColumn text="Description" prefWidth="230">
+                <cellValueFactory><PropertyValueFactory property="description"/></cellValueFactory>
+            </TableColumn>
+        </columns>
+    </TableView>
+
+
+
+
+    <Button fx:id="returnButton" text="Return" onAction="#returnToTableView"
+            style="-fx-background-color: #7f8c8d; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-padding: 10 20;"/>
+
+
+
+
+    <Text text="© 2023 Event Management System" style="-fx-fill: #7f8c8d; -fx-font-size: 12;">
+        <font>
+            <Font name="Arial" />
+        </font>
+    </Text>
+</VBox>

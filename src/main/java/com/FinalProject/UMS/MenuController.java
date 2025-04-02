@@ -285,6 +285,13 @@ public class MenuController {
                 User user = GlobalState.getInstance().getLoggedInUser();
                 subjectManagementController.setUserRole(user.getRole());
             }
+
+            if (controller instanceof EventMenuController) {
+                EventMenuController EventMenuController = (EventMenuController) controller;
+
+                User user = GlobalState.getInstance().getLoggedInUser();
+                EventMenuController.setUserRole(user.getRole());
+            }
             // Close the current window
             if (event != null) {
                 ((Node) (event.getSource())).getScene().getWindow().hide();
@@ -296,3 +303,4 @@ public class MenuController {
         }
     }
 }
+

@@ -59,7 +59,7 @@ public class AZAdminaddstudent {
     // Data management
     private ObservableList<Student> studentList = FXCollections.observableArrayList();
     private ExcelDatabase studentDatabase = new ExcelDatabase();
-    private static final String FILE_PATH = "C:\\Users\\haazi\\OneDrive\\Documents\\FINALPROJECT 1420\\University-Management\\src\\main\\resources\\UMS_Data.xlsx";
+    private static final String FILE_PATH = "C:\\Users\\azahi\\OneDrive - University of Guelph\\1st Year\\Semester 2\\University-Management\\src\\main\\resources\\UMS_Data.xlsx";
     private static final String STUDENT_SHEET_NAME = "Students";
 
     @FXML
