@@ -228,7 +228,8 @@ public class AZAdminaddstudent {
         }
     }
 
-    private void deleteStudent() {
+    @FXML
+    public void deleteStudent() {
         Student selectedStudent = studentTable.getSelectionModel().getSelectedItem();
         if (selectedStudent == null) {
             showAlert("No Selection", "Please select a student to delete.");
