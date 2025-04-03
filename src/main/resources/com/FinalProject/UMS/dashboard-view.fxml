@@ -1,56 +1,282 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.geometry.Pos?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.effect.InnerShadow?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.FinalProject.UMS.DashboardController">
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.FinalProject.UMS.DashboardController"
+            style="-fx-background-color: linear-gradient(to bottom, #f8f9fa, #e9ecef);">
+
+    <!-- Header -->
     <top>
-        <HBox alignment="TOP_RIGHT" style="-fx-padding: 10;">
-            <Button text="Back to Main Screen" fx:id="backButton" onAction="#handleBackButton" style="-fx-font-size: 14;"/>
-        </HBox>
+        <VBox spacing="10">
+            <padding>
+                <Insets top="15" right="20" bottom="5" left="20"/>
+            </padding>
+
+            <!-- Header with Logo -->
+            <HBox alignment="CENTER_LEFT" spacing="15">
+                <Circle radius="25" style="-fx-fill: #9B001C;">
+                    <effect>
+                        <InnerShadow/>
+                    </effect>
+                </Circle>
+                <VBox alignment="CENTER_LEFT">
+                    <Label text="Admin Dashboard" style="-fx-text-fill: #9B001C; -fx-font-weight: bold;">
+                        <font>
+                            <Font name="Arial" size="24" />
+                        </font>
+                    </Label>
+                    <Label text="University Management System Overview" style="-fx-text-fill: #666666; -fx-font-style: italic;">
+                        <font>
+                            <Font name="Arial" size="12" />
+                        </font>
+                    </Label>
+                </VBox>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label text="Last updated: April 3, 2024 10:45 AM" style="-fx-text-fill: #7f8c8d; -fx-font-style: italic; -fx-font-size: 12;"/>
+                <Button fx:id="backButton" text="Back to Main Screen" onAction="#handleBackButton"
+                        style="-fx-background-color: #9B001C; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 15; -fx-background-radius: 5; -fx-cursor: hand; -fx-font-size: 14;">
+                    <graphic>
+                        <Text text="🏠" style="-fx-font-size: 12;"/>
+                    </graphic>
+                    <effect>
+                        <DropShadow color="#00000040" radius="3" spread="0.03"/>
+                    </effect>
+                </Button>
+            </HBox>
+
+            <!-- Separator -->
+            <Rectangle height="3" style="-fx-fill: #F2BA30; -fx-opacity: 0.6; -fx-arc-width: 3; -fx-arc-height: 3;"/>
+        </VBox>
     </top>
+
+    <!-- Main Content -->
     <center>
-        <ScrollPane>
-            <VBox spacing="20" style="-fx-padding: 20;">
+        <ScrollPane fitToWidth="true" style="-fx-background: transparent; -fx-background-color: transparent; -fx-padding: 0;">
+            <VBox spacing="15" style="-fx-padding: 15 20 20 20;">
+
                 <!-- Summary Section -->
-                <HBox spacing="20">
-                    <VBox style="-fx-background-color: #f4f4f4; -fx-padding: 15; -fx-border-radius: 5;">
-                        <Label text="Total Students" style="-fx-font-size: 16; -fx-font-weight: bold;"/>
-                        <Label fx:id="totalStudentsLabel" text="0" style="-fx-font-size: 24; -fx-text-fill: #0077b6;"/>
-                    </VBox>
-                    <VBox style="-fx-background-color: #f4f4f4; -fx-padding: 15; -fx-border-radius: 5;">
-                        <Label text="Total Courses" style="-fx-font-size: 16; -fx-font-weight: bold;"/>
-                        <Label fx:id="totalCoursesLabel" text="0" style="-fx-font-size: 24; -fx-text-fill: #0077b6;"/>
-                    </VBox>
-                    <VBox style="-fx-background-color: #f4f4f4; -fx-padding: 15; -fx-border-radius: 5;">
-                        <Label text="Total Faculties" style="-fx-font-size: 16; -fx-font-weight: bold;"/>
-                        <Label fx:id="totalFacultiesLabel" text="0" style="-fx-font-size: 24; -fx-text-fill: #0077b6;"/>
-                    </VBox>
-                    <VBox style="-fx-background-color: #f4f4f4; -fx-padding: 15; -fx-border-radius: 5;">
-                        <Label text="Total Events" style="-fx-font-size: 16; -fx-font-weight: bold;"/>
-                        <Label fx:id="totalEventsLabel" text="0" style="-fx-font-size: 24; -fx-text-fill: #0077b6;"/>
-                    </VBox>
+                <HBox spacing="15">
+                    <!-- Total Students Card -->
+                    <StackPane style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 15;" HBox.hgrow="ALWAYS">
+                        <effect>
+                            <DropShadow color="#00000022" radius="5" spread="0.03"/>
+                        </effect>
+                        <HBox spacing="15" alignment="CENTER_LEFT">
+                            <StackPane>
+                                <Circle radius="25" style="-fx-fill: rgba(52, 152, 219, 0.15);"/>
+                                <Text text="👨‍🎓" style="-fx-font-size: 20;"/>
+                            </StackPane>
+                            <VBox spacing="5">
+                                <Label text="Total Students" style="-fx-font-weight: bold; -fx-text-fill: #666666; -fx-font-size: 14;"/>
+                                <Label fx:id="totalStudentsLabel" text="11" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #3498db;"/>
+                                <Label text="↑ 12% from last semester" style="-fx-text-fill: #27ae60; -fx-font-size: 12;"/>
+                            </VBox>
+                        </HBox>
+                    </StackPane>
+
+                    <!-- Total Courses Card -->
+                    <StackPane style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 15;" HBox.hgrow="ALWAYS">
+                        <effect>
+                            <DropShadow color="#00000022" radius="5" spread="0.03"/>
+                        </effect>
+                        <HBox spacing="15" alignment="CENTER_LEFT">
+                            <StackPane>
+                                <Circle radius="25" style="-fx-fill: rgba(46, 204, 113, 0.15);"/>
+                                <Text text="📚" style="-fx-font-size: 20;"/>
+                            </StackPane>
+                            <VBox spacing="5">
+                                <Label text="Total Courses" style="-fx-font-weight: bold; -fx-text-fill: #666666; -fx-font-size: 14;"/>
+                                <Label fx:id="totalCoursesLabel" text="3" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #2ecc71;"/>
+                                <Label text="↑ 5% from last semester" style="-fx-text-fill: #27ae60; -fx-font-size: 12;"/>
+                            </VBox>
+                        </HBox>
+                    </StackPane>
+
+                    <!-- Total Faculties Card -->
+                    <StackPane style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 15;" HBox.hgrow="ALWAYS">
+                        <effect>
+                            <DropShadow color="#00000022" radius="5" spread="0.03"/>
+                        </effect>
+                        <HBox spacing="15" alignment="CENTER_LEFT">
+                            <StackPane>
+                                <Circle radius="25" style="-fx-fill: rgba(155, 89, 182, 0.15);"/>
+                                <Text text="👨‍🏫" style="-fx-font-size: 20;"/>
+                            </StackPane>
+                            <VBox spacing="5">
+                                <Label text="Total Faculties" style="-fx-font-weight: bold; -fx-text-fill: #666666; -fx-font-size: 14;"/>
+                                <Label fx:id="totalFacultiesLabel" text="6" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #9b59b6;"/>
+                                <Label text="↑ 3% from last semester" style="-fx-text-fill: #27ae60; -fx-font-size: 12;"/>
+                            </VBox>
+                        </HBox>
+                    </StackPane>
+
+                    <!-- Total Events Card -->
+                    <StackPane style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 15;" HBox.hgrow="ALWAYS">
+                        <effect>
+                            <DropShadow color="#00000022" radius="5" spread="0.03"/>
+                        </effect>
+                        <HBox spacing="15" alignment="CENTER_LEFT">
+                            <StackPane>
+                                <Circle radius="25" style="-fx-fill: rgba(231, 76, 60, 0.15);"/>
+                                <Text text="🎭" style="-fx-font-size: 20;"/>
+                            </StackPane>
+                            <VBox spacing="5">
+                                <Label text="Total Events" style="-fx-font-weight: bold; -fx-text-fill: #666666; -fx-font-size: 14;"/>
+                                <Label fx:id="totalEventsLabel" text="3" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #e74c3c;"/>
+                                <Label text="↑ 20% from last semester" style="-fx-text-fill: #27ae60; -fx-font-size: 12;"/>
+                            </VBox>
+                        </HBox>
+                    </StackPane>
                 </HBox>
 
                 <!-- Recent Activities Section -->
-                <VBox spacing="10">
-                    <Label text="Recent Activities" style="-fx-font-size: 18; -fx-font-weight: bold;"/>
-                    <VBox fx:id="recentActivitiesBox" spacing="10"/>
-                </VBox>
+                <StackPane style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 15;">
+                    <effect>
+                        <DropShadow color="#00000022" radius="5" spread="0.03"/>
+                    </effect>
+                    <VBox spacing="10">
+                        <HBox alignment="CENTER_LEFT" spacing="10">
+                            <StackPane>
+                                <Circle radius="15" style="-fx-fill: rgba(52, 152, 219, 0.15);"/>
+                                <Text text="🔔" style="-fx-font-size: 14;"/>
+                            </StackPane>
+                            <Label text="Recent Activities" style="-fx-font-weight: bold; -fx-text-fill: #666666; -fx-font-size: 16;"/>
+                        </HBox>
+
+                        <VBox fx:id="recentActivitiesBox" spacing="10">
+                            <!-- Hard-coded activity items -->
+                            <HBox spacing="10" style="-fx-background-color: #f8f9fa; -fx-background-radius: 5; -fx-padding: 10;">
+                                <StackPane>
+                                    <Circle radius="15" style="-fx-fill: rgba(46, 204, 113, 0.15);"/>
+                                    <Text text="✅" style="-fx-font-size: 12;"/>
+                                </StackPane>
+                                <VBox spacing="3">
+                                    <Label text="New Student Registration" style="-fx-font-weight: bold; -fx-text-fill: #333333; -fx-font-size: 14;"/>
+                                    <Label text="15 new students registered for Fall 2024" style="-fx-text-fill: #666666; -fx-font-size: 12;"/>
+                                    <Label text="Today, 10:30 AM" style="-fx-text-fill: #7f8c8d; -fx-font-style: italic; -fx-font-size: 11;"/>
+                                </VBox>
+                            </HBox>
+
+                            <HBox spacing="10" style="-fx-background-color: #f8f9fa; -fx-background-radius: 5; -fx-padding: 10;">
+                                <StackPane>
+                                    <Circle radius="15" style="-fx-fill: rgba(231, 76, 60, 0.15);"/>
+                                    <Text text="📝" style="-fx-font-size: 12;"/>
+                                </StackPane>
+                                <VBox spacing="3">
+                                    <Label text="Course Schedule Updated" style="-fx-font-weight: bold; -fx-text-fill: #333333; -fx-font-size: 14;"/>
+                                    <Label text="Fall 2024 course schedule has been finalized" style="-fx-text-fill: #666666; -fx-font-size: 12;"/>
+                                    <Label text="Yesterday, 3:45 PM" style="-fx-text-fill: #7f8c8d; -fx-font-style: italic; -fx-font-size: 11;"/>
+                                </VBox>
+                            </HBox>
+
+                            <HBox spacing="10" style="-fx-background-color: #f8f9fa; -fx-background-radius: 5; -fx-padding: 10;">
+                                <StackPane>
+                                    <Circle radius="15" style="-fx-fill: rgba(155, 89, 182, 0.15);"/>
+                                    <Text text="👨‍🏫" style="-fx-font-size: 12;"/>
+                                </StackPane>
+                                <VBox spacing="3">
+                                    <Label text="New Faculty Hired" style="-fx-font-weight: bold; -fx-text-fill: #333333; -fx-font-size: 14;"/>
+                                    <Label text="Dr. Sarah Johnson joined the Computer Science department" style="-fx-text-fill: #666666; -fx-font-size: 12;"/>
+                                    <Label text="April 1, 2024, 9:15 AM" style="-fx-text-fill: #7f8c8d; -fx-font-style: italic; -fx-font-size: 11;"/>
+                                </VBox>
+                            </HBox>
+                        </VBox>
+                    </VBox>
+                </StackPane>
 
                 <!-- Upcoming Events Section -->
-                <VBox spacing="10">
-                    <Label text="Upcoming Events" style="-fx-font-size: 18; -fx-font-weight: bold;"/>
-                    <VBox fx:id="upcomingEventsBox" spacing="10"/>
-                </VBox>
+                <StackPane style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 15;">
+                    <effect>
+                        <DropShadow color="#00000022" radius="5" spread="0.03"/>
+                    </effect>
+                    <VBox spacing="10">
+                        <HBox alignment="CENTER_LEFT" spacing="10">
+                            <StackPane>
+                                <Circle radius="15" style="-fx-fill: rgba(231, 76, 60, 0.15);"/>
+                                <Text text="📅" style="-fx-font-size: 14;"/>
+                            </StackPane>
+                            <Label text="Upcoming Events" style="-fx-font-weight: bold; -fx-text-fill: #666666; -fx-font-size: 16;"/>
+                        </HBox>
+
+                        <VBox fx:id="upcomingEventsBox" spacing="10">
+                            <!-- Hard-coded event items -->
+                            <HBox spacing="10" style="-fx-background-color: #f8f9fa; -fx-background-radius: 5; -fx-padding: 10;">
+                                <VBox alignment="CENTER" style="-fx-background-color: #9B001C; -fx-background-radius: 5; -fx-padding: 8; -fx-min-width: 60;">
+                                    <Label text="APR" style="-fx-font-weight: bold; -fx-text-fill: white; -fx-font-size: 12;"/>
+                                    <Label text="15" style="-fx-font-weight: bold; -fx-text-fill: white; -fx-font-size: 18;"/>
+                                </VBox>
+                                <VBox spacing="3">
+                                    <Label text="Spring Career Fair" style="-fx-font-weight: bold; -fx-text-fill: #333333; -fx-font-size: 14;"/>
+                                    <Label text="Main Campus, Student Union Building" style="-fx-text-fill: #666666; -fx-font-size: 12;"/>
+                                    <Label text="10:00 AM - 4:00 PM" style="-fx-text-fill: #7f8c8d; -fx-font-style: italic; -fx-font-size: 11;"/>
+                                </VBox>
+                            </HBox>
+
+                            <HBox spacing="10" style="-fx-background-color: #f8f9fa; -fx-background-radius: 5; -fx-padding: 10;">
+                                <VBox alignment="CENTER" style="-fx-background-color: #9B001C; -fx-background-radius: 5; -fx-padding: 8; -fx-min-width: 60;">
+                                    <Label text="APR" style="-fx-font-weight: bold; -fx-text-fill: white; -fx-font-size: 12;"/>
+                                    <Label text="22" style="-fx-font-weight: bold; -fx-text-fill: white; -fx-font-size: 18;"/>
+                                </VBox>
+                                <VBox spacing="3">
+                                    <Label text="Faculty Research Symposium" style="-fx-font-weight: bold; -fx-text-fill: #333333; -fx-font-size: 14;"/>
+                                    <Label text="Science Building, Auditorium A" style="-fx-text-fill: #666666; -fx-font-size: 12;"/>
+                                    <Label text="1:00 PM - 5:00 PM" style="-fx-text-fill: #7f8c8d; -fx-font-style: italic; -fx-font-size: 11;"/>
+                                </VBox>
+                            </HBox>
+
+                            <HBox spacing="10" style="-fx-background-color: #f8f9fa; -fx-background-radius: 5; -fx-padding: 10;">
+                                <VBox alignment="CENTER" style="-fx-background-color: #9B001C; -fx-background-radius: 5; -fx-padding: 8; -fx-min-width: 60;">
+                                    <Label text="MAY" style="-fx-font-weight: bold; -fx-text-fill: white; -fx-font-size: 12;"/>
+                                    <Label text="05" style="-fx-font-weight: bold; -fx-text-fill: white; -fx-font-size: 18;"/>
+                                </VBox>
+                                <VBox spacing="3">
+                                    <Label text="Spring Concert" style="-fx-font-weight: bold; -fx-text-fill: #333333; -fx-font-size: 14;"/>
+                                    <Label text="University Amphitheater" style="-fx-text-fill: #666666; -fx-font-size: 12;"/>
+                                    <Label text="7:00 PM - 10:00 PM" style="-fx-text-fill: #7f8c8d; -fx-font-style: italic; -fx-font-size: 11;"/>
+                                </VBox>
+                            </HBox>
+
+                            <HBox spacing="10" style="-fx-background-color: #f8f9fa; -fx-background-radius: 5; -fx-padding: 10;">
+                                <VBox alignment="CENTER" style="-fx-background-color: #9B001C; -fx-background-radius: 5; -fx-padding: 8; -fx-min-width: 60;">
+                                    <Label text="MAY" style="-fx-font-weight: bold; -fx-text-fill: white; -fx-font-size: 12;"/>
+                                    <Label text="20" style="-fx-font-weight: bold; -fx-text-fill: white; -fx-font-size: 18;"/>
+                                </VBox>
+                                <VBox spacing="3">
+                                    <Label text="Graduation Ceremony" style="-fx-font-weight: bold; -fx-text-fill: #333333; -fx-font-size: 14;"/>
+                                    <Label text="University Stadium" style="-fx-text-fill: #666666; -fx-font-size: 12;"/>
+                                    <Label text="10:00 AM - 1:00 PM" style="-fx-text-fill: #7f8c8d; -fx-font-style: italic; -fx-font-size: 11;"/>
+                                </VBox>
+                            </HBox>
+                        </VBox>
+                    </VBox>
+                </StackPane>
             </VBox>
         </ScrollPane>
     </center>
+
+    <!-- Footer -->
+    <bottom>
+        <HBox alignment="CENTER" style="-fx-padding: 10; -fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-width: 1 0 0 0;">
+            <Label text="© 2025 University Management System | Admin Dashboard v1.2.3" style="-fx-text-fill: #666666; -fx-font-size: 12;"/>
+        </HBox>
+    </bottom>
 </BorderPane>
+

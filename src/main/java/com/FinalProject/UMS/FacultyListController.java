@@ -108,22 +108,6 @@ public class FacultyListController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/FinalProject/UMS/menu-view.fxml"));
             Parent root = loader.load();
 
-            // Create new scene with previous dimensions
-            Scene scene = new Scene(root, prevWidth, prevHeight);
-
-            // Apply CSS if exists (remove if you don't have CSS)
-            try {
-                scene.getStylesheets().add(getClass().getResource("/com/FinalProject/UMS/styles.css").toExternalForm());
-            } catch (NullPointerException e) {
-                System.out.println("No CSS file found - proceeding without styles");
-            }
-
-            // Set the new scene
-            currentStage.setScene(scene);
-            currentStage.setTitle("Main Menu");
-
-            // Force layout refresh
-            root.requestLayout();
 
         } catch (IOException e) {
             System.err.println("Failed to load menu: " + e.getMessage());
@@ -133,6 +117,7 @@ public class FacultyListController {
             ((Stage) facultyTable.getScene().getWindow()).close();
         }
     }
+
 
     public void addFaculty(Faculty faculty) {
         if (faculty.getId() == null || faculty.getId().isEmpty()) {

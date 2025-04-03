@@ -4,59 +4,97 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.effect.*?>
 
 <VBox xmlns="http://javafx.com/javafx/8.0.171"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.FinalProject.UMS.AdminStudentController"
       spacing="15"
-      style="-fx-background-color: #f4f4f4;">
+      style="-fx-background-color: linear-gradient(to bottom, #f8f9fa, #f4f4f4);">
 
     <padding>
         <Insets top="20" right="20" bottom="20" left="20"/>
     </padding>
 
-    <!-- Header -->
-    <Text text="Student Management System - Admin Dashboard"
-          style="-fx-fill: #2c3e50; -fx-font-weight: bold;">
-        <font>
-            <Font name="Arial" size="24" />
-        </font>
-    </Text>
+    <!-- Header - Enhanced with styling but keeping original text -->
+    <HBox alignment="CENTER_LEFT" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 15;">
+        <effect>
+            <DropShadow color="#00000022" radius="10" spread="0.05"/>
+        </effect>
+        <Circle radius="20" style="-fx-fill: #9B001C;"/>
+        <Text text="Student Management System - Admin Dashboard"
+              style="-fx-fill: #2c3e50; -fx-font-weight: bold; -fx-translate-x: 15;">
+            <font>
+                <Font name="Arial" size="24" />
+            </font>
+        </Text>
+    </HBox>
 
-    <!-- Navigation Buttons Section -->
-    <VBox spacing="10" style="-fx-background-color: white; -fx-border-color: #bdc3c7; -fx-border-width: 1; -fx-padding: 15;">
-        <Label text="Student Management Actions:" style="-fx-font-weight: bold; -fx-font-size: 16;"/>
+    <!-- Navigation Buttons Section - Enhanced styling but keeping original buttons -->
+    <VBox spacing="10" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 15;">
+        <effect>
+            <DropShadow color="#00000022" radius="10" spread="0.05"/>
+        </effect>
+
+        <Label text="Student Management Actions:" style="-fx-font-weight: bold; -fx-font-size: 16; -fx-text-fill: #9B001C;"/>
+        <Separator style="-fx-background-color: #F2BA30; -fx-opacity: 0.6;"/>
 
         <HBox spacing="15" alignment="CENTER">
             <Button text="Admin Student Controls" onAction="#handleAddStudent"
-                    style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 15; -fx-background-radius: 5;"/>
-
-
+                    style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 5; -fx-cursor: hand;">
+                <effect>
+                    <DropShadow color="#00000040" radius="5" spread="0.05"/>
+                </effect>
+                <graphic>
+                    <Text text="👨‍🎓" style="-fx-font-size: 14;"/>
+                </graphic>
+            </Button>
 
             <Button fx:id="backButton" text="Back to Main Menu" onAction="#handleBackButton"
-                    style="-fx-background-color: #555555; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 15; -fx-background-radius: 5;"/>
+                    style="-fx-background-color: #9B001C; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 5; -fx-cursor: hand;">
+                <effect>
+                    <DropShadow color="#00000040" radius="5" spread="0.05"/>
+                </effect>
+                <graphic>
+                    <Text text="⬅️" style="-fx-font-size: 14;"/>
+                </graphic>
+            </Button>
         </HBox>
     </VBox>
 
-    <!-- Quick Stats Section -->
-    <VBox spacing="10" style="-fx-background-color: white; -fx-border-color: #bdc3c7; -fx-border-width: 1; -fx-padding: 15;">
-        <Label text="Quick Statistics:" style="-fx-font-weight: bold; -fx-font-size: 16;"/>
+    <!-- Quick Stats Section - Enhanced styling but keeping original stats -->
+    <VBox spacing="10" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 15;">
+        <effect>
+            <DropShadow color="#00000022" radius="10" spread="0.05"/>
+        </effect>
+
+        <Label text="Quick Statistics:" style="-fx-font-weight: bold; -fx-font-size: 16; -fx-text-fill: #F2BA30;"/>
+        <Separator style="-fx-background-color: #F2BA30; -fx-opacity: 0.6;"/>
 
         <HBox spacing="30" alignment="CENTER">
-            <VBox alignment="CENTER" spacing="5">
+            <VBox alignment="CENTER" spacing="5" style="-fx-background-color: rgba(155, 0, 28, 0.1); -fx-padding: 15; -fx-background-radius: 10;" HBox.hgrow="ALWAYS">
+                <Text text="👨‍🎓" style="-fx-font-size: 24;"/>
                 <Label text="Total Students" style="-fx-font-weight: bold;"/>
-                <Label text="1,24" style="-fx-font-size: 24; -fx-text-fill: #2c3e50;"/>
+                <Label text="8" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #9B001C;"/>
             </VBox>
 
-            <VBox alignment="CENTER" spacing="5">
+            <VBox alignment="CENTER" spacing="5" style="-fx-background-color: rgba(242, 186, 48, 0.1); -fx-padding: 15; -fx-background-radius: 10;" HBox.hgrow="ALWAYS">
+                <Text text="📚" style="-fx-font-size: 24;"/>
                 <Label text="Active Enrollments" style="-fx-font-weight: bold;"/>
-                <Label text="100" style="-fx-font-size: 24; -fx-text-fill: #27ae60;"/>
+                <Label text="10" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #F2BA30;"/>
             </VBox>
 
-            <VBox alignment="CENTER" spacing="5">
+            <VBox alignment="CENTER" spacing="5" style="-fx-background-color: rgba(231, 76, 60, 0.1); -fx-padding: 15; -fx-background-radius: 10;" HBox.hgrow="ALWAYS">
+                <Text text="⚠️" style="-fx-font-size: 24;"/>
                 <Label text="Pending Actions" style="-fx-font-weight: bold;"/>
-                <Label text="18" style="-fx-font-size: 24; -fx-text-fill: #e74c3c;"/>
+                <Label text="2" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #e74c3c;"/>
             </VBox>
         </HBox>
     </VBox>
+
+    <!-- Footer -->
+    <HBox alignment="CENTER">
+        <Label text="© 2024 University Management System" style="-fx-font-size: 12; -fx-text-fill: #666666;"/>
+    </HBox>
 </VBox>
