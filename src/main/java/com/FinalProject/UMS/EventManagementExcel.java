@@ -1,16 +1,7 @@
-
-
-
 package com.FinalProject.UMS;
-
-
-
 
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
-
-
 
 import java.io.*;
 import java.time.LocalDate;
@@ -19,25 +10,16 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-
-
-
 public class EventManagementExcel {
     private static final String FILE_PATH = "src/main/resources/UMS_Data.xlsx";
     private static final String SHEET_NAME = "Events";
     private static final int SHEET_INDEX = 4;
     private static final DateTimeFormatter excelDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-
-
-
     public List<EventController> readEvents() {
         List<EventController> events = new ArrayList<>();
         try (FileInputStream fis = new FileInputStream(FILE_PATH);
              Workbook workbook = new XSSFWorkbook(fis)) {
-
-
-
 
             Sheet sheet = workbook.getSheetAt(SHEET_INDEX);
             if (sheet == null) {
@@ -45,16 +27,10 @@ public class EventManagementExcel {
                 return events;
             }
 
-
-
-
             Iterator<Row> rowIterator = sheet.iterator();
             if (rowIterator.hasNext()) {
                 rowIterator.next(); // Skip header row
             }
-
-
-
 
             while (rowIterator.hasNext()) {
                 Row row = rowIterator.next();
@@ -69,9 +45,6 @@ public class EventManagementExcel {
         return events;
     }
 
-
-
-
     private EventController createEventFromRow(Row row) {
         try {
             String eventCode = getStringCellValue(row.getCell(0));
@@ -79,28 +52,16 @@ public class EventManagementExcel {
             String description = getStringCellValue(row.getCell(2));
             String location = getStringCellValue(row.getCell(3));
 
-
-
-
             String dateTimeStr = getStringCellValue(row.getCell(4));
             if (dateTimeStr.matches("\\d+\\.?\\d*")) {
                 double excelDate = Double.parseDouble(dateTimeStr);
                 dateTimeStr = convertExcelDateToString(excelDate);
             }
 
-
-
-
             int capacity = (int) getNumericCellValue(row.getCell(5));
-
-
-
 
             double cost = 0.0;
             String costStr = getStringCellValue(row.getCell(6));
-
-
-
 
             if (costStr != null) {
                 costStr = costStr.trim();
@@ -120,14 +81,8 @@ public class EventManagementExcel {
                 }
             }
 
-
-
-
             String headerImage = getStringCellValue(row.getCell(7));
             String registeredStudents = getStringCellValue(row.getCell(8));
-
-
-
 
             return new EventController(eventCode, title, description, location,
                     dateTimeStr, capacity, cost, headerImage, registeredStudents);
@@ -137,17 +92,11 @@ public class EventManagementExcel {
         }
     }
 
-
-
-
     private String convertExcelDateToString(double excelDate) {
         // Excel's epoch is 1900-01-01 (with 1900 incorrectly treated as leap year)
         // Subtract 2 days to get correct dates (because of Excel's bug)
         LocalDate baseDate = LocalDate.of(1899, 12, 30);
         LocalDate date = baseDate.plusDays((long) excelDate);
-
-
-
 
         // Get time fraction (Excel stores time as fraction of a day)
         double timeFraction = excelDate - Math.floor(excelDate);
@@ -155,23 +104,14 @@ public class EventManagementExcel {
         int hours = totalSeconds / 3600;
         int minutes = (totalSeconds % 3600) / 60;
 
-
-
-
         return String.format("%04d-%02d-%02d %02d:%02d",
                 date.getYear(), date.getMonthValue(), date.getDayOfMonth(),
                 hours, minutes);
     }
 
-
-
-
     public void addEvent(EventController event) {
         try (FileInputStream fis = new FileInputStream(FILE_PATH);
              Workbook workbook = new XSSFWorkbook(fis)) {
-
-
-
 
             Sheet sheet = workbook.getSheetAt(SHEET_INDEX);
             if (sheet == null) {
@@ -179,15 +119,9 @@ public class EventManagementExcel {
                 createHeaderRow(sheet);
             }
 
-
-
-
             int nextRow = findNextAvailableRow(sheet);
             Row newRow = sheet.createRow(nextRow);
             populateEventRow(newRow, event);
-
-
-
 
             writeWorkbook(workbook);
         } catch (IOException e) {
@@ -195,21 +129,13 @@ public class EventManagementExcel {
         }
     }
 
-
-
-
     public void updateEvent(String eventCode, EventController updatedEvent) {
         try (FileInputStream fis = new FileInputStream(FILE_PATH);
              Workbook workbook = new XSSFWorkbook(fis)) {
 
-
-
-
             Sheet sheet = workbook.getSheetAt(SHEET_INDEX);
-            if (sheet == null) return;
-
-
-
+            if (sheet == null)
+                return;
 
             for (int i = 1; i <= sheet.getLastRowNum(); i++) {
                 Row row = sheet.getRow(i);
@@ -219,51 +145,45 @@ public class EventManagementExcel {
                 }
             }
 
-
-
-
             writeWorkbook(workbook);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
-
-
 
     public void deleteEvent(String eventCode) {
         try (FileInputStream fis = new FileInputStream(FILE_PATH);
              Workbook workbook = new XSSFWorkbook(fis)) {
 
-
-
-
             Sheet sheet = workbook.getSheetAt(SHEET_INDEX);
-            if (sheet == null) return;
+            if (sheet == null)
+                return;
 
-
-
-
+            int rowToDelete = -1;
             for (int i = 1; i <= sheet.getLastRowNum(); i++) {
                 Row row = sheet.getRow(i);
                 if (row != null && eventCode.equals(getStringCellValue(row.getCell(0)))) {
-                    sheet.removeRow(row);
-                    shiftRowsUp(sheet, i + 1, sheet.getLastRowNum());
+                    rowToDelete = i;
                     break;
                 }
             }
 
+            if (rowToDelete != -1) {
+                // Remove the row
+                sheet.removeRow(sheet.getRow(rowToDelete));
 
+                // Shift rows up to fill the gap
+                int lastRowNum = sheet.getLastRowNum();
+                if (rowToDelete < lastRowNum) {
+                    sheet.shiftRows(rowToDelete + 1, lastRowNum, -1);
+                }
 
-
-            writeWorkbook(workbook);
+                writeWorkbook(workbook);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
-
-
 
     private void populateEventRow(Row row, EventController event) {
         row.createCell(0).setCellValue(event.getEventCode());
@@ -277,20 +197,14 @@ public class EventManagementExcel {
         row.createCell(8).setCellValue(event.getRegisteredStudents());
     }
 
-
-
-
     private void createHeaderRow(Sheet sheet) {
-        String[] headers = {"Event Code", "Event Name", "Description", "Location",
-                "Date and Time", "Capacity", "Cost", "Header Image", "Registered Students"};
+        String[] headers = { "Event Code", "Event Name", "Description", "Location",
+                "Date and Time", "Capacity", "Cost", "Header Image", "Registered Students" };
         Row headerRow = sheet.createRow(0);
         for (int i = 0; i < headers.length; i++) {
             headerRow.createCell(i).setCellValue(headers[i]);
         }
     }
-
-
-
 
     private void shiftRowsUp(Sheet sheet, int startRow, int endRow) {
         if (startRow <= endRow) {
@@ -305,9 +219,6 @@ public class EventManagementExcel {
                 }
             }
 
-
-
-
             Row lastRow = sheet.getRow(endRow);
             if (lastRow != null) {
                 sheet.removeRow(lastRow);
@@ -315,16 +226,10 @@ public class EventManagementExcel {
         }
     }
 
-
-
-
     private void copyRow(Sheet sheet, Row sourceRow, Row destinationRow) {
         for (int i = sourceRow.getFirstCellNum(); i < sourceRow.getLastCellNum(); i++) {
             Cell oldCell = sourceRow.getCell(i);
             Cell newCell = destinationRow.createCell(i);
-
-
-
 
             if (oldCell != null) {
                 copyCell(oldCell, newCell);
@@ -332,17 +237,11 @@ public class EventManagementExcel {
         }
     }
 
-
-
-
     private void copyCell(Cell oldCell, Cell newCell) {
         if (oldCell == null) {
             newCell.setBlank();
             return;
         }
-
-
-
 
         switch (oldCell.getCellType()) {
             case STRING:
@@ -366,9 +265,6 @@ public class EventManagementExcel {
         }
     }
 
-
-
-
     private int findNextAvailableRow(Sheet sheet) {
         int rowNum = 1;
         while (sheet.getRow(rowNum) != null) {
@@ -377,20 +273,15 @@ public class EventManagementExcel {
         return rowNum;
     }
 
-
-
-
     private void writeWorkbook(Workbook workbook) throws IOException {
         try (FileOutputStream fos = new FileOutputStream(FILE_PATH)) {
             workbook.write(fos);
         }
     }
 
-
-
-
     private String getStringCellValue(Cell cell) {
-        if (cell == null) return "";
+        if (cell == null)
+            return "";
         switch (cell.getCellType()) {
             case STRING:
                 return cell.getStringCellValue();
@@ -407,11 +298,9 @@ public class EventManagementExcel {
         }
     }
 
-
-
-
     private double getNumericCellValue(Cell cell) {
-        if (cell == null) return 0;
+        if (cell == null)
+            return 0;
         switch (cell.getCellType()) {
             case NUMERIC:
                 return cell.getNumericCellValue();
@@ -425,12 +314,24 @@ public class EventManagementExcel {
                 return 0;
         }
     }
+
+    public boolean eventCodeExists(String eventCode) {
+        try (FileInputStream fis = new FileInputStream(FILE_PATH);
+             Workbook workbook = new XSSFWorkbook(fis)) {
+
+            Sheet sheet = workbook.getSheetAt(SHEET_INDEX);
+            if (sheet == null)
+                return false;
+
+            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+                Row row = sheet.getRow(i);
+                if (row != null && eventCode.equals(getStringCellValue(row.getCell(0)))) {
+                    return true;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }
-
-
-
-
-
-
-
-

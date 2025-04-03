@@ -1,8 +1,5 @@
 package com.FinalProject.UMS;
 
-
-
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -17,9 +14,6 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
-
-
-
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -28,9 +22,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
-
-
-
 
 public class EventAdminController {
     @FXML
@@ -54,9 +45,6 @@ public class EventAdminController {
     @FXML
     private TableColumn<EventController, String> registeredStudentsColumn;
 
-
-
-
     @FXML
     private TextField eventCodeField;
     @FXML
@@ -76,9 +64,6 @@ public class EventAdminController {
     @FXML
     private TextField eventCost;
 
-
-
-
     @FXML
     private Button addEventButton;
     @FXML
@@ -90,16 +75,10 @@ public class EventAdminController {
     @FXML
     private Button timePickerButton;
 
-
-
-
     private EventManagementExcel excelManager = new EventManagementExcel();
     private DateTimeFormatter displayFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy 'at' HH:mm");
     private DateTimeFormatter excelFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
-
-
-
 
     @FXML
     public void initialize() {
@@ -108,15 +87,9 @@ public class EventAdminController {
         setupDatePicker();
     }
 
-
-
-
     private void setupDatePicker() {
         eventDatePicker.setConverter(new StringConverter<LocalDate>() {
             private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-
-
 
             @Override
             public String toString(LocalDate date) {
@@ -126,9 +99,6 @@ public class EventAdminController {
                     return "";
                 }
             }
-
-
-
 
             @Override
             public LocalDate fromString(String string) {
@@ -141,50 +111,28 @@ public class EventAdminController {
         });
     }
 
-
-
-
     @FXML
     protected void showTimePickerDialog() {
         Dialog<LocalTime> dialog = new Dialog<>();
         dialog.setTitle("Select Time");
         dialog.setHeaderText("Choose the event time");
 
-
-
-
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-
-
-
 
         Spinner<Integer> hourSpinner = new Spinner<>(0, 23, 12);
         Spinner<Integer> minuteSpinner = new Spinner<>(0, 59, 0);
 
-
-
-
         hourSpinner.setEditable(true);
         minuteSpinner.setEditable(true);
-
-
-
 
         HBox content = new HBox(10);
         content.getChildren().addAll(
                 new Label("Hour:"), hourSpinner,
-                new Label("Minute:"), minuteSpinner
-        );
+                new Label("Minute:"), minuteSpinner);
         content.setAlignment(Pos.CENTER);
         content.setPadding(new Insets(20));
 
-
-
-
         dialog.getDialogPane().setContent(content);
-
-
-
 
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == ButtonType.OK) {
@@ -193,17 +141,11 @@ public class EventAdminController {
             return null;
         });
 
-
-
-
         Optional<LocalTime> result = dialog.showAndWait();
         result.ifPresent(time -> {
             eventTimeField.setText(time.format(timeFormatter));
         });
     }
-
-
-
 
     private void setupTableColumns() {
         eventCodeColumn.setCellValueFactory(new PropertyValueFactory<>("eventCode"));
@@ -215,9 +157,6 @@ public class EventAdminController {
         costColumn.setCellValueFactory(new PropertyValueFactory<>("cost"));
         headerImageColumn.setCellValueFactory(new PropertyValueFactory<>("headerImage"));
         registeredStudentsColumn.setCellValueFactory(new PropertyValueFactory<>("registeredStudents"));
-
-
-
 
         dateColumn.setCellFactory(column -> new TableCell<EventController, String>() {
             @Override
@@ -246,9 +185,6 @@ public class EventAdminController {
             }
         });
 
-
-
-
         capacityColumn.setCellFactory(column -> new TableCell<EventController, Integer>() {
             @Override
             protected void updateItem(Integer capacity, boolean empty) {
@@ -260,9 +196,6 @@ public class EventAdminController {
                 }
             }
         });
-
-
-
 
         costColumn.setCellFactory(column -> new TableCell<EventController, Double>() {
             @Override
@@ -277,40 +210,25 @@ public class EventAdminController {
         });
     }
 
-
-
-
     private String convertExcelDateToString(double excelDate) {
         LocalDate baseDate = LocalDate.of(1899, 12, 30);
         LocalDate date = baseDate.plusDays((long) excelDate);
-
-
-
 
         double timeFraction = excelDate - Math.floor(excelDate);
         int totalSeconds = (int) (timeFraction * 24 * 60 * 60);
         int hours = totalSeconds / 3600;
         int minutes = (totalSeconds % 3600) / 60;
 
-
-
-
         return String.format("%04d-%02d-%02d %02d:%02d",
                 date.getYear(), date.getMonthValue(), date.getDayOfMonth(),
                 hours, minutes);
     }
-
-
-
 
     private void loadEventsFromExcel() {
         List<EventController> events = excelManager.readEvents();
         ObservableList<EventController> observableList = FXCollections.observableArrayList(events);
         eventTableView.setItems(observableList);
     }
-
-
-
 
     @FXML
     protected void addEvent() {
@@ -323,42 +241,29 @@ public class EventAdminController {
             int capacity = Integer.parseInt(eventCapacity.getText().trim());
             double cost = Double.parseDouble(eventCost.getText().trim());
 
-
-
+            // Check if event code already exists
+            if (excelManager.eventCodeExists(eventCode)) {
+                showAlert("Error", "Event code already exists. Please use a different event code.");
+                return;
+            }
 
             LocalDate date = eventDatePicker.getValue();
             String time = eventTimeField.getText().trim();
-
-
-
 
             if (date == null || time.isEmpty()) {
                 showAlert("Error", "Please select both date and time");
                 return;
             }
 
-
-
-
             String dateTime = date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + " " + time;
 
-
-
-
             EventController newEvent = new EventController(
-                    eventCode, title, description, location, dateTime, capacity, cost, imageUrl, ""
-            );
-
-
-
+                    eventCode, title, description, location, dateTime, capacity, cost, imageUrl, "");
 
             excelManager.addEvent(newEvent);
             loadEventsFromExcel();
             clearFormFields();
             showAlert("Success", "Event added successfully");
-
-
-
 
         } catch (NumberFormatException e) {
             showAlert("Error", "Please enter valid numbers for capacity and cost");
@@ -370,9 +275,6 @@ public class EventAdminController {
         }
     }
 
-
-
-
     @FXML
     protected void editEvent() {
         EventController selectedEvent = eventTableView.getSelectionModel().getSelectedItem();
@@ -380,9 +282,6 @@ public class EventAdminController {
             showAlert("Error", "Please select an event to edit");
             return;
         }
-
-
-
 
         try {
             String eventCode = eventCodeField.getText().trim();
@@ -393,43 +292,24 @@ public class EventAdminController {
             int capacity = Integer.parseInt(eventCapacity.getText().trim());
             double cost = Double.parseDouble(eventCost.getText().trim());
 
-
-
-
             LocalDate date = eventDatePicker.getValue();
             String time = eventTimeField.getText().trim();
-
-
-
 
             if (date == null || time.isEmpty()) {
                 showAlert("Error", "Please select both date and time");
                 return;
             }
 
-
-
-
             String dateTime = date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + " " + time;
-
-
-
 
             EventController updatedEvent = new EventController(
                     eventCode, title, description, location, dateTime, capacity, cost,
-                    imageUrl, selectedEvent.getRegisteredStudents()
-            );
-
-
-
+                    imageUrl, selectedEvent.getRegisteredStudents());
 
             excelManager.updateEvent(selectedEvent.getEventCode(), updatedEvent);
             loadEventsFromExcel();
             clearFormFields();
             showAlert("Success", "Event updated successfully");
-
-
-
 
         } catch (NumberFormatException e) {
             showAlert("Error", "Please enter valid numbers for capacity and cost");
@@ -441,9 +321,6 @@ public class EventAdminController {
         }
     }
 
-
-
-
     @FXML
     protected void deleteEvent() {
         EventController selectedEvent = eventTableView.getSelectionModel().getSelectedItem();
@@ -452,16 +329,10 @@ public class EventAdminController {
             return;
         }
 
-
-
-
         Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
         confirmation.setTitle("Confirm Deletion");
         confirmation.setHeaderText("Delete Event");
         confirmation.setContentText("Are you sure you want to delete this event?");
-
-
-
 
         Optional<ButtonType> result = confirmation.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
@@ -476,9 +347,6 @@ public class EventAdminController {
             }
         }
     }
-
-
-
 
     @FXML
     protected void onReturnButtonClick() {
@@ -495,9 +363,6 @@ public class EventAdminController {
         }
     }
 
-
-
-
     @FXML
     protected void showCalendarView() {
         try {
@@ -505,9 +370,6 @@ public class EventAdminController {
             Parent root = loader.load();
             CalendarViewController controller = loader.getController();
             controller.setIsAdminView(true); // true for admin view
-
-
-
 
             Stage stage = (Stage) eventTableView.getScene().getWindow();
             stage.setScene(new Scene(root));
@@ -518,9 +380,6 @@ public class EventAdminController {
             e.printStackTrace();
         }
     }
-
-
-
 
     private void clearFormFields() {
         eventCodeField.clear();
@@ -533,9 +392,6 @@ public class EventAdminController {
         eventDatePicker.setValue(null);
         eventTimeField.clear();
     }
-
-
-
 
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
