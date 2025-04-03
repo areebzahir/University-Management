@@ -13,7 +13,7 @@ import java.util.List;
 public class EventManagementExcel {
     private static final String FILE_PATH = "src/main/resources/UMS_Data.xlsx";
     private static final String SHEET_NAME = "Events";
-    private static final int SHEET_INDEX = 4;
+    private static final int SHEET_INDEX = 3;
     private static final DateTimeFormatter excelDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     public List<EventController> readEvents() {
