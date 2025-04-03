@@ -24,6 +24,8 @@ public class LoginController {
     @FXML
     private Button loginButton;
 
+    // Map to store faculty information from the Excel database
+    private Map<String, Faculties> faculties;
     // Map to store user information from the Excel database
     private Map<String, User> users;
 
@@ -38,6 +40,13 @@ public class LoginController {
         } else {
             LOGGER.log(Level.SEVERE, "Failed to load users from Excel"); // Log an error if loading fails
         }
+
+        faculties = ExcelDatabase.loadFaculties(); // Load faculties from external database
+        if (faculties != null) {
+            LOGGER.log(Level.INFO, "Loaded {0} faculties", faculties.size()); // Log number of faculties loaded
+        } else {
+            LOGGER.log(Level.SEVERE, "Failed to load faculties from Excel"); // Log an error if loading fails
+        }
     }
 
     // Method to handle login logic when the login button is clicked
@@ -46,11 +55,7 @@ public class LoginController {
         String username = usernameField.getText().trim(); // Get the entered username
         String password = passwordField.getText().trim(); // Get the entered password
 
-
-        LOGGER.log(Level.INFO, "Attempting login for user: {0}", username); // Log the login attempt
-
-
-        // Check for hardcoded admin login first
+        // Check for hardcoded admin login first- before faculty and user
         if ("a".equals(username) && "a".equals(password)) {
             LOGGER.info("Admin login successful"); // Log admin login success
 
@@ -66,6 +71,45 @@ public class LoginController {
             return;
         }
 
+
+        LOGGER.log(Level.INFO, "Attempting login for faculty: {0}", username); // Log the login attempt
+
+        // Ensure faculties were loaded from the database before proceeding
+        if (faculties == null) {
+            showPopup("Error", "Faculty database not available!", Alert.AlertType.ERROR); // Show error if faculties are null
+            return;
+        }
+
+        // Check if the entered username exists in the faculty database (use facultyId as username)
+        Faculties faculty = faculties.get(username);
+
+        // If faculty exists, authenticate their password
+        if (faculty != null) {
+            if (faculty.getPassword().equals(password)) { // If password is correct (no authenticate method in Faculties)
+                LOGGER.log(Level.INFO, "Faculty {0} authenticated successfully", username); // Log successful authentication
+
+                // Create a User object for the faculty (for GlobalState)
+                User facultyUser = new User();
+                facultyUser.setUsername(faculty.getFacultyId()); // Use facultyId as username
+                facultyUser.setRole("FACULTY"); // Or another appropriate role
+                facultyUser.setName(faculty.getName());  //set name
+                facultyUser.setEmail(faculty.getEmail());  //set email
+                facultyUser.setId(faculty.getFacultyId());   //set id
+                facultyUser.setPassword(faculty.getPassword()); //set password
+
+                // Store the faculty User object in the global state
+                GlobalState.getInstance().setLoggedInUser(facultyUser);
+                System.out.println("Faculty set in GlobalState: " + GlobalState.getInstance().getLoggedInUser());//DEBUG
+
+                // After successful auth:
+                navigateToMenu("FACULTY", event); // Navigate to the menu, passing the role
+                return;
+            } else {
+                LOGGER.warning("Incorrect password for faculty: " + username); // Log incorrect password attempt
+                errorMessageLabel.setText("Invalid password. Please try again."); // Show error message on the UI
+                showPopup("Login Failed", "Incorrect password", Alert.AlertType.ERROR); // Show error popup
+            }
+        }
         // Ensure users were loaded from the database before proceeding
         if (users == null) {
             showPopup("Error", "User database not available!", Alert.AlertType.ERROR); // Show error if users are null

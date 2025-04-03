@@ -157,4 +157,7 @@ public class User {
 
     public void setUsername(String a) {
     }
+
+    public void setId(String facultyId) {
+    }
 }

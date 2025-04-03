@@ -9,11 +9,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
+
 public class ExcelDatabase {
 
     private static final String FILE_PATH ="C:\\Users\\haazi\\OneDrive\\Documents\\FINALPROJECT 1420\\University-Management\\src\\main\\resources\\UMS_Data.xlsx";
     private static final String STUDENT_SHEET_NAME = "Students";
     private static final String SUBJECT_SHEET_NAME = "Subjects";
+    private static final String FACULTIES_SHEET_NAME = "Faculties";
+
     private static final int ID_COLUMN = 0;
     private static final int NAME_COLUMN = 1;
     private static final int ADDRESS_COLUMN = 2;
@@ -35,12 +38,80 @@ public class ExcelDatabase {
     private static final boolean HAS_SUBJECT_HEADER_ROW = true;
 
     private static final int STUDENT_SHEET_INDEX = 2;
+    private static final int FACULTIES_SHEET_INDEX = 3;
 
     private static final Pattern EMAIL_PATTERN = Pattern.compile(
             "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"
     );
 
     private static final Logger LOGGER = Logger.getLogger(ExcelDatabase.class.getName());
+
+    public static Map<String, Faculties> loadFaculties() {
+        Map<String, Faculties> faculties = new HashMap<>();
+        FileInputStream file = null; // Initialize file outside the try block
+        Workbook workbook = null;   // Initialize workbook outside the try block
+        try {
+            file = new FileInputStream(new File(FILE_PATH)); // Using FILE_PATH
+            workbook = new XSSFWorkbook(file);
+            Sheet sheet = workbook.getSheet(FACULTIES_SHEET_NAME); // Using FACULTIES_SHEET_NAME
+
+            if (sheet == null) {
+                LOGGER.log(Level.SEVERE, "Sheet '" + FACULTIES_SHEET_NAME + "' not found in the Excel file.");
+                return null;
+            }
+
+            for (int rowIndex = 1; rowIndex <= sheet.getLastRowNum(); rowIndex++) {
+                Row row = sheet.getRow(rowIndex);
+                if (row != null) {
+                    String facultyId = getStringCellValue(row.getCell(0)); // Column A
+                    String name = getStringCellValue(row.getCell(1)); // Column B
+                    String degree = getStringCellValue(row.getCell(2)); // Column C
+                    String researchInterest = getStringCellValue(row.getCell(3)); // Column D
+                    String email = getStringCellValue(row.getCell(4)); // Column E
+                    String officeLocation = getStringCellValue(row.getCell(5)); // Column F
+                    String coursesOffered = getStringCellValue(row.getCell(6)); // Column G
+                    String password = getStringCellValue(row.getCell(7)); // Column H
+
+                    Faculties faculty = new Faculties(facultyId, name, degree, researchInterest, email, officeLocation, coursesOffered, password);
+                    faculties.put(facultyId, faculty);
+                }
+            }
+
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Error loading faculties from Excel: " + e.getMessage(), e);
+            e.printStackTrace(); // Print the stack trace for debugging
+            return null;
+        } finally {
+            try {
+                if (workbook != null) workbook.close();
+                if (file != null) file.close();
+            } catch (IOException e) {
+                LOGGER.log(Level.WARNING, "Error closing workbook or file: " + e.getMessage(), e);
+            }
+        }
+        return faculties;
+    }
+    private static String getStringCellValue(Cell cell) {
+        if (cell == null) {
+            return "";
+        }
+        try {
+            switch (cell.getCellType()) {
+                case STRING:
+                    return cell.getStringCellValue();
+                case NUMERIC:
+                    return String.valueOf((int) cell.getNumericCellValue());
+                case BLANK:
+                    return "";
+                default:
+                    return "";
+            }
+        } catch (Exception e) {
+            LOGGER.log(Level.WARNING, "Error getting string value from cell: " + e.getMessage(), e);
+            return "";
+        }
+    }
+
 
     public static List<User> loadUsersAsList() {
         Map<String, User> userMap = ExcelDatabase.loadUsers();
