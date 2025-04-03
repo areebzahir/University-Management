@@ -44,8 +44,8 @@ public class EventUserController {
     public void initialize() {
 
         // Prevent unauthorized access
-            userButton.setDisable(true);
-           userButton.setVisible(false);
+        //   userButton.setDisable(true);
+        // userButton.setVisible(false);
         if (GlobalState.getInstance().getLoggedInUser() == null ||
                 !GlobalState.getInstance().getLoggedInUser().getRole().equals("USER")) {
             showAlert("Access Denied", "You don't have permission to access this view.");

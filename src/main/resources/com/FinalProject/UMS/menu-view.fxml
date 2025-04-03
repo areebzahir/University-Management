@@ -132,21 +132,33 @@
                             <Button fx:id="facultyManagementButton" text="Manage Faculty"
                                     onAction="#handleFacultyManagement"
                                     style="-fx-background-color: rgba(242, 186, 48, 0.2);
-                                           -fx-text-fill: #F2BA30;
-                                           -fx-padding: 12;
-                                           -fx-background-radius: 8;
-                                           -fx-border-color: #F2BA30;
-                                           -fx-border-radius: 8;
-                                           -fx-cursor: hand;"/>
+                       -fx-text-fill: #F2BA30;
+                       -fx-padding: 12;
+                       -fx-background-radius: 8;
+                       -fx-border-color: #F2BA30;
+                       -fx-border-radius: 8;
+                       -fx-cursor: hand;"/>
+
                             <Button text="Assign Courses"
                                     onAction="#handleAssignFacultyCourses"
                                     style="-fx-background-color: rgba(242, 186, 48, 0.2);
-                                           -fx-text-fill: #F2BA30;
-                                           -fx-padding: 12;
-                                           -fx-background-radius: 8;
-                                           -fx-border-color: #F2BA30;
-                                           -fx-border-radius: 8;
-                                           -fx-cursor: hand;"/>
+                       -fx-text-fill: #F2BA30;
+                       -fx-padding: 12;
+                       -fx-background-radius: 8;
+                       -fx-border-color: #F2BA30;
+                       -fx-border-radius: 8;
+                       -fx-cursor: hand;"/>
+
+                            <!-- NEW View Faculty Button -->
+                            <Button fx:id="viewFacultyButton" text="View Faculty"
+                                    onAction="#handleViewFaculty"
+                                    style="-fx-background-color: rgba(242, 186, 48, 0.2);
+                       -fx-text-fill: #F2BA30;
+                       -fx-padding: 12;
+                       -fx-background-radius: 8;
+                       -fx-border-color: #F2BA30;
+                       -fx-border-radius: 8;
+                       -fx-cursor: hand;"/>
                         </VBox>
                     </VBox>
 

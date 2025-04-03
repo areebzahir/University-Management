@@ -59,7 +59,7 @@ public class AZAdminaddstudent {
     // Data management
     private ObservableList<Student> studentList = FXCollections.observableArrayList();
     private ExcelDatabase studentDatabase = new ExcelDatabase();
-    private static final String FILE_PATH = "C:\\Users\\haazi\\OneDrive\\Documents\\FINALPROJECT 1420\\University-Management\\src\\main\\resources\\UMS_Data.xlsx";
+    private static final String FILE_PATH = "C:\\Users\\azahi\\OneDrive - University of Guelph\\1st Year\\Semester 2\\University-Management\\src\\main\\resources\\UMS_Data.xlsx";
     private static final String STUDENT_SHEET_NAME = "Students";
 
     @FXML
@@ -630,7 +630,7 @@ public class AZAdminaddstudent {
 
         // Create the academic progress display
         VBox content = new VBox(10);
-        content.setPadding(new javafx.geometry.Insets(20, 20, 10, 10));
+        content.setPadding(new Insets(20, 20, 10, 10));
 
         // Hardcoded academic data
         double termGPA = 3.75;
@@ -855,7 +855,7 @@ public class AZAdminaddstudent {
 
         // Create the tuition information display
         VBox content = new VBox(10);
-        content.setPadding(new javafx.geometry.Insets(20, 150, 10, 10));
+        content.setPadding(new Insets(20, 150, 10, 10));
 
         // Add tuition summary
         content.getChildren().add(new Label("Tuition Summary:"));
@@ -931,7 +931,7 @@ public class AZAdminaddstudent {
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
-        grid.setPadding(new javafx.geometry.Insets(20, 150, 10, 10));
+        grid.setPadding(new Insets(20, 150, 10, 10));
 
         TextField amountField = new TextField();
         ComboBox<String> paymentTypeCombo = new ComboBox<>();
@@ -1105,7 +1105,7 @@ public class AZAdminaddstudent {
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
-        grid.setPadding(new javafx.geometry.Insets(20, 150, 10, 10));
+        grid.setPadding(new Insets(20, 150, 10, 10));
 
         TextField amountField = new TextField();
         TextField nameField = new TextField();
@@ -1174,7 +1174,7 @@ public class AZAdminaddstudent {
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
-        grid.setPadding(new javafx.geometry.Insets(20, 150, 10, 10));
+        grid.setPadding(new Insets(20, 150, 10, 10));
 
         TextField amountField = new TextField();
         TextField nameField = new TextField();
@@ -1243,7 +1243,7 @@ public class AZAdminaddstudent {
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
-        grid.setPadding(new javafx.geometry.Insets(20, 150, 10, 10));
+        grid.setPadding(new Insets(20, 150, 10, 10));
 
         TextField amountField = new TextField();
         DatePicker datePicker = new DatePicker(java.time.LocalDate.now());

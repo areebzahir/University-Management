@@ -1,6 +1,5 @@
 package com.FinalProject.UMS;
 
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -23,45 +22,30 @@ public class MenuController {
     private static final Logger LOGGER = Logger.getLogger(MenuController.class.getName());
     private static final String ROLE_ADMIN = "ADMIN";
     private static final String ROLE_USER = "USER";
-    @FXML
-    private VBox menuVBox;
 
-    @FXML
-    private Button subjectManagementButton;
-
-    @FXML
-    private Button courseManagementButton;
-
-    @FXML
-    private Button studentManagementButton;
-
-    @FXML
-    private Button facultyManagementButton;
-
-    @FXML
-    private Button eventManagementButton;
-
-    @FXML
-    private Button adminStudentViewButton;
+    @FXML private VBox menuVBox;
+    @FXML private Button subjectManagementButton;
+    @FXML private Button courseManagementButton;
+    @FXML private Button studentManagementButton;
+    @FXML private Button facultyManagementButton;
+    @FXML private Button eventManagementButton;
+    @FXML private Button adminStudentViewButton;
+    @FXML private Button viewFacultyButton;
 
     private String loggedInStudentId;
     private String userRole;
 
-
     @FXML
     public void initialize() {
         LOGGER.info("MenuController initialized");
-
-        // Retrieve userRole from GlobalState
         User loggedInUser = GlobalState.getInstance().getLoggedInUser();
         if (loggedInUser != null) {
             this.userRole = loggedInUser.getRole();
             System.out.println("Initializing MenuController - Current role: " + userRole);
         } else {
             System.out.println("Initializing MenuController - No user logged in");
-            this.userRole = null; // Or set a default role if appropriate
+            this.userRole = null;
         }
-
         updateButtonVisibility();
     }
 
@@ -70,13 +54,11 @@ public class MenuController {
         System.out.println("Setting user role to: " + this.userRole);
         LOGGER.info("User role set to: " + this.userRole);
 
-        // Store the userRole in GlobalState
         User loggedInUser = GlobalState.getInstance().getLoggedInUser();
         if (loggedInUser != null) {
-            loggedInUser.setRole(this.userRole); // Update the role in the User object
-            GlobalState.getInstance().setLoggedInUser(loggedInUser); // Store the updated User object
+            loggedInUser.setRole(this.userRole);
+            GlobalState.getInstance().setLoggedInUser(loggedInUser);
         }
-
         updateButtonVisibility();
     }
 
@@ -86,116 +68,95 @@ public class MenuController {
             adminStudentViewButton.setVisible(false);
             adminStudentViewButton.setManaged(false);
             studentManagementButton.setVisible(false);
-            studentManagementButton.setVisible(false);
+            studentManagementButton.setManaged(false);
+            viewFacultyButton.setVisible(false);
+            viewFacultyButton.setManaged(false);
             return;
         }
 
         boolean isAdmin = ROLE_ADMIN.equals(userRole);
         boolean isUser = ROLE_USER.equals(userRole);
 
-        System.out.println("Updating button visibility - Admin: " + isAdmin +
-                ", User: " + isUser);
+        System.out.println("Updating button visibility - Admin: " + isAdmin + ", User: " + isUser);
 
-        // Admin sees only admin button
         adminStudentViewButton.setVisible(isAdmin);
         adminStudentViewButton.setManaged(isAdmin);
-        studentManagementButton.setDisable(isAdmin); // Disable student button for admin
-
-        // User sees only student button
+        studentManagementButton.setDisable(isAdmin);
         studentManagementButton.setVisible(isUser);
         studentManagementButton.setManaged(isUser);
-        adminStudentViewButton.setDisable(isUser); // Disable admin button for user
+        adminStudentViewButton.setDisable(isUser);
+        viewFacultyButton.setVisible(true); // Visible to both roles
+        viewFacultyButton.setManaged(true);
 
-        LOGGER.info("Button visibility updated - AdminButton: " + isAdmin +
-                ", StudentButton: " + isUser);
+        LOGGER.info("Button visibility updated");
     }
 
-    @FXML
-    private void handleDashboard(ActionEvent event) {
+    // Scene Navigation Handlers
+    @FXML private void handleDashboard(ActionEvent event) {
         loadScene("Dashboard-view.fxml", "Dashboard", event);
     }
 
-
-    @FXML
-    private void handleSubjectManagement(ActionEvent event) {
-        LOGGER.log(Level.INFO, "Subject Management button clicked");
-        loadScene("/com/FinalProject/UMS/SubjectManagement.fxml", "Subject Management", event);  // Corrected path and using loadScene
+    @FXML private void handleSubjectManagement(ActionEvent event) {
+        loadScene("/com/FinalProject/UMS/SubjectManagement.fxml", "Subject Management", event);
     }
 
-    @FXML
-    private void handleAddSubject(ActionEvent event) {
+    @FXML private void handleAddSubject(ActionEvent event) {
         loadScene("addSubject.fxml", "Add Subject", event);
     }
 
-    @FXML
-    private void handleEditSubject(ActionEvent event) {
+    @FXML private void handleEditSubject(ActionEvent event) {
         loadScene("editSubject.fxml", "Edit Subject", event);
     }
 
-    @FXML
-    private void handleDeleteSubject(ActionEvent event) {
+    @FXML private void handleDeleteSubject(ActionEvent event) {
         loadScene("deleteSubject.fxml", "Delete Subject", event);
     }
 
-    @FXML
-    private void handleViewSubject(ActionEvent event) {
+    @FXML private void handleViewSubject(ActionEvent event) {
         loadScene("viewSubject.fxml", "View Subject", event);
     }
-    @FXML
-    private void handleCourseManagement(ActionEvent event) {
+
+    @FXML private void handleCourseManagement(ActionEvent event) {
         loadScene("CourseManagement-view.fxml", "Course Management", event);
     }
 
-    @FXML
-    private void handleAddCourse(ActionEvent event) {
+    @FXML private void handleAddCourse(ActionEvent event) {
         loadScene("addCourse.fxml", "Add Course", event);
     }
 
-    @FXML
-    private void handleEditCourse(ActionEvent event) {
+    @FXML private void handleEditCourse(ActionEvent event) {
         loadScene("editCourse.fxml", "Edit Course", event);
     }
 
-    @FXML
-    private void handleDeleteCourse(ActionEvent event) {
+    @FXML private void handleDeleteCourse(ActionEvent event) {
         loadScene("deleteCourse.fxml", "Delete Course", event);
     }
 
-    @FXML
-    private void handleViewCourse(ActionEvent event) {
+    @FXML private void handleViewCourse(ActionEvent event) {
         loadScene("viewCourse.fxml", "View Course", event);
     }
 
-    @FXML
-    private void handleAssignFaculty(ActionEvent event) {
+    @FXML private void handleAssignFaculty(ActionEvent event) {
         loadScene("assignFaculty.fxml", "Assign Faculty Courses", event);
     }
 
-    @FXML
-    private void handleManageEnrollments(ActionEvent event) {
+    @FXML private void handleManageEnrollments(ActionEvent event) {
         loadScene("manageEnrollments.fxml", "Manage Enrollments", event);
     }
 
-    @FXML
-    private void handleStudentManage(ActionEvent event) {
+    @FXML private void handleStudentManage(ActionEvent event) {
         System.out.println("Student management button clicked by user with role: " + userRole);
-
-        // Load student data and print to console
         List<Student> students = StudentDatabase.loadStudentsFromExcel();
         System.out.println("Loaded Students:");
         for (Student student : students) {
-            System.out.println(student.getStudentId() + " " + student.getName() + " " + student.getAddress() + " " + student.getEmail());
+            System.out.println(student.getStudentId() + " " + student.getName());
         }
 
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("studentmanagecontroller.fxml"));
             Parent root = loader.load();
-
-            // Get the controller for the student management view
-            StudentManagementMenuController studentManagementController = loader.getController();
-
-            // Pass the logged-in student ID to the student management controller
-            studentManagementController.setLoggedInStudentId(loggedInStudentId);
+            StudentManagementMenuController controller = loader.getController();
+            controller.setLoggedInStudentId(loggedInStudentId);
 
             Stage stage = (Stage) studentManagementButton.getScene().getWindow();
             Scene scene = new Scene(root, 1920, 1080);
@@ -205,16 +166,12 @@ public class MenuController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
-    @FXML
-    private void handleAdminStudentView(ActionEvent event) {
-        System.out.println("Admin student view button clicked by user with role: " + userRole);
 
+    @FXML private void handleAdminStudentView(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("admin-student-view.fxml"));
             Parent root = loader.load();
-
             Stage stage = (Stage) adminStudentViewButton.getScene().getWindow();
             stage.setScene(new Scene(root, 1920, 1080));
             stage.setTitle("Admin Student View");
@@ -225,61 +182,56 @@ public class MenuController {
         }
     }
 
-    @FXML
-    private void handleFacultyManagement(ActionEvent event) {
+    // Faculty Management Section
+    @FXML private void handleFacultyManagement(ActionEvent event) {
         loadScene("faculty-view.fxml", "Faculty Management", event);
     }
 
-    @FXML
-    private void handleAssignFacultyCourses(ActionEvent event) {
+    @FXML private void handleAssignFacultyCourses(ActionEvent event) {
         loadScene("assignFacultyCourses.fxml", "Assign Faculty Courses", event);
     }
 
-    @FXML
-    private void handleEventManagement(ActionEvent event) {
+    @FXML private void handleViewFaculty(ActionEvent event) {
+        loadScene("/com/FinalProject/UMS/facultyStudentView.fxml", "View Faculty", event);
+    }
+
+    // Event Management Section
+    @FXML private void handleEventManagement(ActionEvent event) {
         loadScene("event-menu-view.fxml", "Event Management", event);
     }
 
-    @FXML
-    private void handleEditEvent(ActionEvent event) {
+    @FXML private void handleEditEvent(ActionEvent event) {
         loadScene("editEvent.fxml", "Edit Event", event);
     }
 
-    @FXML
-    private void handleDeleteEvent(ActionEvent event) {
+    @FXML private void handleDeleteEvent(ActionEvent event) {
         loadScene("deleteEvent.fxml", "Delete Event", event);
     }
 
-    @FXML
-    private void handleViewEvents(ActionEvent event) {
+    @FXML private void handleViewEvents(ActionEvent event) {
         loadScene("viewEvents.fxml", "View Events", event);
     }
 
-    @FXML
-    private void handleManageEventRegistrations(ActionEvent event) {
-        loadScene("manageEventRegistrations.fxml", "ManageEventRegistrations", event);
+    @FXML private void handleManageEventRegistrations(ActionEvent event) {
+        loadScene("manageEventRegistrations.fxml", "Manage Event Registrations", event);
     }
 
-    @FXML
-    private void handleViewProfile(ActionEvent event) {
+    // User Profile and System
+    @FXML private void handleViewProfile(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("profile-view.fxml"));
             Parent root = loader.load();
-
-
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
+            stage.setScene(new Scene(root));
             stage.setTitle("User Profile");
             stage.show();
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Error loading profile FXML: " + e.getMessage(), e);
-            showError("Error", "Failed to load profile FXML.");
+            LOGGER.log(Level.SEVERE, "Error loading profile FXML", e);
+            showError("Error", "Failed to load profile");
         }
     }
 
-    @FXML
-    private void handleLogout(ActionEvent event) {
+    @FXML private void handleLogout(ActionEvent event) {
         try {
             // Close the current window
             Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -300,12 +252,11 @@ public class MenuController {
             showError("Logout Error", "Failed to return to login screen");
         }
     }
-    @FXML
-    private void handleOpenChatbot() {
+
+    @FXML private void handleOpenChatbot() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("chatbot-popup.fxml"));
             Parent root = loader.load();
-
             Stage chatbotStage = new Stage();
             chatbotStage.initModality(Modality.APPLICATION_MODAL);
             chatbotStage.initOwner(menuVBox.getScene().getWindow());
@@ -314,10 +265,11 @@ public class MenuController {
             chatbotStage.show();
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Failed to open chatbot", e);
-            showError("Error", "Failed to open chatbot: " + e.getMessage());
+            showError("Error", "Failed to open chatbot");
         }
     }
 
+    // Utility Methods
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
@@ -339,46 +291,32 @@ public class MenuController {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxmlFile));
             Parent root = fxmlLoader.load();
 
-            Stage stage;
-            if (event != null) {
-                stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
-            } else {
-                stage = (Stage) menuVBox.getScene().getWindow();
-            }
+            Stage stage = (event != null) ?
+                    (Stage) ((Button) event.getSource()).getScene().getWindow() :
+                    (Stage) menuVBox.getScene().getWindow();
 
             stage.setTitle(title);
             stage.setScene(new Scene(root, 1366, 768));
             stage.show();
-            // Get the controller for the loaded FXML
+
             Object controller = fxmlLoader.getController();
-            // If it's the SubjectManagementController, pass the user role
             if (controller instanceof SubjectManagementController) {
-                SubjectManagementController subjectManagementController = (SubjectManagementController) controller;
-
-                User user = GlobalState.getInstance().getLoggedInUser();
-                subjectManagementController.setUserRole(user.getRole());
+                ((SubjectManagementController)controller).setUserRole(
+                        GlobalState.getInstance().getLoggedInUser().getRole());
+            } else if (controller instanceof EventMenuController) {
+                ((EventMenuController)controller).setUserRole(
+                        GlobalState.getInstance().getLoggedInUser().getRole());
+            } else if (controller instanceof MenuController) {
+                ((MenuController)controller).setUserRole(
+                        GlobalState.getInstance().getLoggedInUser().getRole());
             }
 
-            if (controller instanceof EventMenuController) {
-                EventMenuController EventMenuController = (EventMenuController) controller;
-
-                User user = GlobalState.getInstance().getLoggedInUser();
-                EventMenuController.setUserRole(user.getRole());
-            }
-            if (controller instanceof MenuController) {
-                MenuController MenuController = (MenuController) controller;
-
-                User user = GlobalState.getInstance().getLoggedInUser();
-                MenuController.setUserRole(user.getRole());
-            }
-            // Close the current window
             if (event != null) {
-                ((Node) (event.getSource())).getScene().getWindow().hide();
+                ((Node) event.getSource()).getScene().getWindow().hide();
             }
-
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Error loading " + fxmlFile + ": " + e.getMessage(), e);
-            showAlert("Error", "Failed to load " + title + " window.");
+            LOGGER.log(Level.SEVERE, "Error loading " + fxmlFile, e);
+            showAlert("Error", "Failed to load " + title);
         }
     }
 }

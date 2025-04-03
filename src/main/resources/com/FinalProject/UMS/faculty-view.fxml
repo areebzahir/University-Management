@@ -1,20 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
-        <?import javafx.scene.control.*?>
-        <?import javafx.scene.layout.*?>
 
-<VBox alignment="CENTER" spacing="10.0" xmlns="http://javafx.com/javafx"
-      xmlns:fx="http://javafx.com/fxml" fx:controller="com.FinalProject.UMS.FacultyController">
 
-    <Label fx:id="pageTitle" text="Faculty Management" />
 
-    <TextField fx:id="nameField" promptText="Enter Faculty Name" visible="false"/>
-    <TextField fx:id="emailField" promptText="Enter Email" visible="false"/>
-    <TextField fx:id="departmentField" promptText="Enter Department" visible="false"/>
 
-    <HBox spacing="10.0">
-        <Button fx:id="backButton" text="Back" onAction="#handleBack"/>
-        <Button fx:id="saveButton" text="Save Faculty" onAction="#saveFaculty" visible="false"/>
-        <Button fx:id="addFacultyButton" text="Add Faculty" onAction="#showAddFacultyForm"/>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.cell.*?>
+
+
+
+
+<VBox xmlns="http://javafx.com/javafx/8"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.FinalProject.UMS.FacultyListController"
+      spacing="10"
+      style="-fx-padding: 20;">
+
+
+
+
+    <TableView fx:id="facultyTable">
+        <columns>
+            <TableColumn fx:id="idColumn" text="Faculty ID"/>
+            <TableColumn fx:id="nameColumn" text="Name"/>
+            <TableColumn fx:id="degreeColumn" text="Degree"/>
+            <TableColumn fx:id="researchColumn" text="Research Interest"/>
+            <TableColumn fx:id="emailColumn" text="Email"/>
+            <TableColumn fx:id="officeColumn" text="Office Location"/>
+            <TableColumn fx:id="coursesColumn" text="Courses Offered"/>
+            <TableColumn fx:id="actionsColumn" text="Actions"/>
+        </columns>
+    </TableView>
+
+
+
+
+    <HBox spacing="10">
+        <Button text="Add Faculty" onAction="#handleAddFaculty"/>
+        <Button text="Back" onAction="#handleBack"/>
     </HBox>
-
 </VBox>
+
+
+
+

@@ -6,10 +6,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -17,136 +14,147 @@ import javafx.scene.layout.HBox;
 import java.io.IOException;
 
 public class FacultyListController {
+    @FXML private TableView<Faculty> facultyTable;
+    @FXML private TableColumn<Faculty, String> idColumn, nameColumn, degreeColumn,
+            researchColumn, emailColumn, officeColumn, coursesColumn;
+    @FXML private TableColumn<Faculty, Void> actionsColumn;
 
-    @FXML
-    private TableView<Faculty> facultyTable;
-    @FXML
-    private TableColumn<Faculty, Integer> idColumn;
-    @FXML
-    private TableColumn<Faculty, String> nameColumn, emailColumn, departmentColumn;
-    @FXML
-    private TableColumn<Faculty, Void> actionsColumn;
-
-    public static ObservableList<Faculty> facultyList = FXCollections.observableArrayList();
-
-    // Singleton instance to ensure only one controller exists
-    private static FacultyListController instance;
-
-    public FacultyListController() {
-        instance = this;
-    }
-
-    // Returns the instance of FacultyListController
-    public static FacultyListController getInstance() {
-        if (instance == null) {
-            System.out.println("ERROR: FacultyListController instance is null!");
-        }
-        return instance;
-    }
+    private final ObservableList<Faculty> facultyList = FXCollections.observableArrayList();
+    private final FacultyExcelHandler excelHandler = new FacultyExcelHandler();
 
     @FXML
     public void initialize() {
-        System.out.println("Initializing Faculty List...");
-        instance = this; // Assign instance inside initialize()
-
-        if (facultyTable == null) {
-            System.out.println("facultyTable is NULL! Make sure FXML is properly linked.");
-            return;
-        }
-
-        // Set TableView column mappings
+        // Setup columns
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        degreeColumn.setCellValueFactory(new PropertyValueFactory<>("degree"));
+        researchColumn.setCellValueFactory(new PropertyValueFactory<>("researchInterest"));
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
-        departmentColumn.setCellValueFactory(new PropertyValueFactory<>("department"));
+        officeColumn.setCellValueFactory(new PropertyValueFactory<>("officeLocation"));
+        coursesColumn.setCellValueFactory(new PropertyValueFactory<>("coursesOffered"));
 
-        // Add sample data if the list is empty
-        if (facultyList.isEmpty()) {
-            facultyList.add(new Faculty(1, "John Doe", "john@example.com", "Computer Science"));
-            facultyList.add(new Faculty(2, "Jane Smith", "jane@example.com", "Mathematics"));
-        }
-
+        // Load data
+        facultyList.setAll(excelHandler.readFaculty());
         facultyTable.setItems(facultyList);
+        facultyTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-        // Add "Edit" & "Delete" buttons to each row
-        actionsColumn.setCellFactory(new Callback<>() {
-            @Override
-            public TableCell<Faculty, Void> call(final TableColumn<Faculty, Void> param) {
-                return new TableCell<>() {
-                    private final Button editButton = new Button("Edit");
-                    private final Button deleteButton = new Button("Delete");
+        // Setup action buttons
+        actionsColumn.setCellFactory(param -> new TableCell<>() {
+            private final Button editBtn = new Button("Edit");
+            private final Button deleteBtn = new Button("Delete");
+            private final HBox buttons = new HBox(5, editBtn, deleteBtn);
 
-                    {
-                        // Set action for edit button
-                        editButton.setOnAction(event -> {
-                            Faculty faculty = getTableView().getItems().get(getIndex());
-                            try {
-                                editFaculty(faculty);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        });
-
-                        // Set action for delete button
-                        deleteButton.setOnAction(event -> {
-                            Faculty faculty = getTableView().getItems().get(getIndex());
-                            deleteFaculty(faculty);
-                        });
+            {
+                editBtn.setOnAction(e -> {
+                    Faculty faculty = getTableView().getItems().get(getIndex());
+                    try {
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/FinalProject/UMS/faculty-edit.fxml"));
+                        Parent root = loader.load();
+                        FacultyEditController controller = loader.getController();
+                        controller.initData(faculty, FacultyListController.this);
+                        Stage stage = new Stage();
+                        stage.setScene(new Scene(root));
+                        stage.setTitle("Edit Faculty");
+                        stage.show();
+                    } catch (IOException ex) {
+                        showAlert("Error", "Failed to load edit window");
                     }
+                });
 
-                    @Override
-                    public void updateItem(Void item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if (empty) {
-                            setGraphic(null);
-                        } else {
-                            HBox buttons = new HBox(5);
-                            buttons.getChildren().addAll(editButton, deleteButton);
-                            setGraphic(buttons);
+                deleteBtn.setOnAction(e -> {
+                    Faculty faculty = getTableView().getItems().get(getIndex());
+                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                    alert.setTitle("Confirm Deletion");
+                    alert.setHeaderText("Delete " + faculty.getName() + "?");
+                    alert.setContentText("This cannot be undone.");
+                    alert.showAndWait().ifPresent(response -> {
+                        if (response == ButtonType.OK) {
+                            facultyList.remove(faculty);
+                            excelHandler.saveFaculty(facultyList);
                         }
-                    }
-                };
+                    });
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                setGraphic(empty ? null : buttons);
             }
         });
     }
 
-    // Refreshes the table to reflect updated data
-    public void refreshTable() {
-        if (facultyTable != null) {
-            facultyTable.refresh();
-            System.out.println("Faculty Table refreshed.");
-        } else {
-            System.out.println("facultyTable is NULL, cannot refresh.");
+    @FXML
+    private void handleAddFaculty() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/FinalProject/UMS/faculty-add.fxml"));
+        Parent root = loader.load();
+        FacultyController controller = loader.getController();
+        controller.setFacultyListController(this);
+        Stage stage = new Stage();
+        stage.setScene(new Scene(root));
+        stage.setTitle("Add Faculty");
+        stage.show();
+    }
+
+    @FXML
+    private void handleBack() {
+        try {
+            // Get current stage and window dimensions
+            Stage currentStage = (Stage) facultyTable.getScene().getWindow();
+            double prevWidth = currentStage.getWidth();
+            double prevHeight = currentStage.getHeight();
+
+            // Load menu view
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/FinalProject/UMS/menu-view.fxml"));
+            Parent root = loader.load();
+
+            // Create new scene with previous dimensions
+            Scene scene = new Scene(root, prevWidth, prevHeight);
+
+            // Apply CSS if exists (remove if you don't have CSS)
+            try {
+                scene.getStylesheets().add(getClass().getResource("/com/FinalProject/UMS/styles.css").toExternalForm());
+            } catch (NullPointerException e) {
+                System.out.println("No CSS file found - proceeding without styles");
+            }
+
+            // Set the new scene
+            currentStage.setScene(scene);
+            currentStage.setTitle("Main Menu");
+
+            // Force layout refresh
+            root.requestLayout();
+
+        } catch (IOException e) {
+            System.err.println("Failed to load menu: " + e.getMessage());
+            e.printStackTrace();
+
+            // Fallback - close window if menu can't be loaded
+            ((Stage) facultyTable.getScene().getWindow()).close();
         }
     }
 
-    // Opens the edit faculty form
-    private void editFaculty(Faculty faculty) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/fmp/views/faculty-edit.fxml"));
-        Parent root = loader.load();
-
-        FacultyEditController editController = loader.getController();
-        editController.setFacultyData(
-                String.valueOf(faculty.getId()), faculty.getName(), faculty.getEmail(), faculty.getDepartment()
-        );
-
-        Stage stage = (Stage) facultyTable.getScene().getWindow();
-        stage.setScene(new Scene(root, 400, 300));
+    public void addFaculty(Faculty faculty) {
+        if (faculty.getId() == null || faculty.getId().isEmpty()) {
+            faculty.setId("FAC-" + (facultyList.size() + 1));
+        }
+        facultyList.add(faculty);
+        excelHandler.saveFaculty(facultyList);
     }
 
-    // Deletes a faculty member from the list
-    private void deleteFaculty(Faculty faculty) {
-        facultyList.remove(faculty);
-        refreshTable();
-        System.out.println("Deleted Faculty: " + faculty.getName());
+    public void updateFaculty(Faculty faculty) {
+        int index = facultyList.indexOf(faculty);
+        if (index >= 0) {
+            facultyList.set(index, faculty);
+            excelHandler.saveFaculty(facultyList);
+        }
     }
 
-    // Navigates back to the Faculty Form page
-    @FXML
-    private void goBack() throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/fmp/views/faculty-view.fxml"));
-        Parent root = loader.load();
-        Stage stage = (Stage) facultyTable.getScene().getWindow();
-        stage.setScene(new Scene(root, 400, 300));
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

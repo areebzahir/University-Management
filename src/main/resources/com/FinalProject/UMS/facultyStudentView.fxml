@@ -5,16 +5,17 @@
 <?import javafx.scene.layout.*?>
 
 
-<VBox alignment="CENTER" spacing="10.0"
-      xmlns="http://javafx.com/javafx"
+<VBox xmlns="http://javafx.com/javafx/17"
       xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.FinalProject.UMS.FacultyListController">
+      fx:controller="com.FinalProject.UMS.FacultyViewController"
+      spacing="10"
+      style="-fx-padding: 20;">
 
 
-    <Label text="Faculty Management" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+    <Label text="Faculty Directory" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
 
 
-    <TableView fx:id="facultyTable">
+    <TableView fx:id="facultyTableView">
         <columns>
             <TableColumn fx:id="idColumn" text="ID" minWidth="50"/>
             <TableColumn fx:id="nameColumn" text="Name" minWidth="100"/>
@@ -23,15 +24,11 @@
             <TableColumn fx:id="emailColumn" text="Email" minWidth="150"/>
             <TableColumn fx:id="officeColumn" text="Office Location" minWidth="100"/>
             <TableColumn fx:id="coursesColumn" text="Courses Offered" minWidth="150"/>
-            <TableColumn fx:id="actionsColumn" text="Actions" minWidth="100"/>
         </columns>
     </TableView>
 
 
     <HBox spacing="10">
-        <Button text="Add Faculty" onAction="#handleAddFaculty"/>
         <Button text="Back" onAction="#handleBack"/>
     </HBox>
 </VBox>
-
-
