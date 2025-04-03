@@ -280,10 +280,26 @@ public class MenuController {
 
     @FXML
     private void handleLogout(ActionEvent event) {
-        showAlert("Logout", "Logging out...");
-        // Add code here to log the user out and return to the login screen
-    }
+        try {
+            // Close the current window
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            currentStage.close();
 
+            // Load and show the login screen
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("login-view.fxml"));
+            Parent root = loader.load();
+
+            Stage loginStage = new Stage();
+            loginStage.setScene(new Scene(root));
+            loginStage.setTitle("University Management System - Login");
+            loginStage.show();
+
+            LOGGER.info("User logged out successfully");
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Error during logout", e);
+            showError("Logout Error", "Failed to return to login screen");
+        }
+    }
     @FXML
     private void handleOpenChatbot() {
         try {

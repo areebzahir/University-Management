@@ -22,7 +22,7 @@ public class AdminStudentController {
 
     @FXML
     private void handleBackButton() {
-        switchToView("studentmanagecontroller.fxml", "University Management System - Main Screen");
+        switchToView("menu-view.fxml", "University Management System - Main Screen");
     }
 
     private void switchToView(String fxmlFile, String title) {
