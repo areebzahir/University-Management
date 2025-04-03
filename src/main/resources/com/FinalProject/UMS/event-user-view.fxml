@@ -5,52 +5,142 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.effect.InnerShadow?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<VBox alignment="CENTER" spacing="20" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.FinalProject.UMS.EventUserController" style="-fx-background-color: #f4f4f4;">
-    <!-- Header -->
-    <Text text="Event Registration System" style="-fx-fill: #2c3e50; -fx-font-weight: bold;">
-        <font>
-            <Font name="Arial" size="28" />
-        </font>
-    </Text>
+<AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.FinalProject.UMS.EventUserController" prefWidth="900" prefHeight="650" style="-fx-background-color: #f8f9fa;">
+    <VBox spacing="25" alignment="CENTER" AnchorPane.topAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0">
+        <padding>
+            <Insets top="20" right="20" bottom="20" left="20"/>
+        </padding>
 
-    <!-- TableView for Events -->
-    <TableView fx:id="eventTableView" prefWidth="800" prefHeight="300" style="-fx-background-color: white; -fx-border-color: #bdc3c7; -fx-border-width: 1;">
-        <columns>
-            <TableColumn fx:id="eventCodeColumn" text="Event Code" prefWidth="100" />
-            <TableColumn fx:id="eventNameColumn" text="Event Name" prefWidth="150" />
-            <TableColumn fx:id="descriptionColumn" text="Description" prefWidth="200" />
-            <TableColumn fx:id="locationColumn" text="Location" prefWidth="120" />
-            <TableColumn fx:id="dateColumn" text="Date and Time" prefWidth="150" />
-            <TableColumn fx:id="capacityColumn" text="Capacity" prefWidth="80" />
-        </columns>
-    </TableView>
+        <!-- Header with Title -->
+        <HBox alignment="CENTER" style="-fx-background-color: white; -fx-padding: 25; -fx-background-radius: 15;">
+            <effect>
+                <DropShadow color="#00000033" radius="15" spread="0.1"/>
+            </effect>
+            <Circle radius="35" style="-fx-fill: #9B001C;">
+                <effect>
+                    <InnerShadow/>
+                </effect>
+            </Circle>
+            <Label text="Event Registration System" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #9B001C; -fx-padding: 0 0 0 15;"/>
+        </HBox>
 
-    <!-- Filter Buttons -->
-    <HBox spacing="10" alignment="CENTER">
-        <Button fx:id="allEventsButton" text="All Events" onAction="#showAllEvents" style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 5;" />
-        <Button fx:id="myEventsButton" text="My Events" onAction="#showMyEvents" style="-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 5;" />
-    </HBox>
+        <!-- Main Content Area -->
+        <VBox spacing="20" style="-fx-background-color: white; -fx-padding: 25; -fx-background-radius: 15;" VBox.vgrow="ALWAYS">
+            <effect>
+                <DropShadow color="#00000033" radius="15" spread="0.1"/>
+            </effect>
 
-    <!-- Action Buttons -->
-    <HBox spacing="10" alignment="CENTER">
-        <Button fx:id="registerButton" text="Register for Event" onAction="#registerForEvent" style="-fx-background-color: #e67e22; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 5;" />
-        <Button fx:id="calendarViewButton" text="Calendar View" onAction="#showCalendarView" style="-fx-background-color: #9b59b6; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 5;" />
-    </HBox>
+            <!-- Filter Buttons -->
+            <HBox spacing="15" alignment="CENTER">
+                <Button fx:id="allEventsButton" text="All Events" onAction="#showAllEvents"
+                        style="-fx-background-color: #9B001C;
+                               -fx-text-fill: white;
+                               -fx-font-size: 14;
+                               -fx-font-weight: bold;
+                               -fx-padding: 10 20;
+                               -fx-background-radius: 5;
+                               -fx-cursor: hand;">
+                    <effect>
+                        <DropShadow color="#00000040" radius="5" spread="0.05"/>
+                    </effect>
+                </Button>
 
-    <!-- Navigation Buttons -->
-    <HBox spacing="10" alignment="CENTER">
-        <Button fx:id="returnButton" text="Return to Main Menu" onAction="#onReturnButtonClick" style="-fx-background-color: #7f8c8d; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 5;" />
-    </HBox>
+                <Button fx:id="myEventsButton" text="My Events" onAction="#showMyEvents"
+                        style="-fx-background-color: #F2BA30;
+                               -fx-text-fill: white;
+                               -fx-font-size: 14;
+                               -fx-font-weight: bold;
+                               -fx-padding: 10 20;
+                               -fx-background-radius: 5;
+                               -fx-cursor: hand;">
+                    <effect>
+                        <DropShadow color="#00000040" radius="5" spread="0.05"/>
+                    </effect>
+                </Button>
+            </HBox>
 
-    <!-- Footer -->
-    <Text text="© 2023 Event Management System" style="-fx-fill: #7f8c8d; -fx-font-size: 12;">
-        <font>
-            <Font name="Arial" />
-        </font>
-    </Text>
-</VBox>
+            <!-- TableView for Events - Preserved from original -->
+            <TableView fx:id="eventTableView" prefWidth="800" prefHeight="300" style="-fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-radius: 5;">
+                <effect>
+                    <DropShadow color="#00000022" radius="5" spread="0.05"/>
+                </effect>
+                <columns>
+                    <TableColumn fx:id="eventCodeColumn" text="Event Code" prefWidth="100" />
+                    <TableColumn fx:id="eventNameColumn" text="Event Name" prefWidth="150" />
+                    <TableColumn fx:id="descriptionColumn" text="Description" prefWidth="200" />
+                    <TableColumn fx:id="locationColumn" text="Location" prefWidth="120" />
+                    <TableColumn fx:id="dateColumn" text="Date and Time" prefWidth="150" />
+                    <TableColumn fx:id="capacityColumn" text="Capacity" prefWidth="80" />
+                </columns>
+                <placeholder>
+                    <Label text="No events available. Check back later or change your filter." style="-fx-text-fill: #666666;"/>
+                </placeholder>
+            </TableView>
+
+            <!-- Action Buttons -->
+            <HBox spacing="15" alignment="CENTER">
+                <Button fx:id="registerButton" text="Register for Event" onAction="#registerForEvent"
+                        style="-fx-background-color: #9B001C;
+                               -fx-text-fill: white;
+                               -fx-font-size: 14;
+                               -fx-font-weight: bold;
+                               -fx-padding: 12 25;
+                               -fx-background-radius: 5;
+                               -fx-cursor: hand;">
+                    <effect>
+                        <DropShadow color="#00000040" radius="5" spread="0.05"/>
+                    </effect>
+                </Button>
+
+                <Button fx:id="calendarViewButton" text="Calendar View" onAction="#showCalendarView"
+                        style="-fx-background-color: #F2BA30;
+                               -fx-text-fill: white;
+                               -fx-font-size: 14;
+                               -fx-font-weight: bold;
+                               -fx-padding: 12 25;
+                               -fx-background-radius: 5;
+                               -fx-cursor: hand;">
+                    <effect>
+                        <DropShadow color="#00000040" radius="5" spread="0.05"/>
+                    </effect>
+                </Button>
+
+                <Button fx:id="returnButton" text="Return to Main Menu" onAction="#onReturnButtonClick"
+                        style="-fx-background-color: rgba(155, 0, 28, 0.2);
+                               -fx-text-fill: #9B001C;
+                               -fx-font-size: 14;
+                               -fx-font-weight: bold;
+                               -fx-padding: 12 25;
+                               -fx-background-radius: 5;
+                               -fx-border-color: #9B001C;
+                               -fx-border-radius: 5;
+                               -fx-cursor: hand;">
+                    <effect>
+                        <DropShadow color="#00000040" radius="5" spread="0.05"/>
+                    </effect>
+                </Button>
+            </HBox>
+        </VBox>
+
+        <!-- Footer -->
+        <HBox alignment="CENTER" style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 10;">
+            <effect>
+                <DropShadow color="#00000033" radius="10" spread="0.05"/>
+            </effect>
+            <Text text="© 2025 Event Management System" style="-fx-fill: #666666; -fx-font-size: 12px;">
+                <font>
+                    <Font name="Arial" />
+                </font>
+            </Text>
+        </HBox>
+    </VBox>
+</AnchorPane>
