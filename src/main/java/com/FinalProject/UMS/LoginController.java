@@ -46,16 +46,23 @@ public class LoginController {
         String username = usernameField.getText().trim(); // Get the entered username
         String password = passwordField.getText().trim(); // Get the entered password
 
-       // String username = "S20250003";
-       //String password = "default123";
 
         LOGGER.log(Level.INFO, "Attempting login for user: {0}", username); // Log the login attempt
 
-        // Check for admin login first (hardcoded check for admin credentials)
+
+        // Check for hardcoded admin login first
         if ("a".equals(username) && "a".equals(password)) {
             LOGGER.info("Admin login successful"); // Log admin login success
-            showPopup("Login Successful", "Welcome, Admin!", Alert.AlertType.INFORMATION); // Show success popup
-            navigateToAdminDashboard(event); // Navigate to the admin dashboard
+
+            // Create a User object for the admin
+            User adminUser = new User();
+            adminUser.setUsername("a");
+            adminUser.setRole("ADMIN");
+
+            // Store the admin User object in GlobalState
+            GlobalState.getInstance().setLoggedInUser(adminUser);
+
+            navigateToMenu("ADMIN", event); // Navigate to the admin dashboard setting the role
             return;
         }
 
@@ -72,14 +79,14 @@ public class LoginController {
         if (user != null) {
             if (user.authenticate(password)) { // If password is correct
                 LOGGER.log(Level.INFO, "User {0} authenticated successfully", username); // Log successful authentication
-                showPopup("Login Successful", "Welcome, " + username + "!", Alert.AlertType.INFORMATION); // Show success popup
+                //  showPopup("Login Successful", "Welcome, " + username + "!", Alert.AlertType.INFORMATION); // Show success popup
 
                 // Store the logged-in user in the global state
                 GlobalState.getInstance().setLoggedInUser(user);
-                System.out.println("User set in GlobalState: " + GlobalState.getInstance().getLoggedInUser()); // Debug statement
+                System.out.println("User set in GlobalState: " + GlobalState.getInstance().getLoggedInUser());//DEBUG
 
                 // After successful auth:
-                navigateToDashboard(user, event); // Navigate to the user dashboard
+                navigateToMenu(user.getRole(), event); // Navigate to the user dashboard, passing the role
             } else {
                 LOGGER.warning("Incorrect password for user: " + username); // Log incorrect password attempt
                 errorMessageLabel.setText("Invalid password. Please try again."); // Show error message on the UI
@@ -91,40 +98,31 @@ public class LoginController {
             showPopup("Login Failed", "User ID not found", Alert.AlertType.ERROR); // Show error popup
         }
     }
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
 
-    // Method to navigate to the user dashboard after successful login
-    private void navigateToDashboard(User user, ActionEvent event) {
-        LOGGER.log(Level.INFO, "Navigating to dashboard for user id: {0}", user.getId()); // Log the navigation attempt
+
+    // Method to navigate to the  menu after successful login, passing the role
+    private void navigateToMenu(String role, ActionEvent event) {
+        LOGGER.log(Level.INFO, "Navigating to menu for role: {0}", role); // Log the navigation attempt
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("menu-view.fxml"));
             Parent root = fxmlLoader.load(); // Load the menu FXML file
 
             MenuController menuController = fxmlLoader.getController(); // Get controller for the menu
-//            String userRole = determineUserRole(user.getId()); // Determine the role of the user (e.g., admin, faculty)
-//            menuController.setUserRole(userRole); // Set the user role in the menu controller
+            menuController.setUserRole(role); // Set the user role in the menu controller
 
-            // Pass the logged-in user to the MenuController
-//            menuController.setLoggedInUser(GlobalState.getInstance().getLoggedInUser());
-            System.out.println("Logged in user: " + GlobalState.getInstance().getLoggedInUser());//DEBUG
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root)); // Set the new scene for the stage
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Error loading menu FXML: " + e.getMessage(), e); // Log error if loading menu fails
             showPopup("Error", "Failed to load menu.", Alert.AlertType.ERROR); // Show error popup
-        }
-    }
-
-    // Method to navigate to the admin dashboard after successful admin login
-    private void navigateToAdminDashboard(ActionEvent event) {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("menu-view.fxml"));
-            Parent root = fxmlLoader.load(); // Load the menu FXML file
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root)); // Set the new scene for the stage
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Error loading Admin Dashboard: " + e.getMessage(), e); // Log error if loading fails
-            showPopup("Error", "Failed to load admin dashboard.", Alert.AlertType.ERROR); // Show error popup
         }
     }
 

@@ -26,8 +26,6 @@
         <Button onAction="#onOpenCoursesButtonClick" text="View Enrolled Courses" style="-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 5;" />
         <Button onAction="#onOpenGradesButtonClick" text="View Grades" style="-fx-background-color: #e67e22; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 5;" />
         <Button onAction="#onOpenTuitionButtonClick" text="View Tuition Status" style="-fx-background-color: #9b59b6; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 5;" />
-        <Button onAction="#onOpenSecondPageButtonClick" text="Open Student Info" style="-fx-background-color: #34495e; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 5;" />
-        <Button onAction="#onOpenAdminDashboardButtonClick" text="Admin Dashboard" style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 5;" />
     </VBox>
 
     <!-- Back Button -->

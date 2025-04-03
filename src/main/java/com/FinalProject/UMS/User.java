@@ -24,6 +24,10 @@ public class User {
         this.role = role;
     }
 
+    public User() {
+
+    }
+
     // Getters and setters
     public String getRole() {
         return role;
@@ -148,5 +152,9 @@ public class User {
     // Add this method to set the password
     public void setPassword(String password) {
         this.password = password;
+    }
+
+
+    public void setUsername(String a) {
     }
 }

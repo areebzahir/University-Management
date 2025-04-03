@@ -25,11 +25,11 @@ public class EventMenuController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Get role from GlobalState if available
+        //Get role from GlobalState if available
         if (GlobalState.getInstance().getLoggedInUser() != null) {
             this.userRole = GlobalState.getInstance().getLoggedInUser().getRole();
             adjustVisibilityBasedOnRole();
-        }
+       }
     }
 
     public void setUserRole(String role) {

@@ -21,11 +21,13 @@ public class StudentManagementMenuController {
 
     private String loggedInStudentId; // Store the logged-in student's ID
 
+
+
+
     public void setLoggedInStudentId(String studentId) {
         this.loggedInStudentId = studentId;
 
     }
-
     // Handles the button click to open the second page (Student Information)
     @FXML
     protected void onOpenSecondPageButtonClick() {

@@ -102,15 +102,26 @@
                     <VBox spacing="5" styleClass="menu-section">
                         <Label text="Student Management"
                                style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #F2BA30;"/>
-                        <Button fx:id="studentManagementButton" text="Manage Students"
-                                onAction="#handleStudentManage"
-                                style="-fx-background-color: rgba(242, 186, 48, 0.2);
-                                       -fx-text-fill: #F2BA30;
-                                       -fx-padding: 12;
-                                       -fx-background-radius: 8;
-                                       -fx-border-color: #F2BA30;
-                                       -fx-border-radius: 8;
-                                       -fx-cursor: hand;"/>
+                        <VBox spacing="5">
+                            <Button fx:id="studentManagementButton" text="Manage Students"
+                                    onAction="#handleStudentManage"
+                                    style="-fx-background-color: rgba(242, 186, 48, 0.2);
+                       -fx-text-fill: #F2BA30;
+                       -fx-padding: 12;
+                       -fx-background-radius: 8;
+                       -fx-border-color: #F2BA30;
+                       -fx-border-radius: 8;
+                       -fx-cursor: hand;"/>
+                            <Button fx:id="adminStudentViewButton" text="Admin View"
+                                    onAction="#handleAdminStudentView"
+                                    style="-fx-background-color: rgba(242, 186, 48, 0.2);
+                       -fx-text-fill: #F2BA30;
+                       -fx-padding: 12;
+                       -fx-background-radius: 8;
+                       -fx-border-color: #F2BA30;
+                       -fx-border-radius: 8;
+                       -fx-cursor: hand;"/>
+                        </VBox>
                     </VBox>
 
                     <!-- Faculty Management -->

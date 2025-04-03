@@ -1,5 +1,6 @@
 package com.FinalProject.UMS;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -20,7 +21,8 @@ import java.util.logging.Logger;
 public class MenuController {
 
     private static final Logger LOGGER = Logger.getLogger(MenuController.class.getName());
-
+    private static final String ROLE_ADMIN = "ADMIN";
+    private static final String ROLE_USER = "USER";
     @FXML
     private VBox menuVBox;
 
@@ -39,43 +41,80 @@ public class MenuController {
     @FXML
     private Button eventManagementButton;
 
+    @FXML
+    private Button adminStudentViewButton;
+
     private String loggedInStudentId;
+    private String userRole;
 
+
+    @FXML
     public void initialize() {
-        // Initialization code, if needed
-        System.out.println("Initializing MenuController");
+        LOGGER.info("MenuController initialized");
 
+        // Retrieve userRole from GlobalState
+        User loggedInUser = GlobalState.getInstance().getLoggedInUser();
+        if (loggedInUser != null) {
+            this.userRole = loggedInUser.getRole();
+            System.out.println("Initializing MenuController - Current role: " + userRole);
+        } else {
+            System.out.println("Initializing MenuController - No user logged in");
+            this.userRole = null; // Or set a default role if appropriate
+        }
+
+        updateButtonVisibility();
     }
 
-    public void setLoggedInStudentId(String studentId) { // Add this method
-        this.loggedInStudentId = studentId;
+    public void setUserRole(String role) {
+        this.userRole = role != null ? role.toUpperCase() : null;
+        System.out.println("Setting user role to: " + this.userRole);
+        LOGGER.info("User role set to: " + this.userRole);
+
+        // Store the userRole in GlobalState
+        User loggedInUser = GlobalState.getInstance().getLoggedInUser();
+        if (loggedInUser != null) {
+            loggedInUser.setRole(this.userRole); // Update the role in the User object
+            GlobalState.getInstance().setLoggedInUser(loggedInUser); // Store the updated User object
+        }
+
+        updateButtonVisibility();
     }
 
-    // Add this method to receive the logged-in user
-//    public void setLoggedInUser(User user) {
-//        this.loggedInUser = user;
-//        LOGGER.log(Level.INFO, "Logged in user received in MenuController: {0}", user.getId());
-//
-//
-//        //  Determine if the user is a student and get their student ID
-//        if (user.getStudentId() != null && !user.getStudentId().isEmpty()) {
-//            loggedInStudentId = user.getStudentId();
-//            LOGGER.log(Level.INFO, "User is a student with ID: {0}", loggedInStudentId);
-//        } else {
-//            LOGGER.warning("User is not a student or student ID is missing.");
-//            loggedInStudentId = null; // Or handle the non-student case as needed
-//        }
-//        String userRole = user.getRole();
-//        setUserRole(userRole);
-//
-//    }
+    private void updateButtonVisibility() {
+        if (userRole == null) {
+            System.out.println("No role set - hiding all buttons");
+            adminStudentViewButton.setVisible(false);
+            adminStudentViewButton.setManaged(false);
+            studentManagementButton.setVisible(false);
+            studentManagementButton.setVisible(false);
+            return;
+        }
 
+        boolean isAdmin = ROLE_ADMIN.equals(userRole);
+        boolean isUser = ROLE_USER.equals(userRole);
 
+        System.out.println("Updating button visibility - Admin: " + isAdmin +
+                ", User: " + isUser);
+
+        // Admin sees only admin button
+        adminStudentViewButton.setVisible(isAdmin);
+        adminStudentViewButton.setManaged(isAdmin);
+        studentManagementButton.setDisable(isAdmin); // Disable student button for admin
+
+        // User sees only student button
+        studentManagementButton.setVisible(isUser);
+        studentManagementButton.setManaged(isUser);
+        adminStudentViewButton.setDisable(isUser); // Disable admin button for user
+
+        LOGGER.info("Button visibility updated - AdminButton: " + isAdmin +
+                ", StudentButton: " + isUser);
+    }
 
     @FXML
     private void handleDashboard(ActionEvent event) {
         loadScene("Dashboard-view.fxml", "Dashboard", event);
     }
+
 
     @FXML
     private void handleSubjectManagement(ActionEvent event) {
@@ -139,6 +178,8 @@ public class MenuController {
 
     @FXML
     private void handleStudentManage(ActionEvent event) {
+        System.out.println("Student management button clicked by user with role: " + userRole);
+
         // Load student data and print to console
         List<Student> students = StudentDatabase.loadStudentsFromExcel();
         System.out.println("Loaded Students:");
@@ -165,6 +206,23 @@ public class MenuController {
             e.printStackTrace();
         }
 
+    }
+    @FXML
+    private void handleAdminStudentView(ActionEvent event) {
+        System.out.println("Admin student view button clicked by user with role: " + userRole);
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("admin-student-view.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) adminStudentViewButton.getScene().getWindow();
+            stage.setScene(new Scene(root, 1920, 1080));
+            stage.setTitle("Admin Student View");
+            stage.show();
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Error loading admin student view", e);
+            showError("Error", "Failed to load admin student view: " + e.getMessage());
+        }
     }
 
     @FXML
@@ -207,8 +265,7 @@ public class MenuController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("profile-view.fxml"));
             Parent root = loader.load();
-            //ProfileController profileController = loader.getController();
-            //profileController.setLoggedInStudentId(loggedInUser.getId()); // Remove this line!!
+
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
@@ -292,6 +349,12 @@ public class MenuController {
                 User user = GlobalState.getInstance().getLoggedInUser();
                 EventMenuController.setUserRole(user.getRole());
             }
+            if (controller instanceof MenuController) {
+                MenuController MenuController = (MenuController) controller;
+
+                User user = GlobalState.getInstance().getLoggedInUser();
+                MenuController.setUserRole(user.getRole());
+            }
             // Close the current window
             if (event != null) {
                 ((Node) (event.getSource())).getScene().getWindow().hide();
@@ -303,4 +366,3 @@ public class MenuController {
         }
     }
 }
-
